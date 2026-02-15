@@ -1,0 +1,31 @@
+<div class="container">
+    <h3 mat-dialog-title>Are you sure?</h3>
+    <div mat-dialog-content>
+        <ul class="clearfix">
+            <li>
+                <mat-form-field class="example-full-width " appearance="outline">
+                    <mat-label>Session Year</mat-label>
+                    <mat-select [(ngModel)]="data.sessionYear" required>
+                        <mat-option *ngFor="let item of sessionYearList" [value]="item.id">
+                            {{item.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </li>
+            <li>
+                <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Date Of Exit</mat-label>
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="data.exitDate" disabled required>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker disabled="false"></mat-datepicker>
+                </mat-form-field>
+            </li>
+        </ul>
+    </div>
+    <div mat-dialog-actions class="mb-1">
+        <button mat-flat-button color="warn" [mat-dialog-close]="data">
+            Delete
+        </button>
+        <button mat-flat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+    </div>
+</div>

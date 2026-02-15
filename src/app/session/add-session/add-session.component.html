@@ -1,0 +1,96 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">{{dialogTitle}} Session</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/pages/session/all-session">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/pages/session/all-session">Session</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{dialogTitle}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="body">
+                        <form class="m-4" [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Title</mat-label>
+                                        <input matInput formControlName="name" required>
+                                        <mat-icon matSuffix>sms</mat-icon>
+                                        <mat-error *ngIf="sessionForm.get('name').hasError('required')">
+                                            Please Add Title
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Previous Session</mat-label>
+                                        <mat-select formControlName="previousSessionId" required>
+                                          <mat-option *ngFor="let session of sessionMap | keyvalue" [value]="session.key">
+                                            {{session.value}}
+                                          </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="sessionForm.get('previousSessionId').hasError('required')">
+                                          Please Select previousSessionId
+                                        </mat-error>
+                                      </mat-form-field>
+                                </div>
+                               
+                            </div>
+                            <div class="row">
+
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>From Date</mat-label>
+                                        <input matInput [matDatepicker]="rpicker" formControlName="fromDate"
+                                             disabled required>
+                                        <mat-datepicker-toggle matSuffix [for]="rpicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #rpicker disabled="false"></mat-datepicker>
+                                        <mat-error *ngIf="sessionForm.get('fromDate').hasError('required')">
+                                            Please Select Date
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>To Date</mat-label>
+                                        <input matInput [matDatepicker]="rpicker1" formControlName="toDate"
+                                             disabled required>
+                                        <mat-datepicker-toggle matSuffix [for]="rpicker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #rpicker1 disabled="false"></mat-datepicker>
+                                        <mat-error *ngIf="sessionForm.get('toDate').hasError('required')">
+                                            Please Select Date
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                
+                            </div>
+
+                           
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                    <mat-spinner-button [options]="spinnerButtonOptions"
+                                        [disabled]="!sessionForm.valid">
+                                    </mat-spinner-button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

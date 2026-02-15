@@ -1,0 +1,317 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">Staff Profile</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/pages/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/pages/staff/all-staff">Staff</a>
+                        </li>
+                        <li class="breadcrumb-item active">Profile</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Your content goes here  -->
+        <div class="row clearfix">
+            <div class="col-lg-4 col-md-12">
+                <div class="card">
+                    <div class="m-b-20">
+                        <div class="contact-grid">
+                            <div class="profile-header bg-dark">
+                                <div class="user-name">{{ staff.name}}</div>
+                                <div class="name-center">{{userTypeMap.get(staff.userType)}} </div>
+                            </div>
+                            <img [src]='apiURL+staff.uploadImg' (error)="updateStaffUrl($event, staff)" width="120"
+                                height="120" class="user-img" alt="avatar" />
+                            <p>
+                                {{ staff.address}}
+                                <br />
+                            </p>
+                            <div>
+                                <span class="phone">
+                                    <i class="material-icons">phone</i>{{staff.mobile}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item m-l-10">
+                            <a class="nav-link active" data-toggle="tab" href="#about">About</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane body active" id="about">
+                            <ul class="list-group list-group-unbordered">
+                                <li class="list-group-item">
+                                    <b>Date Of Birth </b>
+                                    <div class="profile-desc-item pull-right">{{ staff.dob | date: showDateFormat}}
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Gender </b>
+                                    <div class="profile-desc-item pull-right">{{genderMap.get( staff.gender)}}</div>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <b>Emergency Mobile </b>
+                                    <div class="profile-desc-item pull-right">{{ staff.emergencyMobile}}</div>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>DOJ</b>
+                                    <div class="profile-desc-item pull-right">{{staff.dateOfJoining| date:
+                                        showDateFormat}}</div>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Qualification </b>
+                                    <div class="profile-desc-item pull-right">{{ staff.education}}</div>
+                                </li>
+
+                            </ul>
+                            <small class="text-muted">Email address: </small>
+                            <p>{{staff.email}}</p>
+                            <hr>
+                            <small class="text-muted">Mobile: </small>
+                            <p>{{staff.mobile}}</p>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="card">
+                    <div class="profile-tab-box">
+                        <div class="p-l-20">
+                            <ul class="nav ">
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link active show" href="#timetable" data-toggle="tab">Time Table</a>
+                                </li>
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link" href="#attendance" data-toggle="tab">Attendance Details</a>
+                                </li>
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link" href="#documents" data-toggle="tab">Document Details</a>
+                                </li>
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link" href="#holidays" data-toggle="tab">Holidays</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="timetable" aria-expanded="false">
+                        <div class="card">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item m-l-10" *ngFor="let recipient of weekMap | keyvalue;let i = index">
+                                    <a class="nav-link {{i==0? 'active' : ''}}" data-toggle="tab"
+                                        href="{{'#' +recipient.value.short}}">{{recipient.value.short}}</a>
+                                </li>
+                            </ul>
+                            
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="attendance" aria-expanded="false">
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card project_widget">
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="tableBody">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover ">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Month</th>
+                                                                    <th style="color: #1d9605;text-align: center;">
+                                                                        Present</th>
+                                                                    <th style="text-align: center;">Weekends</th>
+                                                                    <th style="text-align: center;">Holidays</th>
+                                                                    <th style="color: #ff0000;text-align: center;">
+                                                                        Absent</th>
+                                                                    <th style="text-align: center;">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let month of monthList">
+                                                                    <td>{{month}}-{{attendanceMap.get(month) ?
+                                                                        attendanceMap.get(month).year: ''}}</td>
+                                                                    <td style="color: #1d9605;text-align: center;">
+                                                                        {{attendanceMap.get(month) ?
+                                                                        attendanceMap.get(month).present : '-'}}
+                                                                    </td>
+                                                                    <td style="text-align: center;">
+                                                                        {{attendanceMap.get(month) ?
+                                                                        attendanceMap.get(month).totalWeekend :
+                                                                        '-'}}</td>
+                                                                    <td style="text-align: center;">
+                                                                        {{attendanceMap.get(month) ?
+                                                                        attendanceMap.get(month).totalHolidays :
+                                                                        '-'}}</td>
+                                                                    <td style="color: #ff0000;text-align: center;">
+                                                                        {{attendanceMap.get(month) ?
+                                                                        attendanceMap.get(month).absent : '-'}}</td>
+                                                                    <td *ngIf="attendanceMap.get(month)"><button
+                                                                            mat-icon-button color="accent"
+                                                                            class="btn-tbl-delete"
+                                                                            (click)="$event.stopPropagation()"
+                                                                            (click)="viewStaffAttendance(month, attendanceMap.get(month).month, attendanceMap.get(month).year, staff.id)">
+                                                                            <mat-icon aria-label="View"
+                                                                                class="col-white">preview
+                                                                            </mat-icon>
+                                                                        </button></td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="documents" aria-expanded="false">
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card project_widget">
+                                    <div class="header">
+                                        <h2>Document Details</h2>
+                                    </div>
+
+                                    <div class="body">
+                                        <div class="row" *ngIf="staffDocuments.length > 0">
+                                            <table class="table table-hover ">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Document Name</th>
+                                                        <th>Download</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let document of staffDocuments">
+                                                        <td>{{document.documentName}}</td>
+                                                        <td>
+                                                            <a href="{{apiURL + document.uploadDocument}}">
+                                                                <mat-icon matSuffix>archive</mat-icon>
+                                                            </a>
+                                                            <button mat-icon-button color="accent"
+                                                                (click)="deleteDocument(document)">
+                                                                <mat-icon aria-label="Delete" class="col-blue">delete
+                                                                </mat-icon>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <br />
+
+                                        <div class="card project_widget">
+                                            <div class="header">
+                                                <h2>Add New Document</h2>
+                                            </div>
+                                            <form class="m-4" [formGroup]="documentForm"
+                                                (ngSubmit)="onDocumentSubmit()">
+
+                                                <div class="row">
+                                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                                        <mat-form-field class="example-full-width mb-3"
+                                                            appearance="outline">
+                                                            <mat-label>Document Name</mat-label>
+                                                            <input matInput formControlName="name" required>
+                                                            <mat-error
+                                                                *ngIf="documentForm.get('name').hasError('required')">
+                                                                Please Enter Document Name
+                                                            </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                                        <mat-form-field class="example-full-width mb-3"
+                                                            appearance="outline">
+                                                            <mat-label>Upload Doc</mat-label>
+                                                            <ngx-mat-file-input accept="image/*,.pdf" [multiple]="false"
+                                                                formControlName="uploadDoc" required>
+                                                            </ngx-mat-file-input>
+                                                            <mat-icon matSuffix>attach_file</mat-icon>
+                                                            <mat-error
+                                                                *ngIf="documentForm.get('uploadDoc').hasError('required')">
+                                                                Please upload Document
+                                                            </mat-error>
+                                                            <mat-error
+                                                                *ngIf="documentForm.get('uploadDoc').hasError('fileMinSize')">
+                                                                File size exceeds than 2 MB
+                                                            </mat-error>
+                                                            <mat-hint style="color: red;font-size: 16px;"> File Size
+                                                                should not be exceed more than 2
+                                                                MB.</mat-hint>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                                        <mat-spinner-button [options]="spinnerButtonOptions"
+                                                            [disabled]="!documentForm.valid">
+                                                        </mat-spinner-button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="holidays" aria-expanded="false">
+                        <div class="card">
+
+                            <div class="body">
+                                <div class="row clearfix">
+                                    <div class="body table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;vertical-align: inherit">Holiday Name
+                                                    </th>
+                                                    <th style="text-align: center;vertical-align: inherit">Holiday Date
+                                                    </th>
+                                                </tr>
+                                                <tr *ngFor="let holiday of holidayList">
+                                                    <td style="text-align: center;vertical-align: inherit">
+                                                        {{holiday.name}}
+                                                    </td>
+                                                    <td style="text-align: center;vertical-align: inherit">
+                                                        {{holiday.holidayDate | date: showDateFormat}}
+                                                    </td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,151 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="block-header">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <ul class="breadcrumb breadcrumb-style ">
+            <li class="breadcrumb-item">
+              <h4 class="page-title">Dashboard</h4>
+            </li>
+            <li class="breadcrumb-item bcrumb-1">
+              <a routerLink="/pages/dashboard/staff-dashboard">
+                <i class="fas fa-home"></i> Home</a>
+            </li>
+            <li class="breadcrumb-item active">Dashboard</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Widgets -->
+    <div class="row ">
+      <div class="col-xs-8 col-sm-8 col-md-6 col-lg-6" *ngIf="login.userType ==1 || dashboardAclModels.indexOf(6) > -1">
+        <div class="card">
+          <div class="header">
+            <h2>Daily Tasks</h2>
+          </div>
+          <div class="tableBody" style="overflow-y: auto;height: 300px;">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">Task Name</th>
+                    <th class="text-center">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let announcement of announcementList">
+                    <td>
+                      {{announcement.message}}
+                    </td>
+                    <td>
+                      {{announcement.createDate | date: showDateFormat}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="text-center">
+            <a routerLink="/pages/announcement/all-announcement" class="b-b-primary text-primary"> View All
+              Posts</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-8 col-sm-8 col-md-6 col-lg-6" *ngIf="login.userType ==1 || dashboardAclModels.indexOf(6) > -1">
+        <div class="card">
+          <div class="header">
+            <h2><b>Today Follow-Up</b></h2>
+          </div>
+          <div class="tableBody" style="overflow-y: auto;height: 300px;">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">Customer Name</th>
+                    <th class="text-center">Mobile No.</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">Product</th>
+                    <th class="text-center">Assign To</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let customerLeadModel of allCustomerLeadModels">
+                    <td>
+
+                      {{customerLeadModel.name}}
+                    </td>
+                    <td>
+                      {{customerLeadModel.mobile}}
+                    </td>
+                    <td>
+                      <ul>
+                        <li>
+                          {{customerLeadModel.nextActivityDate | date: showDateFormat}}
+                        </li>
+                        <li>
+                          {{customerLeadModel.activityAction }}
+                        </li>
+                      </ul>
+                    </td>
+                    <td>
+                      {{customerLeadModel.details}}
+                    </td>
+                    <td>
+                      {{staffMap.get(customerLeadModel.assignTo)?.name}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="text-center">
+            <a routerLink="/pages/customerLead/all-customers-lead" class="b-b-primary text-primary"> View All
+              Posts</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- #END# Widgets -->
+    <div class="row clearfix">
+      <div class="col-xs-8 col-sm-8 col-md-6 col-lg-6" *ngIf="login.userType ==1 || dashboardAclModels.indexOf(5) > -1">
+        <div class="card">
+          <div class="header">
+            <h2>Staff Birthday</h2>
+          </div>
+          <div class="tableBody" style="overflow-y: auto;height: 300px;">
+            <div *ngIf="birthdayStaff.length >0; else elseStaffBlock" class="table-responsive">
+              <table class="table table-hover">
+                <tbody>
+                  <tr *ngFor="let staff of birthdayStaff">
+                    <td>
+                      <img [src]='apiURL+staff.uploadImg' (error)="updateStaffUrl($event, staff)" width="80" height="80"
+                        style="border-radius: 50%" alt="avatar" />
+                    </td>
+                    <td>
+                      <ul>
+                        <li>
+                          {{staff.name}}
+                        </li>
+                        <li>
+                          {{staff.mobile}}
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #elseStaffBlock>
+              <div>
+                <img src='assets/images/banner/cake.png' height="200px" />
+                <br>
+                No birthday buddy found
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

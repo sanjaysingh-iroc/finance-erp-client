@@ -1,0 +1,102 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">Customer Profile</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/pages/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/pages/customers/all-customers">Customer</a>
+                        </li>
+                        <li class="breadcrumb-item active">Profile</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Your content goes here  -->
+        <div class="row clearfix">
+            <div class="col-lg-4 col-md-12">
+                <div class="card">
+                    <div class="m-b-20">
+                        <div class="contact-grid">
+                            <div class="profile-header bg-dark">
+                                <div class="user-name">{{ customer.name}}</div>
+                            </div>
+                            <img [src]='apiURL+customer.uploadImg' (error)="updateCustomerUrl($event, customer)"
+                                width="120" height="120" class="user-img" alt="avatar" />
+                            <p>
+                                {{ customer.address}}
+                                <br />
+                            </p>
+                            <div>
+                                <span class="phone">
+                                    <i class="material-icons">phone</i>{{customer.mobile}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item m-l-10">
+                            <a class="nav-link active" data-toggle="tab" href="#about">About</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane body active" id="about">
+                            <ul class="list-group list-group-unbordered">
+
+                                <li class="list-group-item">
+                                    <b>Gender </b>
+                                    <div class="profile-desc-item pull-right">{{genderMap.get( customer.gender)}}</div>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <b>Emergency Mobile </b>
+                                    <div class="profile-desc-item pull-right">{{ customer.emergencyMobile}}</div>
+                                </li>
+
+                            </ul>
+                            <small class="text-muted">Email address: </small>
+                            <p>{{customer.email}}</p>
+                            <hr>
+                            <small class="text-muted">Mobile: </small>
+                            <p>{{customer.mobile}}</p>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="card">
+                    <div class="profile-tab-box">
+                        <div class="p-l-20">
+                            <ul class="nav ">
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link active show" href="#timetable" data-toggle="tab">Time Table</a>
+                                </li>
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link" href="#attendance" data-toggle="tab">Attendance Details</a>
+                                </li>
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link" href="#documents" data-toggle="tab">Document Details</a>
+                                </li>
+                                <li class="nav-item tab-all p-l-20">
+                                    <a class="nav-link" href="#holidays" data-toggle="tab">Holidays</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</section>

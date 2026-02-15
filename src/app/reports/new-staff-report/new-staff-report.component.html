@@ -1,0 +1,88 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">New Staff</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/pages/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a href="#" onClick="return false;">Report</a>
+                        </li>
+                        <li class="breadcrumb-item active">New Staff</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0px;">
+                <div class="card" style="margin-bottom: 0px;">
+                    <div class="body">
+                        <div class="table-responsive">
+                            <div class="materialTableHeader">
+                                <div class="row">
+                                    <div class="col-8">
+
+                                    </div>
+                                    <div class="col-4">
+                                        <ul class="header-buttons">
+                                            <li>
+                                                <div class="icon-button-demo">
+                                                    <button mat-mini-fab color="primary" (click)="generatePDF()">
+                                                        <mat-icon class="col-white">picture_as_pdf</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="icon-button-demo">
+                                                    <button mat-mini-fab color="primary" (click)="exportExcel()">
+                                                        <mat-icon class="col-white">explicit</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tableBody" style="position : relative; height: calc(100vh - 240px);"
+                                [perfectScrollbar]>
+                                <table class="table table-hover ">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>DOB</th>
+                                            <th>Gender</th>
+                                            <th>Mobile</th>
+                                            <th>Email</th>
+                                            <th>Date of Joining</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let staff of staffsList">
+                                            <td class="table-img tbl-col-width-per-6">
+                                                <img [src]='apiURL+staff.uploadImg' (error)="updateStaffUrl($event, staff)">
+                                            </td>
+                                            <td>{{staff.name}}</td>
+                                            <td>{{staff.dob | date: showDateFormat}}</td>
+                                            <td>{{genderMap.get(staff.gender)}}</td>
+                                            <td>{{staff.mobile}}</td>
+                                            <td>{{staff.email}}</td>
+                                            <td>{{staff.dateOfJoining | date: showDateFormat}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
