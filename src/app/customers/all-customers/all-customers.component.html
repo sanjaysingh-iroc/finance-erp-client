@@ -88,15 +88,10 @@
                                         {{row.name}}</mat-cell>
                                 </ng-container>
                                 <ng-container matColumnDef="contactPersonName">
-                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Contact
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Spouse
                                         Name</mat-header-cell>
                                     <mat-cell *matCellDef="let row">
-                                        {{row.contactPersonName}}</mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="email">
-                                    <mat-header-cell *matHeaderCellDef mat-sort-header>E-Mail</mat-header-cell>
-                                    <mat-cell *matCellDef="let row">
-                                        {{row.email}}</mat-cell>
+                                        {{row.spouseName}}</mat-cell>
                                 </ng-container>
                                 <ng-container matColumnDef="mobile">
                                     <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</mat-header-cell>
@@ -104,10 +99,16 @@
                                         {{row.mobile}}</mat-cell>
                                 </ng-container>
                                 <ng-container matColumnDef="emergencyMobile">
-                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Emergency
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Spouse
                                         Mobile</mat-header-cell>
                                     <mat-cell *matCellDef="let row">
-                                        {{row.emergencyMobile}}</mat-cell>
+                                        {{row.spouseMobile}}</mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="password">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Password
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let row">
+                                        {{row.password}}</mat-cell>
                                 </ng-container>
                                 <!-- actions -->
                                 <ng-container matColumnDef="actions">

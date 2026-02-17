@@ -25,7 +25,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
   customerLoansForm: FormGroup;
   spinnerButtonOptions: MatProgressButtonOptions;
   customerMap: Map<number, CustomerModel> = new Map<number, CustomerModel>();
-  selectedCustomer: CustomerModel = new CustomerModel({});
+  selectedCustomer: CustomerModel = new CustomerModel({}, {}, {});
 
   customerDetails = new FormControl(null, [
     Validators.required,

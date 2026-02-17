@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerModel } from '../customer.model';
+import { CustomerLoanModel, CustomerModel } from '../customer.model';
 import { UtilsService } from '../../shared/services/utils.service';
 import { monthMap, settings, weekMap } from '../../demo/data';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -20,11 +20,14 @@ import { CompressImageService } from '../../shared/services/CompressImageService
 export class AboutCustomerComponent implements OnInit {
 
   customer: CustomerModel;
-  genderMap: Map<number, string> = new Map<number, string>();
   showDateFormat: string;
 
   apiURL: string = environment.apiUrl;
   spinnerButtonOptions: MatProgressButtonOptions;
+  customerLoanList: CustomerLoanModel[] = [];
+  loanTotalPaidAmountMap: Map<number, number> = new Map<number, number>();
+  customerLoanAmountMap: Map<number, string> = new Map<number, string>();
+  customerModelMap: Map<number, CustomerModel> = new Map<number, CustomerModel>();
 
   constructor(
     private customerService: CustomerService,
@@ -44,12 +47,31 @@ export class AboutCustomerComponent implements OnInit {
   ngOnInit(): void {
     this.spinnerButtonOptions = this.commonLayout.getprogressButton();
     this.showDateFormat = settings.SHOW_DATE_FORMAT;
-
-    
     this.customer = history.state.customer;
 
-    this.utilsService.getAllGender()
-      .subscribe(data => data.forEach(element => this.genderMap.set(element.id, element.name)));
+
+    this.customerService.getCustomerLoans(this.customer.id).subscribe(data => {
+      this.customerLoanList = data;
+      console.log(data);
+    });
+
+    this.customerService.calculateAmountByLoanId().subscribe(data => {
+      data.forEach(loanTotalPaidAmount => {
+        this.loanTotalPaidAmountMap.set(loanTotalPaidAmount[0], loanTotalPaidAmount[1]);
+      });
+    });
+
+    this.customerService.getCustomerLoanByLastDeposit().subscribe(data => {
+      data.forEach(customerLoanAmountModel => {
+        this.customerLoanAmountMap.set(customerLoanAmountModel.loanId, customerLoanAmountModel.depositDate);
+      });
+    });
+
+    this.customerService.getAllCustomers().subscribe(data => {
+      data.forEach(customerModel => {
+        this.customerModelMap.set(customerModel.id, customerModel);
+      });
+    });
   }
 
   updateCustomerUrl(event, row) {

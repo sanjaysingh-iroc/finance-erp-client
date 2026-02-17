@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { first } from 'rxjs/operators';
+import { first, map, startWith } from 'rxjs/operators';
 import { CustomerService } from '../customer.service';
 import { CustomerLoanModel, CustomerModel } from '../customer.model';
 import { CommonLayout } from '../../shared/shared-layout/share.layout';
@@ -10,10 +10,9 @@ import { SessionModel } from '../../session/session.model';
 import { LocalStorageData } from '../../shared/local-storage-data';
 import { formatDate } from '@angular/common';
 import { settings } from '../../demo/data';
-import { BillingService } from '../../billing/billing.service';
-import { BillingModel } from '../../billing/billing.model';
 import { CompressImageService } from '../../shared/services/CompressImageService';
 import { Utils } from '../../shared/util-class';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -28,17 +27,30 @@ export class AddCustomerLoanComponent implements OnInit {
   customerLoansForm: FormGroup;
   session: SessionModel;
   spinnerButtonOptions: MatProgressButtonOptions;
-  allBillingsMap: Map<number, BillingModel> = new Map<number, BillingModel>();
   allCustomersMap: Map<number, CustomerModel> = new Map<number, CustomerModel>();
+  filteredOptions: Observable<CustomerModel[]>;
+  filteredGuarantorOptions: Observable<CustomerModel[]>;
 
-  invoiceList: number[] = [];
-  selectedCustomer: CustomerModel = new CustomerModel({});
+  customers: CustomerModel[] = [];
+
+  selectedCustomer: CustomerModel = new CustomerModel({}, {}, {});
+
+  selectedGuarantor: CustomerModel = new CustomerModel({}, {}, {});
+
+
   maxLoanAmountControl = new FormControl('0');
-  selectedBillingModel: BillingModel;
-  
+  customerDetails = new FormControl(null, [
+    Validators.required,
+    this.forbiddenNamesValidator()
+  ]);
+
+  guarntorDetails = new FormControl(null, [
+    Validators.required,
+    this.forbiddenNamesValidator()
+  ]);
+
   constructor(private fb: FormBuilder,
     private customerService: CustomerService,
-    private billingService: BillingService,
     private compressImage: CompressImageService,
     public utils: Utils,
 
@@ -51,7 +63,27 @@ export class AddCustomerLoanComponent implements OnInit {
 
     this.spinnerButtonOptions = this.commonLayout.getprogressButton();
     this.session = this.localStorageData.sessionValue;
+    this.customerService.getAllCustomers().subscribe(data => {
+      data.sort((a, b) => a.name.localeCompare(b.name));
+      this.customers = data;
+      data.forEach(customerModel => {
+        this.allCustomersMap.set(customerModel.id, customerModel);
 
+      });
+
+      this.filteredOptions = this.customerDetails.valueChanges.pipe(
+        startWith<any>({ id: 0, name: "" }),
+        map(value => (value == null || typeof value == "string" ? value : value.name)),
+        map(name => (name ? this._filter(name) : this.customers.slice()))
+      );
+
+      this.filteredGuarantorOptions = this.guarntorDetails.valueChanges.pipe(
+        startWith<any>({ id: 0, name: "" }),
+        map(value => (value == null || typeof value == "string" ? value : value.name)),
+        map(name => (name ? this._filter(name) : this.customers.slice()))
+      );
+
+    });
     this.action = history.state.action;
     if (this.action == 'edit') {
       this.customerLoanModel = history.state.customerLoanModel;
@@ -62,67 +94,47 @@ export class AddCustomerLoanComponent implements OnInit {
     }
 
     this.customerLoansForm = this.fb.group({
-      invoiceId: [this.customerLoanModel.invoiceId, [Validators.required]],
+      customerDetails: this.customerDetails,
+      guarntorDetails: this.guarntorDetails,
 
       customerLoanDate: [this.customerLoanModel.customerLoanDate, [Validators.required]],
-
       amount: [this.customerLoanModel.amount, [Validators.required, Validators.min(0)]],
       interestAmount: [this.customerLoanModel.interestAmount, [Validators.required, Validators.min(0)]],
       emiAmount: [this.customerLoanModel.emiAmount, [Validators.required, Validators.min(0)]],
-
       comment: [this.customerLoanModel.comment],
       uploadDoc: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
-
-    });
-
-
-    this.customerService.getAllCustomerLoans().subscribe(data => {
-      data.forEach(customerLoanModel => {
-        this.invoiceList.push(customerLoanModel.invoiceId);
-      });
-      this.billingService.getAllLoanBillings().subscribe(data => {
-        const customerList: number[] = [];
-        data.forEach(billingModel => {
-          if (this.invoiceList.indexOf(billingModel.id) < 0 || billingModel.id == this.customerLoanModel.invoiceId) {
-            this.allBillingsMap.set(billingModel.id, billingModel);
-            customerList.push(billingModel.customerId);
-          }
-        });
-        this.customerService.getAllCustomersByIds(customerList).subscribe(data => {
-          data.forEach(customerModel => {
-            this.allCustomersMap.set(customerModel.id, customerModel);
-
-          });
-          if (this.action == 'edit') {
-            this.getInvoiceData(this.customerLoanModel.invoiceId);
-          }
-        });
-      });
-
-
-
     });
 
   }
 
-  onInvoiceSelect(event) {
-    this.getInvoiceData(event.value);
+  private _filter(name: string): CustomerModel[] {
+    const filterValue = name.toLowerCase();
+    return this.customers.filter(
+      option => option.name.toLowerCase().indexOf(filterValue) == 0
+    );
   }
 
-  getInvoiceData(id: number) {
-    this.selectedBillingModel = this.allBillingsMap.get(id);
-    this.selectedCustomer = this.allCustomersMap.get(this.selectedBillingModel.customerId);
-    const totalAmount = this.selectedBillingModel?.totalAmount - this.selectedBillingModel?.roundOffAmount;
-    this.maxLoanAmountControl.setValue(totalAmount);
+  displayFn(user: any): string {
+    return user ? user.name : '';
   }
 
-  onPriceChange(event) {
-    const totalAmount = this.selectedBillingModel?.totalAmount - this.selectedBillingModel?.roundOffAmount;
-    const amount: number = parseFloat((event.target as HTMLInputElement).value);
-    if (amount > totalAmount) {
-      this.customerLoansForm.get('amount').setErrors({ notSame: true });
-    }
+  forbiddenNamesValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      if (typeof control.value == 'string') {
+        return { forbiddenNames: { value: control.value } };
+      }
+      return null;
+    };
   }
+
+  getCustomer(value) {
+    this.selectedCustomer = value;
+  }
+
+  getGuarantor(value) {
+    this.selectedGuarantor = value;
+  }
+
 
   onSubmit() {
     // this.spinnerButtonOptions.active = true;
@@ -137,6 +149,8 @@ export class AddCustomerLoanComponent implements OnInit {
 
     const customerLoansModel: CustomerLoanModel = new CustomerLoanModel(this.customerLoansForm.value);
     customerLoansModel.customerId = this.selectedCustomer.id;
+    customerLoansModel.guarantorId = this.selectedGuarantor.id;
+
     customerLoansModel.customerLoanDate = formatDate(this.customerLoansForm.get("customerLoanDate").value, settings.SAVE_DATE_FORMAT, 'en');
     customerLoansModel.createdBy = login.id;
 

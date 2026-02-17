@@ -4,14 +4,14 @@ import { CustomerModel } from '../customer.model';
 import { first } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { CustomerService } from '../customer.service';
-import { MyErrorStateMatcher } from '../../shared/content-matching-error-state';
-import { CountryModel, GenderModel, StateModel } from '../../shared/common.models';
+import { CountryModel, StateModel } from '../../shared/common.models';
 import { CommonLayout } from '../../shared/shared-layout/share.layout';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { LocalStorageData } from '../../shared/local-storage-data';
 import { CompressImageService } from '../../shared/services/CompressImageService';
-import { salutations } from '../../demo/data';
 import { UtilsService } from '../../shared/services/utils.service';
+import { forkJoin, of } from 'rxjs';
+import { MyErrorStateMatcher } from '../../shared/content-matching-error-state';
 
 @Component({
   selector: 'app-add-customer',
@@ -24,13 +24,16 @@ export class AddCustomerComponent {
   dialogTitle: string = 'Add';
   customerModel: CustomerModel;
   customerPersonalForm: FormGroup;
+  customerSpousePersonalForm: FormGroup;
+  customerForm: FormGroup;
 
-  genderList: GenderModel[];
-  matcher = new MyErrorStateMatcher();
   spinnerButtonOptions: MatProgressButtonOptions;
-  salutations = salutations;
   stateModels: StateModel[];
   countryModels: CountryModel[];
+
+  hide = true;
+  hide2 = true;
+  matcher = new MyErrorStateMatcher();
 
   constructor(private fb: FormBuilder,
     private customerService: CustomerService,
@@ -42,10 +45,6 @@ export class AddCustomerComponent {
   ) { }
   ngOnInit(): void {
     this.spinnerButtonOptions = this.commonLayout.getprogressButton();
-
-    this.utilsService.getAllGender().subscribe(data => {
-      this.genderList = data;
-    });
 
     this.utilsService.getCountry().subscribe(data => {
       this.countryModels = data;
@@ -60,136 +59,109 @@ export class AddCustomerComponent {
       this.customerModel = history.state.customerModel;
       this.dialogTitle = 'Edit'
     } else {
-      this.customerModel = new CustomerModel({});
+      this.customerModel = new CustomerModel({}, {}, {});
     }
 
     this.customerPersonalForm = this.fb.group({
       name: [this.customerModel.name, [Validators.required]],
-      contactPersonName: [this.customerModel.contactPersonName],
-      salutation: [this.customerModel.salutation, [Validators.required]],
-      gender: [this.customerModel.gender > 0 ? this.customerModel.gender : '', [Validators.required]],
       email: [this.customerModel.email, [Validators.email, Validators.minLength(5)]],
       mobile: [this.customerModel.mobile, [Validators.required, Validators.pattern("^[0-9]{10}$")]],
-      emergencyMobile: [this.customerModel.emergencyMobile, [Validators.pattern("^[0-9]{10}$")]],
+      panNo: [this.customerModel.panNo],
+      aadharNo: [this.customerModel.aadharNo],
+      password: [this.customerModel.password, [Validators.required]],
+      confirmPassword: [this.customerModel.password, [Validators.required]],
+
+      uploadImg: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      uploadAadhar: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      uploadPan: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
+
+    }, { validator: this.checkPasswords });
+
+    this.customerSpousePersonalForm = this.fb.group({
+      name: [this.customerModel.spouseName, [Validators.required]],
+      mobile: [this.customerModel.spouseMobile, [Validators.required, Validators.pattern("^[0-9]{10}$")]],
+      panNo: [this.customerModel.spousePanNo],
+      aadharNo: [this.customerModel.spouseAadharNo],
+      uploadSpouseImg: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      spouseUploadAadhar: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      spouseUploadPan: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
+
+    });
+
+    this.customerForm = this.fb.group({
       address: [this.customerModel.address, [Validators.required]],
       district: [this.customerModel.district, [Validators.required]],
       countryId: [this.customerModel.countryId, [Validators.required]],
       stateId: [this.customerModel.stateId, [Validators.required]],
       pinCode: [this.customerModel.pinCode, [Validators.required]],
-      details: [this.customerModel.details],
-      companyName: [this.customerModel.name],
-      panNo: [this.customerModel.panNo],
-      gstNo: [this.customerModel.gstNo],
-      uploadImg: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
-      uploadDoc: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
-
+      details: [this.customerModel.details]
     });
 
   }
 
+  checkPasswords(group: FormGroup) { // here we have the 'passwords' group
+    let pass = group.controls.password.value;
+    let confirmPass = group.controls.confirmPassword.value;
+    return pass == confirmPass ? group.controls.confirmPassword.setErrors(null) : group.controls.confirmPassword.setErrors({ notSame: true });
+  }
+
+
   onSubmit() {
     const login = this.localStorageData.userValue;
-
     this.spinnerButtonOptions.active = true;
-    const customer: CustomerModel = new CustomerModel(this.customerPersonalForm.value);
+    const customer: CustomerModel = new CustomerModel(this.customerPersonalForm.value, this.customerSpousePersonalForm.value, this.customerForm.value);
 
-    customer.createdBy = login.id;
-
+    console.log(customer)
     if (this.action == 'edit') {
       customer.id = this.customerModel.id;
-
-      if (this.customerPersonalForm.value.uploadImg) {
-        let uploadImageData = new FormData();
-        const file = this.customerPersonalForm.value.uploadImg.files[0];
-        uploadImageData.append("file", file);
-        uploadImageData.append("customerId", customer.id + "");
-
-        this.customerService.uploadCustomersImage(uploadImageData).subscribe(
-          (response) => {
-            customer.uploadImg = response.fileDownloadUri;
-            this.updateCustomer(customer);
-          }
-        );
-
-      } else {
-        customer.uploadImg = this.customerModel.uploadImg;
-        this.updateCustomer(customer);
-      }
-      if (this.customerPersonalForm.value.uploadDoc) {
-        let uploadImageData = new FormData();
-        const file = this.customerPersonalForm.value.uploadDoc.files[0];
-        uploadImageData.append("file", file);
-        uploadImageData.append("customerId", customer.id + "");
-
-        this.customerService.uploadCustomersImage(uploadImageData).subscribe(
-          (response) => {
-            customer.uploadDoc = response.fileDownloadUri;
-            this.updateCustomer(customer);
-          }
-        );
-
-      } else {
-        customer.uploadDoc = this.customerModel.uploadDoc;
-        this.updateCustomer(customer);
-      }
-
+      this.uploadAllDoc(customer);
     } else {
-      this.customerService.addNewCustomer(customer)
-        .pipe(first())
-        .subscribe(
-          (customerData) => {
-            if (this.customerPersonalForm.value.uploadImg) {
-              let uploadImageData = new FormData();
-              const file = this.customerPersonalForm.value.uploadImg.files[0];
-              uploadImageData.append("file", file);
-              uploadImageData.append("customerId", customerData.id + "");
-              this.customerService.uploadCustomersImage(uploadImageData).subscribe(
-                (response) => {
-                  customerData.uploadImg = response.fileDownloadUri;
-                  this.customerService.addNewCustomer(customerData).subscribe(
-                    (data) => {
-                      this.uploadDoc(customerData);
-                    });
-                }
-              );
-
-            } else {
-              this.uploadDoc(customerData);
-            }
-
-
-          });
+      this.customerService.addNewCustomer(customer).pipe(first()).subscribe((customerData) => {
+        this.uploadAllDoc(customerData);
+      });
     }
-
   }
 
-  uploadDoc(customerData) {
-    if (this.customerPersonalForm.value.uploadDoc) {
+  uploadAllDoc(customerData: CustomerModel) {
+    const apiCalls = {
+      customerImg: this.uploadDoc(customerData.id, this.customerPersonalForm.value.uploadImg),
+      customerAadhar: this.uploadDoc(customerData.id, this.customerPersonalForm.value.uploadAadhar),
+      customerPan: this.uploadDoc(customerData.id, this.customerPersonalForm.value.uploadPan),
+
+      spouseImg: this.uploadDoc(customerData.id, this.customerSpousePersonalForm.value.uploadSpouseImg),
+      spouseAadhar: this.uploadDoc(customerData.id, this.customerSpousePersonalForm.value.spouseUploadAadhar),
+      spousePan: this.uploadDoc(customerData.id, this.customerSpousePersonalForm.value.spouseUploadPan),
+    };
+
+    forkJoin(apiCalls).subscribe({
+      next: (results) => {
+        customerData.uploadImg = (results as any).customerImg.fileDownloadUri ? (results as any).customerImg.fileDownloadUri : this.customerModel.uploadImg;
+        customerData.uploadAadhar = (results as any).customerAadhar.fileDownloadUri ? (results as any).customerAadhar.fileDownloadUri : this.customerModel.uploadAadhar;
+        customerData.uploadPan = (results as any).customerPan.fileDownloadUri ? (results as any).customerPan.fileDownloadUri : this.customerModel.uploadPan;
+
+        customerData.uploadSpouseImg = (results as any).spouseImg.fileDownloadUri ? (results as any).spouseImg.fileDownloadUri : this.customerModel.uploadSpouseImg;
+        customerData.spouseUploadAadhar = (results as any).spouseAadhar.fileDownloadUri ? (results as any).spouseAadhar.fileDownloadUri : this.customerModel.spouseUploadAadhar;
+        customerData.spouseUploadPan = (results as any).spousePan.fileDownloadUri ? (results as any).spousePan.fileDownloadUri : this.customerModel.spouseUploadPan;
+
+        this.customerService.addNewCustomer(customerData).pipe(first()).subscribe((customerData) => {
+          this.router.navigate(['pages/customers/all-customers']);
+        });
+      },
+      error: (err) => console.error('One or more requests failed:', err)
+    });
+  }
+
+  uploadDoc(id: number, uploadDoc) {
+    if (uploadDoc) {
       let uploadImageData = new FormData();
-      const file = this.customerPersonalForm.value.uploadDoc.files[0];
+      const file = uploadDoc.files[0];
       uploadImageData.append("file", file);
-      uploadImageData.append("customerId", customerData.id + "");
-      this.customerService.uploadCustomersImage(uploadImageData).subscribe(
-        (response) => {
-          customerData.uploadDoc = response.fileDownloadUri;
-          this.customerService.addNewCustomer(customerData).subscribe(
-            (data) => {
-              this.router.navigate(['pages/customers/all-customers']);
-            });
-        }
-      );
+      uploadImageData.append("customerId", id + "");
+      return this.customerService.uploadCustomersImage(uploadImageData);
 
     } else {
-      this.router.navigate(['pages/customers/all-customers']);
+      return of({});;
     }
-  }
 
-  updateCustomer(customer) {
-    this.customerService.addNewCustomer(customer).subscribe(
-      (data) => {
-
-        this.router.navigate(['pages/customers/all-customers']);
-      }
-    );
   }
 }

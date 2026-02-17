@@ -31,35 +31,17 @@ const routes: Routes = [{
     },
 
     {
-      path: 'notification',
-      loadChildren: () => import('../notification/notification.module')
-        .then(m => m.NotificationModule),
-    },
-    {
       path: 'holidays',
       loadChildren: () => import('../holidays/holiday.module')
         .then(m => m.HolidaysModule),
     },
-    {
-      path: 'products',
-      loadChildren: () => import('../products/product.module')
-        .then(m => m.ProductsModule),
-    },
-    {
-      path: 'vendors',
-      loadChildren: () => import('../vendors/vendor.module')
-        .then(m => m.VendorModule),
-    },
+
     {
       path: 'customers',
       loadChildren: () => import('../customers/customer.module')
         .then(m => m.CustomerModule),
     },
-    {
-      path: 'billings',
-      loadChildren: () => import('../billing/billing.module')
-        .then(m => m.BillingModule),
-    },
+
     {
       path: 'company',
       loadChildren: () => import('../company-settings/company-settings.module')
@@ -70,22 +52,12 @@ const routes: Routes = [{
       loadChildren: () => import('../reports/reports.module')
         .then(m => m.ReportsModule),
     },
-     {
-      path: 'documents',
-      loadChildren: () => import('../documents/documents.module')
-        .then(m => m.DocumentsModule),
-    },
-
     {
       path: 'expenses',
       loadChildren: () => import('../expenses/expenses.module')
         .then(m => m.ExpensesModule),
     },
-    {
-      path: 'customerLead',
-      loadChildren: () => import('../customer-lead/customer-lead.module')
-        .then(m => m.CustomerLeadModule),
-    },
+
     {
       path: 'error',
       loadChildren: () => import('../error-pages/error-pages.module')

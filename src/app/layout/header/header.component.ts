@@ -11,11 +11,8 @@ import { RightSidebarService } from '../../shared/services/rightsidebar.service'
 import { ConfigService } from '../../shared/services/config.service';
 import { Router } from '@angular/router';
 import { CompanyService } from '../../company-settings/company.service';
-import { NotificationService } from '../../notification/notification.service';
 import { Subject, Subscription, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { CompanyModel } from '../../company-settings/company.model';
-import { NotificationResponseModel } from '../../notification/notification.model';
 import { AuthService } from '../../auth/auth.service';
 import { environment } from '@environments/environment';
 import { LocalStorageData } from '../../shared/local-storage-data';
@@ -33,8 +30,6 @@ const document: any = window.document;
 export class HeaderComponent implements OnInit, AfterViewInit {
   public config: any = {};
   company: CompanyModel;
-  notifications: NotificationResponseModel[] = [];
-  timerSubscription: Subscription;
   login: LoginModel;
   apiURL: string = environment.apiUrl;
   observer = new Subject();
@@ -52,7 +47,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     private configService: ConfigService,
     private router: Router,
     private companyService: CompanyService,
-    private notificationService: NotificationService,
     private authService: AuthService,
     private localStorageData: LocalStorageData,
 
@@ -71,29 +65,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_teacher_avatar.png" : "assets/images/user/female_teacher_avatar.png";
       this.homeLink = '/pages/dashboard/staff-dashboard';
     }
-
-    this.timerSubscription = timer(0, 1000 * 60 * 10).pipe(
-      map(() => {
-        if (this.isStaff) {
-          this.notificationService.getNotificationDetailsLimit(undefined, this.login.id).subscribe((data) => {
-            this.notifications = data;
-          });
-        } else {
-          this.notificationService.getNotificationDetailsLimit(this.login.id, undefined).subscribe((data) => {
-            this.notifications = data;
-          });
-
-        }
-      })
-    ).subscribe();
-
-    this.notificationService.subscriber$.subscribe(data => {
-      data.forEach((key) => {
-        const foundIndex = this.notifications.findIndex((x) => x.notification.id === key);
-        this.notifications.splice(foundIndex, 1);
-      });
-    });
-
 
     this.localStorageData.staffSubscriber$.subscribe(data => {
       this.login = data;
@@ -147,7 +118,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this.timerSubscription.unsubscribe();
   }
 
   ngAfterViewInit() {

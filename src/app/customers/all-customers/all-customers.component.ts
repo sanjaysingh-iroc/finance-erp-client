@@ -19,8 +19,6 @@ import { DeleteDialogComponent } from '../../shared/dialog/delete/delete.compone
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { LocalStorageData } from '../../shared/local-storage-data';
-import { BillingService } from '../../billing/billing.service';
-import { BillingModel } from '../../billing/billing.model';
 @Component({
   selector: 'app-all-customers',
   templateUrl: './all-customers.component.html',
@@ -30,9 +28,9 @@ export class AllCustomerComponent implements OnInit {
   displayedColumns = [
     'name',
     'contactPersonName',
-    'email',
     'mobile',
     'emergencyMobile',
+    'password',
     'actions'
   ];
 
@@ -44,7 +42,7 @@ export class AllCustomerComponent implements OnInit {
   customerTypeMap: Map<number, string> = new Map<number, string>();
   apiURL: string = environment.apiUrl;
   genderMap: Map<number, string> = new Map<number, string>();
-  allBillingModels: number[]=[];
+  allBillingModels: number[] = [];
 
   constructor(
     private dialog: MatDialog,
@@ -53,7 +51,6 @@ export class AllCustomerComponent implements OnInit {
     private notification: NotificationsService,
     private pdfService: PdfService,
     private excelExportService: ExcelExportService,
-    private billingService: BillingService,
 
     private router: Router,
     private localStorageData: LocalStorageData,
@@ -71,11 +68,6 @@ export class AllCustomerComponent implements OnInit {
     this.showDateFormat = settings.SHOW_DATE_FORMAT;
     this.utilsService.getAllGender()
       .subscribe(data => data.forEach(element => this.genderMap.set(element.id, element.name)));
-
-    this.billingService.getAllBillings().subscribe(data => {
-      data.forEach(element => this.allBillingModels.push(element.customerId));
-    });
-
     this.loadData();
   }
 
@@ -125,7 +117,6 @@ export class AllCustomerComponent implements OnInit {
       let row = [];
       row.push((++index).toString());
       row.push(customerModel.name);
-      row.push(this.genderMap.get(customerModel.gender));
       row.push(customerModel.mobile);
       data.push(row);
     });
@@ -141,7 +132,6 @@ export class AllCustomerComponent implements OnInit {
       let row = [];
       row.push({ text: (++index).toString(), style: 'subheader' });
       row.push({ text: customerModel.name, style: 'subheader' });
-      row.push({ text: this.genderMap.get(customerModel.gender), style: 'subheader' });
       row.push({ text: customerModel.mobile, style: 'subheader' });
       data.push(row);
     });
@@ -238,12 +228,10 @@ export class AllCustomerComponent implements OnInit {
 
 
     this.dataChange = new BehaviorSubject<CustomerModel[]>([]);
-    this.customerService.getAllCustomers().subscribe(
-      data => {
-        data.sort((a, b) => a.name.localeCompare(b.name));
-        this.dataChange.next(data);
-      }
-    );
+    this.customerService.getAllCustomers().subscribe(data => {
+      data.sort((a, b) => a.name.localeCompare(b.name));
+      this.dataChange.next(data);
+    });
     this.dataSource = new ExampleDataSource(
       this.dataChange,
       this.paginator,

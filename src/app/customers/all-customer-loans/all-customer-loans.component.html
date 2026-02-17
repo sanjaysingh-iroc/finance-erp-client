@@ -84,11 +84,6 @@
                                             <mat-cell *matCellDef="let row">
                                                 {{customerModelMap.get(row.customerId)?.name}}</mat-cell>
                                         </ng-container>
-                                        <ng-container matColumnDef="invoiceId">
-                                            <mat-header-cell *matHeaderCellDef mat-sort-header>Invoice</mat-header-cell>
-                                            <mat-cell *matCellDef="let row">
-                                                {{invoiceModelMap.get(row.invoiceId)}}</mat-cell>
-                                        </ng-container>
                                         <ng-container matColumnDef="mobile">
                                             <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</mat-header-cell>
                                             <mat-cell *matCellDef="let row">
@@ -106,12 +101,7 @@
                                             <mat-cell *matCellDef="let row">
                                                 {{row.amount}}</mat-cell>
                                         </ng-container>
-                                        <ng-container matColumnDef="totalPendingAmount">
-                                            <mat-header-cell *matHeaderCellDef mat-sort-header>Total Pending
-                                                Amount</mat-header-cell>
-                                            <mat-cell *matCellDef="let row">
-                                                {{row.amount-(loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0)}}</mat-cell>
-                                        </ng-container>
+
                                         <ng-container matColumnDef="paidAmount">
                                             <mat-header-cell *matHeaderCellDef mat-sort-header>Paid
                                                 Amount</mat-header-cell>
@@ -140,12 +130,26 @@
                                                 {{calculateDays(row.customerLoanDate,row.emiAmount) -
                                                 (loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0)}}</mat-cell>
                                         </ng-container>
+                                        <ng-container matColumnDef="guarantorName">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header>Guarantor
+                                                Name</mat-header-cell>
+                                            <mat-cell *matCellDef="let row">
+                                                {{customerModelMap.get(row.guarantorId)?.name}}</mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="document">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header>EMI
+                                                Amount</mat-header-cell>
+                                            <mat-cell *matCellDef="let row">
+                                                <a *ngIf="row.uploadDoc" href="{{apiURL + row.uploadDoc}}">
+                                                    <mat-icon matSuffix>archive</mat-icon>
+                                                </a></mat-cell>
+                                        </ng-container>
                                         <!-- actions -->
                                         <ng-container matColumnDef="actions">
                                             <mat-header-cell *matHeaderCellDef class="pr-0">Actions</mat-header-cell>
                                             <mat-cell *matCellDef="let row; let i=index;" class="pr-0">
                                                 <button mat-icon-button color="accent" class="btn-tbl-preview"
-                                                    (click)="$event.stopPropagation()"
+                                                    *ngIf="row.approved" (click)="$event.stopPropagation()"
                                                     (click)="viewCustomerProfile(row)">
                                                     <mat-icon aria-label="View" class="col-white">preview
                                                     </mat-icon>
@@ -158,8 +162,9 @@
                                                         class="col-white">done_outline</mat-icon>
                                                 </button>
 
-                                                <button *ngIf="((row.amount - (loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0))==0) && login.userType == 1" mat-icon-button
-                                                    color="accent" class="btn-tbl-done"
+                                                <button
+                                                    *ngIf="((row.amount - (loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0))==0) && login.userType == 1"
+                                                    mat-icon-button color="accent" class="btn-tbl-done"
                                                     (click)="$event.stopPropagation()"
                                                     (click)="completeCustomerLoan(row)">
                                                     <mat-icon aria-label="Edit"

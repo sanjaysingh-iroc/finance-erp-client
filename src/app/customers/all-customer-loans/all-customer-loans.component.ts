@@ -10,13 +10,14 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { settings } from '../../demo/data';
 import { NotificationsService } from '../../shared/notifications-service';
 import { Router } from '@angular/router';
-import { BillingService } from '../../billing/billing.service';
 import { LocalStorageData } from '../../shared/local-storage-data';
 import { DeleteDialogComponent } from '../../shared/dialog/delete/delete.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginModel } from '../../auth/login-model';
 import { Utils } from '../../shared/util-class';
+import { environment } from '@environments/environment';
+
 @Component({
   selector: 'app-all-customer-loans',
   templateUrl: './all-customer-loans.component.html',
@@ -26,28 +27,26 @@ export class AllCustomerLoanComponent implements OnInit {
   displayedColumns = [
     'customerLoanName',
     'customerId',
-    'invoiceId',
     'mobile',
     'customerLoanDate',
     'amount',
-    'totalPendingAmount',
     'paidAmount',
     'lastDeposit',
     'emiAmount',
     'pendingAmount',
-
+    'guarantorName',
+    'document',
     'actions'
   ];
+  apiURL: string = environment.apiUrl;
 
   dataSource: ExampleDataSource | null;
   dataChange: BehaviorSubject<CustomerLoanModel[]> = new BehaviorSubject<CustomerLoanModel[]>([]);
   showDateFormat: string;
   customerModelMap: Map<number, CustomerModel> = new Map<number, CustomerModel>();
-  invoiceModelMap: Map<number, string> = new Map<number, string>();
   loanTotalPaidAmountMap: Map<number, number> = new Map<number, number>();
   login: LoginModel;
   customerMapChange: BehaviorSubject<Map<number, CustomerModel>> = new BehaviorSubject<Map<number, CustomerModel>>(new Map<number, CustomerModel>());
-  invoiceMapChange: BehaviorSubject<Map<number, string>> = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
   customerLoanAmountMap: Map<number, string> = new Map<number, string>();
   customerLoanAmountMapChange: BehaviorSubject<Map<number, string>> = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
   currentDate: Date = new Date();
@@ -56,7 +55,6 @@ export class AllCustomerLoanComponent implements OnInit {
     private dialog: MatDialog,
     private utils: Utils,
     private customerService: CustomerService,
-    private billingService: BillingService,
     private notification: NotificationsService,
     private router: Router,
     private localStorageData: LocalStorageData,
@@ -73,19 +71,12 @@ export class AllCustomerLoanComponent implements OnInit {
     this.login = this.localStorageData.userValue;
     this.showDateFormat = settings.SHOW_DATE_FORMAT;
     this.customerMapChange = new BehaviorSubject<Map<number, CustomerModel>>(new Map<number, CustomerModel>());
-    this.invoiceMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
     this.customerLoanAmountMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
 
-
-
-    this.billingService.getAllLoanBillings().subscribe(data => {
-      data.forEach(billingModel => {
-        this.invoiceModelMap.set(billingModel.id, billingModel.invoiceName +
-          this.utils.formatToThreeDigits(billingModel.invoiceSerial, 3,
-            '0'));
+    this.customerService.getAllCustomers().subscribe(data => {
+      data.forEach(customerModel => {
+        this.customerModelMap.set(customerModel.id, customerModel);
       });
-      this.invoiceMapChange.next(this.invoiceModelMap);
-
     });
 
     this.customerService.calculateAmountByLoanId().subscribe(data => {
@@ -139,8 +130,8 @@ export class AllCustomerLoanComponent implements OnInit {
     this.loadData();
   }
 
-  viewCustomerProfile(customer) {
-    this.router.navigateByUrl('pages/customers/about-customer', { state: { customer: customer, action: 'view' } });
+  viewCustomerProfile(customer: CustomerLoanModel) {
+    this.router.navigateByUrl('pages/customers/about-customer', { state: { customer: this.customerModelMap.get(customer.customerId), action: 'view' } });
   }
 
   get data(): CustomerLoanModel[] {
@@ -198,23 +189,14 @@ export class AllCustomerLoanComponent implements OnInit {
     this.dataChange = new BehaviorSubject<CustomerLoanModel[]>([]);
     this.customerService.getAllCompleteCustomerLoans(false).subscribe(data => {
       this.dataChange.next(data);
-      const customerList: number[] = [];
-      data.forEach(customerModel => {
-        customerList.push(customerModel.customerId);
-      });
-
-      this.customerService.getAllCustomersByIds(customerList).subscribe(data => {
-        data.forEach(customerModel => {
-          this.customerModelMap.set(customerModel.id, customerModel);
-        });
-      });
     });
+
+    
     this.dataSource = new ExampleDataSource(
       this.dataChange,
       this.paginator,
       this.sort,
       this.customerMapChange,
-      this.invoiceMapChange,
       this.customerLoanAmountMapChange
     );
     fromEvent(this.filter.nativeElement, 'keyup')
@@ -242,7 +224,6 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
     public _paginator: MatPaginator,
     public _sort: MatSort,
     public dataChange1: BehaviorSubject<Map<number, CustomerModel>>,
-    public dataChange2: BehaviorSubject<Map<number, string>>,
     public dataChange3: BehaviorSubject<Map<number, string>>,
 
   ) {
@@ -267,7 +248,6 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
     return merge(...displayDataChanges).pipe(
       map(() => {
         const customerMapChange: Map<number, CustomerModel> = this.dataChange1.value;
-        const invoiceMap: Map<number, string> = this.dataChange2.value;
         const customerLoanAmountMap: Map<number, string> = this.dataChange3.value;
 
 
@@ -276,13 +256,12 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
           .filter((customer: CustomerLoanModel) => {
             const searchStr = (
               customer.customerLoanName.toLowerCase() +
-              invoiceMap.get(customer.invoiceId)?.toLowerCase() +
               customerMapChange.get(customer.customerId)?.name.toLowerCase()
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
           });
         // Sort filtered data
-        const sortedData = this.sortData(this.filteredData.slice(), customerMapChange, invoiceMap, customerLoanAmountMap);
+        const sortedData = this.sortData(this.filteredData.slice(), customerMapChange, customerLoanAmountMap);
         // Grab the page's slice of the filtered sorted data.
         const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
         this.renderedData = sortedData.splice(
@@ -295,7 +274,7 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
   }
   disconnect() { }
   /** Returns a sorted copy of the database data. */
-  sortData(data: CustomerLoanModel[], customerMapChange: Map<number, CustomerModel>, invoiceMap: Map<number, string>, customerLoanAmountMap: Map<number, string>): CustomerLoanModel[] {
+  sortData(data: CustomerLoanModel[], customerMapChange: Map<number, CustomerModel>, customerLoanAmountMap: Map<number, string>): CustomerLoanModel[] {
     if (!this._sort.active || this._sort.direction == '') {
       return data;
     }
@@ -305,9 +284,6 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
       switch (this._sort.active) {
         case 'customerLoanName':
           [propertyA, propertyB] = [a.customerLoanName.toLowerCase(), b.customerLoanName.toLowerCase()];
-          break;
-        case 'invoiceId':
-          [propertyA, propertyB] = [invoiceMap.get(a.invoiceId)?.toLowerCase(), invoiceMap.get(b.invoiceId)?.toLowerCase()];
           break;
         case 'customerId':
           [propertyA, propertyB] = [customerMapChange.get(a.customerId)?.name.toLowerCase(), customerMapChange.get(b.customerId)?.name.toLowerCase()];

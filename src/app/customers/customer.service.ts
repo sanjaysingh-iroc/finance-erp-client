@@ -61,10 +61,7 @@ export class CustomerService {
     return this.httpClient.get<CustomerLoanModel[]>(`${environment.apiUrl}/customer/getCustomerLoans`, { params: params });
   }
 
-  public getCustomerLoansByInvoice(invoiceId: number): Observable<CustomerLoanModel> {
-    let params = new HttpParams().append('invoiceId', invoiceId.toString());
-    return this.httpClient.get<CustomerLoanModel>(`${environment.apiUrl}/customer/getCustomerLoansByInvoice`, { params: params });
-  }
+ 
 
 
   public getMaxCustomerLoanId(): Observable<number> {

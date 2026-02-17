@@ -28,51 +28,102 @@
                             <div class="row">
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Invoice Name</mat-label>
-
-                                        <mat-select formControlName="invoiceId"
-                                            (selectionChange)="onInvoiceSelect($event)" required>
-                                            <mat-option *ngFor="let billingModel of allBillingsMap | keyvalue"
-                                                [value]="billingModel.value.id">
-                                                {{billingModel.value.invoiceName +
-                                                utils.formatToThreeDigits(billingModel.value.invoiceSerial, 3, '0') }}
+                                        <input tab-directive type="text" matInput [formControl]="customerDetails"
+                                            [matAutocomplete]="auto" required>
+                                        <mat-label>Customer Name</mat-label>
+                                        <mat-icon matSuffix>account_circle</mat-icon>
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                            autoActiveFirstOption="true"
+                                            (optionSelected)='getCustomer($event.option.value)'>
+                                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                {{
+                                                option.name}}
                                             </mat-option>
-                                        </mat-select>
-                                        <mat-error *ngIf="customerLoansForm.get('invoiceId').hasError('required')">
-                                            Please Select Invoice
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="customerDetails.errors?.required">
+                                            Please Select Customer
+                                        </mat-error>
+                                        <mat-error *ngIf="customerDetails.hasError('forbiddenNames')">
+                                            Please Select Customer from choosen List.
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Customer Name</mat-label>
-                                                <span matPrefix>
-                                                    <mat-icon class="mr-2">phone</mat-icon>
-                                                </span>
-                                                <input matInput value="{{selectedCustomer.name}}" readonly>
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Spouse Name</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput value="{{selectedCustomer.spouseName}}" readonly>
 
-                                            </mat-form-field>
-                                        </div>
-                                        <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Mobile</mat-label>
-                                                <span matPrefix>
-                                                    <mat-icon class="mr-2">phone</mat-icon>
-                                                </span>
-                                                <input matInput value="{{selectedCustomer.mobile}}" readonly>
+                                    </mat-form-field>
+                                </div>
+                                <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Mobile</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput value="{{selectedCustomer.mobile}}" readonly>
 
-                                            </mat-form-field>
-                                        </div>
-                                        
-                                    </div>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <input tab-directive type="text" matInput [formControl]="guarntorDetails"
+                                            [matAutocomplete]="auto1" required>
+                                        <mat-label>Gaurantor Name</mat-label>
+                                        <mat-icon matSuffix>account_circle</mat-icon>
+                                        <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayFn"
+                                            autoActiveFirstOption="true"
+                                            (optionSelected)='getGuarantor($event.option.value)'>
+                                            <mat-option *ngFor="let option of filteredGuarantorOptions | async" [value]="option">
+                                                {{option.name}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="guarntorDetails.errors?.required">
+                                            Please Select Customer
+                                        </mat-error>
+                                        <mat-error *ngIf="guarntorDetails.hasError('forbiddenNames')">
+                                            Please Select Customer from choosen List.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Spouse Name</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput value="{{selectedGuarantor.spouseName}}" readonly>
+
+                                    </mat-form-field>
+                                </div>
+                                <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Mobile</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput value="{{selectedGuarantor.mobile}}" readonly>
+
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
                             <div class="row">
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Loan Date</mat-label>
-                                        <input matInput [matDatepicker]="picker1"
-                                            formControlName="customerLoanDate" disabled required>
+                                        <input matInput [matDatepicker]="picker1" formControlName="customerLoanDate"
+                                            disabled required>
                                         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                         <mat-datepicker #picker1 disabled="false"></mat-datepicker>
                                         <mat-error
@@ -81,20 +132,13 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class=" col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                    <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Max Loan Amount</mat-label>
-                                        <input matInput [formControl]="maxLoanAmountControl" readonly>
-                                        <mat-icon matSuffix>currency_rupee</mat-icon>
-                                    </mat-form-field>
-                                </div>
+
                             </div>
                             <div class="row">
                                 <div class=" col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Amount</mat-label>
-                                        <input matInput formControlName="amount" type="number" min="0"
-                                            (input)="onPriceChange($event)">
+                                        <input matInput formControlName="amount" type="number" min="0">
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                         <mat-error *ngIf="customerLoansForm.get('amount').hasError('min')">
                                             Enter valid amount
@@ -114,8 +158,7 @@
                                 <div class=" col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>EMI Amount </mat-label>
-                                        <input matInput formControlName="emiAmount" type="number" min="0"
-                                            (input)="onPriceChange($event)">
+                                        <input matInput formControlName="emiAmount" type="number" min="0">
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                         <mat-error *ngIf="customerLoansForm.get('emiAmount').hasError('min')">
                                             Enter valid amount

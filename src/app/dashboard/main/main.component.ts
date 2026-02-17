@@ -23,12 +23,9 @@ import { LocalStorageData } from '../../shared/local-storage-data';
 import { SessionService } from '../../session/session.service';
 import { StaffModel } from '../../staff/staff.model';
 import { StaffService } from '../../staff/staff.service';
-import { CommonServices } from '../../shared/services/common-services';
 import { DashboardService } from '../dashboard.service';
 import { LoginModel } from '../../auth/login-model';
 import { UtilsService } from '../../shared/services/utils.service';
-import { CustomerLeadService } from '../../customer-lead/customer-lead.service';
-import { CustomerLeadModel } from '../../customer-lead/customer-lead.model';
 import { formatDate } from '@angular/common';
 
 // declare const $: any;
@@ -108,16 +105,12 @@ export class MainComponent implements OnInit {
   public staffPieChartData: number[] = [];
   login: LoginModel;
   dashboardAclModels: number[] = [];
-  allCustomerLeadModels: CustomerLeadModel[];
   showDateFormat: string = settings.SHOW_DATE_FORMAT;
   staffMap: Map<number, StaffModel> = new Map<number, StaffModel>();
 
   constructor(
     private staffService: StaffService,
-    private sessionService: SessionService,
     private utilsService: UtilsService,
-        private customerLeadService: CustomerLeadService,
-    
     private holidayService: HolidayService,
     private announcementService: AnnouncementService,
     private dashboardService: DashboardService,
@@ -152,10 +145,6 @@ export class MainComponent implements OnInit {
         this.weekMap.delete(element.weekDaysNumber);
       }
     }));
-
-    this.customerLeadService.getAllCustomerLeadDetailsByDate(formatDate(new Date, settings.SAVE_DATE_FORMAT, 'en')).subscribe(data => {
-      this.allCustomerLeadModels = data;
-    });
 
     this.staffService.getAllUsers().subscribe(data => {
       data.forEach(staffModel => this.staffMap.set(staffModel.id, staffModel));

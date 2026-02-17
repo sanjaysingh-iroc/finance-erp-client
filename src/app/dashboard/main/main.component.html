@@ -70,31 +70,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let customerLeadModel of allCustomerLeadModels">
-                    <td>
 
-                      {{customerLeadModel.name}}
-                    </td>
-                    <td>
-                      {{customerLeadModel.mobile}}
-                    </td>
-                    <td>
-                      <ul>
-                        <li>
-                          {{customerLeadModel.nextActivityDate | date: showDateFormat}}
-                        </li>
-                        <li>
-                          {{customerLeadModel.activityAction }}
-                        </li>
-                      </ul>
-                    </td>
-                    <td>
-                      {{customerLeadModel.details}}
-                    </td>
-                    <td>
-                      {{staffMap.get(customerLeadModel.assignTo)?.name}}
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>

@@ -50,17 +50,30 @@
                     <div class="tab-content">
                         <div class="tab-pane body active" id="about">
                             <ul class="list-group list-group-unbordered">
-
                                 <li class="list-group-item">
-                                    <b>Gender </b>
-                                    <div class="profile-desc-item pull-right">{{genderMap.get( customer.gender)}}</div>
+                                    <b>Aadhar No. </b>
+                                    <div class="profile-desc-item pull-right">{{customer.aadharNo }}</div>
                                 </li>
-
                                 <li class="list-group-item">
-                                    <b>Emergency Mobile </b>
-                                    <div class="profile-desc-item pull-right">{{ customer.emergencyMobile}}</div>
+                                    <b>Pan No. </b>
+                                    <div class="profile-desc-item pull-right">{{customer.panNo }}</div>
                                 </li>
-
+                                <li class="list-group-item">
+                                    <b>Spouse Name </b>
+                                    <div class="profile-desc-item pull-right">{{customer.spouseName }}</div>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Spouse Mobile</b>
+                                    <div class="profile-desc-item pull-right">{{customer.spouseMobile }}</div>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Spouse Aadhar</b>
+                                    <div class="profile-desc-item pull-right">{{customer.spouseAadharNo }}</div>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Spouse Pan No.</b>
+                                    <div class="profile-desc-item pull-right">{{customer.spousePanNo }}</div>
+                                </li>
                             </ul>
                             <small class="text-muted">Email address: </small>
                             <p>{{customer.email}}</p>
@@ -78,22 +91,182 @@
                         <div class="p-l-20">
                             <ul class="nav ">
                                 <li class="nav-item tab-all p-l-20">
-                                    <a class="nav-link active show" href="#timetable" data-toggle="tab">Time Table</a>
+                                    <a class="nav-link active show" href="#currentLoans" data-toggle="tab">Current
+                                        Loans</a>
                                 </li>
                                 <li class="nav-item tab-all p-l-20">
-                                    <a class="nav-link" href="#attendance" data-toggle="tab">Attendance Details</a>
+                                    <a class="nav-link" href="#completedLoans" data-toggle="tab">Completed Loans</a>
                                 </li>
                                 <li class="nav-item tab-all p-l-20">
                                     <a class="nav-link" href="#documents" data-toggle="tab">Document Details</a>
                                 </li>
-                                <li class="nav-item tab-all p-l-20">
-                                    <a class="nav-link" href="#holidays" data-toggle="tab">Holidays</a>
-                                </li>
+
                             </ul>
                         </div>
                     </div>
                 </div>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="currentLoans" aria-expanded="true">
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card project_widget">
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="tableBody">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover ">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Name</th>
+                                                                    <th style="text-align: center;">Date</th>
+                                                                    <th style="text-align: center;">Amount</th>
+                                                                    <th style="color: #ff0000;text-align: center;">
+                                                                        Guarantor</th>
+                                                                    <th style="text-align: center;">Paid Amt</th>
+                                                                    <th>EMI Amt</th>
+                                                                    <th>Doc</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let customerLoan of customerLoanList">
+                                                                    <td>{{customerLoan.customerLoanName}}</td>
+                                                                    <td>{{customerLoan.customerLoanDate}}</td>
+                                                                    <td>{{customerLoan.amount}}</td>
+                                                                    <td>{{customerModelMap.get(customerLoan.guarantorId)?.name}}
+                                                                    </td>
+                                                                    <td>{{(loanTotalPaidAmountMap.get(customerLoan.id)?loanTotalPaidAmountMap.get(customerLoan.id):0)}}
+                                                                    </td>
 
+                                                                    <td>{{customerLoan.emiAmount}}</td>
+                                                                    <td><a *ngIf="customerLoan.uploadDoc"
+                                                                            href="{{apiURL + customerLoan.uploadDoc}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="completedLoans" aria-expanded="true">
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card project_widget">
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="tableBody">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover ">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Name</th>
+                                                                    <th style="text-align: center;">Date</th>
+                                                                    <th style="text-align: center;">Amount</th>
+                                                                    <th style="color: #ff0000;text-align: center;">
+                                                                        Guarantor</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let customerLoan of customerLoanList">
+                                                                    <td>{{customerLoan.customerLoanName}}</td>
+                                                                    <td>{{customerLoan.customerLoanDate}}</td>
+                                                                    <td>{{customerLoan.amount}}</td>
+                                                                    <td>{{customerModelMap.get(customerLoan.guarantorId)?.name}}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="documents" aria-expanded="true">
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card project_widget">
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="tableBody">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover ">
+
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Aadhar Card</td>
+                                                                    <td>
+                                                                        <a *ngIf="customer.uploadAadhar"
+                                                                            href="{{apiURL + customer.uploadAadhar}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Pan Card</td>
+                                                                    <td>
+                                                                        <a *ngIf="customer.uploadPan"
+                                                                            href="{{apiURL + customer.uploadPan}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Spouse Photo</td>
+                                                                    <td>
+                                                                        <a *ngIf="customer.uploadSpouseImg"
+                                                                            href="{{apiURL + customer.uploadSpouseImg}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Spouse Aadhar Card</td>
+                                                                    <td>
+                                                                        <a *ngIf="customer.spouseUploadAadhar"
+                                                                            href="{{apiURL + customer.spouseUploadAadhar}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a>
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Spouse Pan Card</td>
+                                                                    <td>
+                                                                        <a *ngIf="customer.spouseUploadPan"
+                                                                            href="{{apiURL + customer.spouseUploadPan}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 
 
             </div>

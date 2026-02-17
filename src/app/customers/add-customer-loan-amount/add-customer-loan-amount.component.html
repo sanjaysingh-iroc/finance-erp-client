@@ -35,8 +35,8 @@
                                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
                                             autoActiveFirstOption="true"
                                             (optionSelected)='getCustomer($event.option.value)'>
-                                             <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                                {{ 
+                                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                {{
                                                 option.name}}
                                             </mat-option>
                                         </mat-autocomplete>
@@ -52,24 +52,26 @@
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Loan Name</mat-label>
 
-                                        <mat-select formControlName="loanId" (selectionChange)="onCustomerLoanSelect($event)" required>
+                                        <mat-select formControlName="loanId"
+                                            (selectionChange)="onCustomerLoanSelect($event)" required>
                                             <mat-option *ngFor="let customerLoanModel of allCustomerLoanModels"
                                                 [value]="customerLoanModel.id">
                                                 {{customerLoanModel.customerLoanName }}
                                             </mat-option>
                                         </mat-select>
                                         <mat-error *ngIf="customerLoansForm.get('loanId').hasError('required')">
-                                            Please Select Invoice
+                                            Please Select Loan
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Loan Date</mat-label>
-                                        <input matInput [matDatepicker]="picker1"
-                                            formControlName="depositDate" disabled required>
+                                        <input matInput [matDatepicker]="picker1" formControlName="depositDate" disabled
+                                            required>
                                         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                         <mat-datepicker #picker1 disabled="false"></mat-datepicker>
                                         <mat-error *ngIf="customerLoansForm.get('depositDate').hasError('required')">
@@ -80,14 +82,15 @@
                                 <div class=" col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Amount</mat-label>
-                                        <input matInput formControlName="amount" type="number" min="1" (input)="onPriceChange($event)" required>
+                                        <input matInput formControlName="amount" type="number" min="1"
+                                            (input)="onPriceChange($event)" required>
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                         <mat-error *ngIf="customerLoansForm.get('amount').hasError('min')">
                                             Enter valid amount
                                         </mat-error>
-                                         <mat-error *ngIf="customerLoansForm.get('amount').hasError('notSame')">
-                                                   Amount Can not be grater than Pending Amount
-                                                </mat-error>
+                                        <mat-error *ngIf="customerLoansForm.get('amount').hasError('notSame')">
+                                            Amount Can not be grater than Pending Amount
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -95,24 +98,27 @@
                                 <div class=" col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Pending Amount</mat-label>
-                                        <input matInput [formControl]="pendingAmountControl" type="number" min="0" readonly>
+                                        <input matInput [formControl]="pendingAmountControl" type="number" min="0"
+                                            readonly>
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                     </mat-form-field>
                                 </div>
                                 <div class=" col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Paid Amount</mat-label>
-                                        <input matInput [formControl]="paidAmountControl" type="number" min="0" readonly>
+                                        <input matInput [formControl]="paidAmountControl" type="number" min="0"
+                                            readonly>
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
-                                        
+
                                     </mat-form-field>
                                 </div>
                                 <div class=" col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Total Amount</mat-label>
-                                        <input matInput [formControl]="totalAmountControl" type="number" min="0" readonly>
+                                        <input matInput [formControl]="totalAmountControl" type="number" min="0"
+                                            readonly>
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
-                                       
+
                                     </mat-form-field>
                                 </div>
                             </div>
