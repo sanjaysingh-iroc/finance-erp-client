@@ -9,6 +9,7 @@ import { AddCustomerLoanComponent } from './add-customer-loan/add-customer-loan.
 import { AllCustomerLoanComponent } from './all-customer-loans/all-customer-loans.component';
 import { AddCustomerLoanAmountComponent } from './add-customer-loan-amount/add-customer-loan-amount.component';
 import { ViewCustomerLoanAmountComponent } from './view-customer-loan-amount/view-customer-loan-amount.component';
+import { AddCustomerAmountComponent } from './add-customer-amount/add-customer-amount.component';
 const routes: Routes = [
   {
     path: '',
@@ -42,6 +43,11 @@ const routes: Routes = [
        {
         path: 'add-customer-loan-amount',
         component: AddCustomerLoanAmountComponent,
+        canActivate: [AuthGuard, LoginGuard]
+      },
+      {
+        path: 'add-customer-amount',
+        component: AddCustomerAmountComponent,
         canActivate: [AuthGuard, LoginGuard]
       },
        {

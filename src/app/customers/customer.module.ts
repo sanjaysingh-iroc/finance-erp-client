@@ -16,6 +16,7 @@ import { AddCustomerLoanComponent } from './add-customer-loan/add-customer-loan.
 import { AllCustomerLoanComponent } from './all-customer-loans/all-customer-loans.component';
 import { AddCustomerLoanAmountComponent } from './add-customer-loan-amount/add-customer-loan-amount.component';
 import { ViewCustomerLoanAmountComponent } from './view-customer-loan-amount/view-customer-loan-amount.component';
+import { AddCustomerAmountComponent } from './add-customer-amount/add-customer-amount.component';
 @NgModule({
   declarations: [
     AllCustomerComponent,
@@ -24,6 +25,8 @@ import { ViewCustomerLoanAmountComponent } from './view-customer-loan-amount/vie
     AddCustomerLoanComponent,
     AllCustomerLoanComponent,
     AddCustomerLoanAmountComponent,
+    AddCustomerAmountComponent,
+
     ViewCustomerLoanAmountComponent
   ],
   imports: [

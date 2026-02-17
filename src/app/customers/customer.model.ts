@@ -105,7 +105,8 @@ export class CustomerLoanAmountModel {
   comment: string;
   createdBy: number;
   approvedBy: number;
-  isApproved: boolean;
+  approved: boolean;
+
   constructor(formData) {
     {
       this.id = formData.id;

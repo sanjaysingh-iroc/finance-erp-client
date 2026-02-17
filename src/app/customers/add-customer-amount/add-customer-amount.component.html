@@ -1,0 +1,89 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">Add Customer Loan Amount </h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/pages/dashboard/customer-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/pages/customers/all-customer-loans">Customer Loan Amount</a>
+                        </li>
+                        <li class="breadcrumb-item active">Add</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0px;">
+                <div class="card" style="margin-bottom: 0px;">
+                    <div class="body">
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4" style="margin-bottom: 0px;">
+                                <mat-form-field class="example-full-width" appearance="outline">
+                                    <mat-label>Select Date</mat-label>
+                                    <input matInput [matDatepicker]="picker1" [formControl]="depositDate"
+                                        (dateChange)="onDateChange()" disabled>
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <form [formGroup]="customerLoanForm" (ngSubmit)="onSubmit()">
+                            <div formArrayName="customerLoans" class="tableBody table-responsive"
+                                style="position : relative; height: calc(100vh - 300px)" [perfectScrollbar]>
+                                <div *ngFor="let  customerLoan of customerLoanFormArray.controls; let i = index">
+                                    <div class="row" [formGroup]="customerLoan">
+
+
+                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Customer Name</mat-label>
+                                                <input matInput formControlName="name" readonly>
+                                                <mat-icon matSuffix>class</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Loan Name</mat-label>
+                                                <input matInput formControlName="loanName" readonly>
+                                                <mat-icon matSuffix>class</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Spouse Name</mat-label>
+                                                <input matInput formControlName="spouseName" readonly>
+                                                <mat-icon matSuffix>class</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Amount</mat-label>
+                                                <input matInput formControlName="amount"  [readonly]="customerLoan.value.isApprove">
+                                                <mat-icon matSuffix>class</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-spinner-button [options]="spinnerButtonOptions">
+                                    </mat-spinner-button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

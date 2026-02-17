@@ -108,7 +108,7 @@ export class AddCustomerComponent {
 
   onSubmit() {
     const login = this.localStorageData.userValue;
-    this.spinnerButtonOptions.active = true;
+    // this.spinnerButtonOptions.active = true;
     const customer: CustomerModel = new CustomerModel(this.customerPersonalForm.value, this.customerSpousePersonalForm.value, this.customerForm.value);
 
     console.log(customer)
