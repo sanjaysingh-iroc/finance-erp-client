@@ -72,7 +72,7 @@ export class AddSessionComponent implements OnInit {
     }
 
     this.sessionService.addNewSession(sessionModel).pipe(first()).subscribe(newSession => {
-      this.router.navigate(['billing/session/all-session']);
+      this.router.navigate(['finance/session/all-session']);
     });
   }
 

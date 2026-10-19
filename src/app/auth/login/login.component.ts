@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
             this.localStorageData.setSettingData(data);
 
           });
-          this.router.navigate(['billing/dashboard/staff-dashboard']);
+          this.router.navigate(['finance/dashboard/staff-dashboard']);
         },
         error => {
           this.isUserValid = false;
@@ -127,7 +127,7 @@ export class LoginComponent implements OnInit {
             }
           }
           this.localStorageData.setNavigationPath(path);
-          this.router.navigate(['billing/dashboard/customer-dashboard']);
+          this.router.navigate(['finance/dashboard/customer-dashboard']);
         },
         error => {
           this.isUserValid = false;

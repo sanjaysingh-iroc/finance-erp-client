@@ -8,7 +8,7 @@
                             <h4 class="page-title">Company Settings</h4>
                         </li>
                         <li class="breadcrumb-item bcrumb-1">
-                            <a routerLink="/billing/dashboard/staff-dashboard">
+                            <a routerLink="/finance/dashboard/staff-dashboard">
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
@@ -36,7 +36,7 @@
                                     </mat-form-field>
                                 </div>
 
-                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Company Person Name</mat-label>
                                         <input matInput formControlName="companyPersonName" required>
@@ -76,13 +76,6 @@
                                         <mat-label>Registration No.</mat-label>
                                         <mat-icon matSuffix>app_registration</mat-icon>
                                         <input matInput formControlName="gstNo">
-                                    </mat-form-field>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                    <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Solar Code</mat-label>
-                                        <mat-icon matSuffix>app_registration</mat-icon>
-                                        <input matInput formControlName="solarCode">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -342,8 +335,8 @@
                                     </mat-form-field>
 
                                 </div>
-                                <img [src]='apiURL+companyModel.signWithStampImg' (error)="updateCustomerUrl($event)" width="100"
-                                    height="60" alt="avatar" />
+                                <img [src]='apiURL+companyModel.signWithStampImg' (error)="updateCustomerUrl($event)"
+                                    width="100" height="60" alt="avatar" />
                             </div>
 
                             <div class="row">

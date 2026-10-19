@@ -8,7 +8,6 @@ export class CompanyModel {
 
     companyCode: string;
     establishmentDate: string;
-    solarCode: string;
     gstNo: string;
 
     email: string;
@@ -46,7 +45,6 @@ export class CompanyModel {
             this.companyCode = formData.companyCode || '';
 
             this.establishmentDate = formData.establishmentDate ? formatDate(formData.establishmentDate, settings.SAVE_DATE_FORMAT, 'en') : '';
-            this.solarCode = formData.solarCode || '';
             this.gstNo = formData.gstNo || '';
 
             this.email = formData.email || '';

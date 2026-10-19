@@ -1,0 +1,251 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">{{dialogTitle}} Customer</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/finance/dashboard/customer-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/finance/finance/customers/all-customers">Customers</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{dialogTitle}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                <div class="card" style="margin-bottom: 0px;">
+                    <div class="body">
+
+                        <form class="m-4" [formGroup]="customerPersonalForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Contact Person Name</mat-label>
+                                        <input matInput formControlName="contactPersonName">
+                                        <mat-icon matSuffix>account_circle</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Email</mat-label>
+                                        <input matInput formControlName="email">
+                                        <mat-icon matSuffix>mail</mat-icon>
+                                        <mat-error
+                                            *ngIf="customerPersonalForm.get('email').hasError('required') && customerPersonalForm.get('email').touched">
+                                            Please enter a valid email
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Google Location</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">location_on</mat-icon>
+                                        </span>
+                                        <input matInput formControlName="location" />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Mobile</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput formControlName="mobile" mask="000-000-0000"
+                                            [showMaskTyped]="true" required />
+                                        <mat-error *ngIf="customerPersonalForm.get('mobile').hasError('required')">
+                                            Please Enter Mobile
+                                        </mat-error>
+                                        <mat-error *ngIf="customerPersonalForm.get('mobile').hasError('pattern')">
+                                            Please Enter A Valid Mobile Number
+                                        </mat-error>
+                                        <mat-error *ngIf="customerPersonalForm.get('mobile').hasError('notSame')">
+                                            Mobile Number Already Exist
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Emergency Mobile</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput formControlName="emergencyMobile" mask="000-000-0000"
+                                            [showMaskTyped]="true" />
+                                        <mat-error
+                                            *ngIf="customerPersonalForm.get('emergencyMobile').hasError('pattern')">
+                                            Please Enter A Valid Mobile Number
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Address</mat-label>
+                                        <textarea matInput formControlName="address" rows="4" required></textarea>
+                                        <mat-icon matSuffix>place</mat-icon>
+                                        <mat-error *ngIf="customerPersonalForm.get('address').hasError('required')">
+                                            Please Add Address
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>District</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">location_city</mat-icon>
+                                        </span>
+                                        <input matInput formControlName="district" required />
+                                        <mat-error *ngIf="customerPersonalForm.get('district').hasError('required')">
+                                            Please Enter District
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Pin Code</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">person_pin_circle</mat-icon>
+                                        </span>
+                                        <input matInput formControlName="pinCode" required />
+                                        <mat-error *ngIf="customerPersonalForm.get('pinCode').hasError('required')">
+                                            Please Enter Pin Code
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Country</mat-label>
+                                        <mat-select formControlName="countryId" required>
+                                            <mat-option *ngFor="let countryModel of countryModels"
+                                                [value]="countryModel.id">
+                                                {{countryModel.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="customerPersonalForm.get('countryId').hasError('required')">
+                                            Please Select Country
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>State</mat-label>
+                                        <mat-select formControlName="stateId" required>
+                                            <mat-option *ngFor="let stateModel of stateModels" [value]="stateModel.id">
+                                                {{stateModel.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="customerPersonalForm.get('stateId').hasError('required')">
+                                            Please Select State
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Aadhar No.</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput formControlName="aadharNo" />
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Pan No.</mat-label>
+                                        <span matPrefix>
+                                            <mat-icon class="mr-2">phone</mat-icon>
+                                        </span>
+                                        <input matInput formControlName="panNo" />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Details</mat-label>
+                                        <textarea matInput formControlName="details" rows="4"></textarea>
+                                        <mat-icon matSuffix>place</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Upload Image</mat-label>
+                                        <ngx-mat-file-input accept="image/*" [multiple]="false"
+                                            formControlName="uploadImg">
+                                        </ngx-mat-file-input>
+                                        <mat-icon matSuffix>attachment</mat-icon>
+                                        <mat-error
+                                            *ngIf="customerPersonalForm.get('uploadImg').hasError('fileMinSize')">
+                                            File size exceeds More than 2 MB
+                                        </mat-error>
+                                        <mat-hint style="color: red;font-size: 16px;"> File Size should not be
+                                            exceed
+                                            more than 2
+                                            MB.</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <img [src]='apiURL+customerModel.uploadImg' (error)="updateCustomerUrl($event)"
+                                    width="100" height="60" alt="avatar" />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Upload Doc</mat-label>
+                                        <ngx-mat-file-input accept="image/*" [multiple]="false"
+                                            formControlName="uploadDoc">
+                                        </ngx-mat-file-input>
+                                        <mat-icon matSuffix>attachment</mat-icon>
+                                        <mat-error
+                                            *ngIf="customerPersonalForm.get('uploadDoc').hasError('fileMinSize')">
+                                            File size exceeds More than 2 MB
+                                        </mat-error>
+                                        <mat-hint style="color: red;font-size: 16px;"> File Size should not be
+                                            exceed
+                                            more than 2
+                                            MB.</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <img [src]='apiURL+customerModel.uploadDoc' (error)="updateCustomerUrl($event)"
+                                    width="100" height="60" alt="avatar" />
+                            </div>
+                            <div class="row">
+                                <mat-spinner-button [options]="spinnerButtonOptions"
+                                    [disabled]="!customerPersonalForm.valid">
+                                </mat-spinner-button>
+
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

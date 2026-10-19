@@ -20,7 +20,7 @@ export class AlreadyLoginGuard implements CanActivate {
   getAccessGuard(url: string): boolean {
 
     if (this.localStorageData.sessionValue) {
-      this.router.navigate(['billing/dashboard/staff-dashboard']);
+      this.router.navigate(['finance/dashboard/staff-dashboard']);
       return false;
     }
     return true;

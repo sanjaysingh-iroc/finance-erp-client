@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
   getAccessGuard(url: string): boolean {
     const path: string[] = this.localStorageData.navigationPathValue;
     if (path == null || path.indexOf(url) < 0) {
-      this.router.navigate(['billing/error/page401']);
+      this.router.navigate(['finance/error/page401']);
       return false;
     }
     return true;

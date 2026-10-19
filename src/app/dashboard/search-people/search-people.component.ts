@@ -6,8 +6,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { CommonLayout } from '../../shared/shared-layout/share.layout';
 import { Router } from '@angular/router';
-import { StaffModel } from '../../finance/staff/staff.model';
-import { StaffService } from '../../finance/staff/staff.service';
+import { StaffModel } from '../../staff/staff.model';
+import { StaffService } from '../../staff/staff.service';
 import { LoginModel } from '../../auth/login-model';
 
 @Component({
@@ -51,7 +51,7 @@ export class SearchPeopleComponent implements OnInit {
   }
 
   viewStaffProfile(staff) {
-    this.router.navigateByUrl('billing/finance/staff/about-staff', { state: { staff: staff, action: 'view' } });
+    this.router.navigateByUrl('finance/finance/staff/about-staff', { state: { staff: staff, action: 'view' } });
   }
 
 

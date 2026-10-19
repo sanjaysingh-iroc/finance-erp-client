@@ -23,10 +23,34 @@ const routes: Routes = [{
         .then(m => m.CompanyDetailsModule),
     },
     {
-      path: 'finance',
-      loadChildren: () => import('../finance/finance-routing/finance.module')
-        .then(m => m.FinanceModule),
+      path: 'announcement',
+      loadChildren: () => import('../announcement/announcement.module')
+        .then(m => m.AnnouncementModule),
     },
+
+    {
+      path: 'customers',
+      loadChildren: () => import('../customers/customer.module')
+        .then(m => m.CustomerModule),
+    },
+
+    {
+      path: 'expenses',
+      loadChildren: () => import('../expenses/expenses.module')
+        .then(m => m.ExpensesModule),
+    },
+
+    {
+      path: 'reports',
+      loadChildren: () => import('../reports/reports.module')
+        .then(m => m.ReportsModule),
+    },
+    {
+      path: 'staff',
+      loadChildren: () => import('../staff/staff.module')
+        .then(m => m.StaffModule),
+    },
+
     {
       path: 'error',
       loadChildren: () => import('../error-pages/error-pages.module')

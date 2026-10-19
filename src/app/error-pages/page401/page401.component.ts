@@ -18,10 +18,10 @@ export class Page401Component implements OnInit {
 
     if (!this.login) {
       this.login = this.localStorageData.customerValue;
-      this.homeLink = '/billing/dashboard/customer-dashboard';
+      this.homeLink = '/finance/dashboard/customer-dashboard';
 
     } else {
-      this.homeLink = '/billing/dashboard/staff-dashboard';
+      this.homeLink = '/finance/dashboard/staff-dashboard';
     }
   }
 }

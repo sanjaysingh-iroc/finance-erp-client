@@ -79,7 +79,6 @@ export class CompanyDetailsComponent implements OnInit {
         this.stdForm.controls.stateId.setValue(data.stateId);
         this.stdForm.controls.pinCode.setValue(data.pinCode);
 
-        this.stdForm.controls.solarCode.setValue(data.solarCode);
         this.stdForm.controls.gstNo.setValue(data.gstNo);
 
         this.stdForm.controls.bankName.setValue(data.bankName);
@@ -101,7 +100,6 @@ export class CompanyDetailsComponent implements OnInit {
       companyPersonName: ['', [Validators.required]],
       establishmentDate: [{ value: '', disabled: false }, [Validators.required]],
       companyCode: [''],
-      solarCode: [''],
       gstNo: [''],
       email: ['', [Validators.email, Validators.minLength(5)]],
       website: [''],

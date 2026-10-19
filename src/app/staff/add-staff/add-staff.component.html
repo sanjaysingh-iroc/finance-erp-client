@@ -1,0 +1,274 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">{{dialogTitle}} Staff</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/finance/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/finance/finance/staff/all-staff">Staffs</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{dialogTitle}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                <div class="card" style="margin-bottom: 0px;">
+                    <div class="body">
+                        <mat-horizontal-stepper [linear]=true #stepper>
+
+                            <mat-step [stepControl]="staffPersonalForm">
+                                <form class="m-4" [formGroup]="staffPersonalForm">
+                                    <ng-template matStepLabel>Personal Information</ng-template>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Emp Code</mat-label>
+                                                <input matInput formControlName="empCode">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Name</mat-label>
+                                                <input matInput formControlName="name" required>
+                                                <mat-icon matSuffix>account_circle</mat-icon>
+
+                                                <mat-error *ngIf="staffPersonalForm.get('name').hasError('required')">
+                                                    Please Add Name
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Date Of Birth</mat-label>
+                                                <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate"
+                                                    formControlName="dob" disabled required>
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker disabled="false"></mat-datepicker>
+                                                <mat-error *ngIf="staffPersonalForm.get('dob').hasError('required')">
+                                                    Please select date
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Email</mat-label>
+                                                <input matInput formControlName="email">
+                                                <mat-icon matSuffix>mail</mat-icon>
+
+                                                <mat-error
+                                                    *ngIf="staffPersonalForm.get('email').hasError('required') && staffPersonalForm.get('email').touched">
+                                                    Please enter a valid email
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Mobile</mat-label>
+                                                <span matPrefix>
+                                                    <mat-icon class="mr-2">phone</mat-icon>
+                                                </span>
+                                                <input matInput formControlName="mobile" mask="000-000-0000"
+                                                    (change)="checkMobile()" [showMaskTyped]="true" required />
+                                                <mat-error *ngIf="staffPersonalForm.get('mobile').hasError('required')">
+                                                    Please Enter Mobile
+                                                </mat-error>
+                                                <mat-error *ngIf="staffPersonalForm.get('mobile').hasError('pattern')">
+                                                    Please Enter A Valid Mobile Number
+                                                </mat-error>
+                                                <mat-error *ngIf="staffPersonalForm.get('mobile').hasError('notSame')">
+                                                    Mobile Number Already Exist
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Emergency Mobile</mat-label>
+                                                <span matPrefix>
+                                                    <mat-icon class="mr-2">phone</mat-icon>
+                                                </span>
+                                                <input matInput formControlName="emergencyMobile" mask="000-000-0000"
+                                                    [showMaskTyped]="true" />
+                                                <mat-error
+                                                    *ngIf="staffPersonalForm.get('emergencyMobile').hasError('pattern')">
+                                                    Please Enter A Valid Mobile Number
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                            style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Address</mat-label>
+                                                <textarea matInput formControlName="address" rows="4"
+                                                    required></textarea>
+                                                <mat-icon matSuffix>place</mat-icon>
+                                                <mat-error
+                                                    *ngIf="staffPersonalForm.get('address').hasError('required')">
+                                                    Please Add Address
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                            style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Upload Image</mat-label>
+                                                <ngx-mat-file-input accept="image/*" [multiple]="false"
+                                                    formControlName="uploadImg">
+                                                </ngx-mat-file-input>
+                                                <mat-icon matSuffix>attachment</mat-icon>
+                                                <mat-error
+                                                    *ngIf="staffPersonalForm.get('uploadImg').hasError('fileMinSize')">
+                                                    File size exceeds More than 2 MB
+                                                </mat-error>
+                                                <mat-hint style="color: red;font-size: 16px;"> File Size should not be
+                                                    exceed
+                                                    more than 2
+                                                    MB.</mat-hint>
+                                            </mat-form-field>
+                                        </div>
+                                        <img [src]='apiURL+staffModel.uploadImg' (error)="updateCustomerUrl($event)"
+                                            width="100" height="60" alt="avatar" />
+                                    </div>
+                                    <div>
+                                        <button mat-raised-button matStepperNext color="primary">Next</button>
+                                    </div>
+                                </form>
+                            </mat-step>
+
+                            <mat-step [stepControl]="staffProfessionalForm">
+                                <form class="m-4" [formGroup]="staffProfessionalForm" (ngSubmit)="onSubmit()"
+                                    #formone="ngForm">
+                                    <ng-template matStepLabel>Professional Information</ng-template>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Password</mat-label>
+                                                <input matInput [type]="hide ? 'password' : 'text'"
+                                                    formControlName="password">
+                                                <button type="button" mat-icon-button matSuffix (click)="hide = !hide"
+                                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                                                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                                </button>
+                                                <mat-error
+                                                    *ngIf="staffProfessionalForm.get('password').hasError('required')">
+                                                    Please Add Password
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Re-Enter Password</mat-label>
+                                                <input matInput [type]="hide2 ? 'password' : 'text'"
+                                                    formControlName="confirmPassword" [errorStateMatcher]="matcher">
+                                                <button type="button" mat-icon-button matSuffix (click)="hide2 = !hide2"
+                                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide2">
+                                                    <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                                </button>
+                                                <mat-error
+                                                    *ngIf="staffProfessionalForm.get('confirmPassword').hasError('notSame')">
+                                                    Passwords do not match
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Select User type</mat-label>
+                                                <mat-select formControlName="userType" required>
+                                                    <mat-option *ngFor="let userType of userTypeList"
+                                                        [value]="userType.id">
+                                                        {{userType.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error
+                                                    *ngIf="staffProfessionalForm.get('userType').hasError('required')">
+                                                    Please Select Any User Type
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Salary</mat-label>
+                                                <input matInput formControlName="salary" type="number" min="0" required>
+                                                <mat-icon matSuffix>payment</mat-icon>
+                                                <mat-error
+                                                    *ngIf="staffProfessionalForm.get('salary').hasError('required')">
+                                                    Please Add Salary
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Date Of Joining</mat-label>
+                                                <input matInput [matDatepicker]="picker1"
+                                                    formControlName="dateOfJoining" disabled required>
+                                                <mat-datepicker-toggle matSuffix
+                                                    [for]="picker1"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                                                <mat-error
+                                                    *ngIf="staffProfessionalForm.get('dateOfJoining').hasError('required')">
+                                                    Please Select Date of Joining
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                            style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline"
+                                                appearance="outline">
+                                                <mat-label>Education</mat-label>
+                                                <textarea matInput formControlName="education" required></textarea>
+                                                <mat-icon matSuffix>cast_for_education</mat-icon>
+                                                <mat-error
+                                                    *ngIf="staffProfessionalForm.get('education').hasError('required')">
+                                                    Please Add Education Details
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <button mat-raised-button matStepperPrevious color="warn"
+                                            class="mr-2">Back</button>
+                                        <mat-spinner-button [options]="spinnerButtonOptions" type="submit"
+                                            [disabled]="!staffProfessionalForm.valid">
+                                        </mat-spinner-button>
+                                    </div>
+                                </form>
+                            </mat-step>
+
+                        </mat-horizontal-stepper>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

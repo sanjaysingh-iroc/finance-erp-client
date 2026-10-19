@@ -8,7 +8,7 @@
               <h4 class="page-title">Dashboard</h4>
             </li>
             <li class="breadcrumb-item bcrumb-1">
-              <a routerLink="/billing/dashboard/staff-dashboard">
+              <a routerLink="/finance/dashboard/staff-dashboard">
                 <i class="fas fa-home"></i> Home</a>
             </li>
             <li class="breadcrumb-item active">Dashboard</li>
@@ -50,65 +50,12 @@
             </div>
           </div>
           <div class="text-center">
-            <a routerLink="/billing/finance/announcement/all-announcement" class="b-b-primary text-primary"> View All
+            <a routerLink="/finance/finance/announcement/all-announcement" class="b-b-primary text-primary"> View All
               Posts</a>
           </div>
         </div>
       </div>
 
-      <div class="col-xs-8 col-sm-8 col-md-6 col-lg-6" *ngIf="login.userType ==1 || dashboardAclModels.indexOf(2) > -1">
-        <div class="card">
-          <div class="header">
-            <h2><b>Today Follow-Up</b></h2>
-          </div>
-          <div class="tableBody" style="overflow-y: auto;height: 300px;">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th class="text-center">Customer Name</th>
-                    <th class="text-center">Mobile No.</th>
-                    <th class="text-center">Date</th>
-                    <th class="text-center">Product</th>
-                    <th class="text-center">Assign To</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let customerLeadModel of allCustomerLeadModels">
-                    <td>
-
-                      {{customerLeadModel.name}}
-                    </td>
-                    <td>
-                      {{customerLeadModel.mobile}}
-                    </td>
-                    <td>
-                      <ul>
-                        <li>
-                          {{customerLeadModel.nextActivityDate | date: showDateFormat}}
-                        </li>
-                        <li>
-                          {{customerLeadModel.activityAction }}
-                        </li>
-                      </ul>
-                    </td>
-                    <td>
-                      {{customerLeadModel.details}}
-                    </td>
-                    <td>
-                      {{staffMap.get(customerLeadModel.assignTo)?.name}}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="text-center">
-            <a routerLink="/billing/finance/customerLead/all-customers-lead" class="b-b-primary text-primary"> View All
-              Posts</a>
-          </div>
-        </div>
-      </div>
     </div>
     <!-- #END# Widgets -->
     <div class="row clearfix">

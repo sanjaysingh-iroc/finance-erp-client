@@ -60,11 +60,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.login = this.localStorageData.customerValue;
       this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/male_customer_avatar.png";
       this.isStaff = false;
-      this.homeLink = '/billing/dashboard/customer-dashboard';
+      this.homeLink = '/finance/dashboard/customer-dashboard';
 
     } else {
       this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/avatar.png";
-      this.homeLink = '/billing/dashboard/staff-dashboard';
+      this.homeLink = '/finance/dashboard/staff-dashboard';
     }
 
 
@@ -101,21 +101,21 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   viewStaffProfile() {
     if (this.isStaff) {
-      this.router.navigateByUrl('billing/finance/staff/about-staff', { state: { staff: this.login, action: 'view' } });
+      this.router.navigateByUrl('finance/finance/staff/about-staff', { state: { staff: this.login, action: 'view' } });
     } else {
-      this.router.navigateByUrl('billing/finance/customers/view-profile');
+      this.router.navigateByUrl('finance/finance/customers/view-profile');
 
     }
   }
 
   changePassword() {
     if (this.isStaff) {
-      this.router.navigateByUrl('billing/finance/staff/changePassword');
+      this.router.navigateByUrl('finance/finance/staff/changePassword');
     }
   }
 
   redirectToSearch() {
-    this.router.navigateByUrl('billing/dashboard/search-people', { state: { search: this.search.value } });
+    this.router.navigateByUrl('finance/dashboard/search-people', { state: { search: this.search.value } });
     this.search.setValue('');
   }
 

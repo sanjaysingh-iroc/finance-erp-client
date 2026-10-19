@@ -13,22 +13,17 @@ import {
   ApexYAxis,
   ChartComponent
 } from 'ng-apexcharts';
-import { AnnouncementModel } from '../../finance/announcement/announcement.model';
-import { AnnouncementService } from '../../finance/announcement/announcement.service';
+import { AnnouncementModel } from '../../announcement/announcement.model';
+import { AnnouncementService } from '../../announcement/announcement.service';
 import { monthMap, settings, weekMap } from '../../demo/data';
-import { HolidayModel } from '../../finance/holidays/holiday.model';
-import { HolidayService } from '../../finance/holidays/holiday.service';
 import { FullName, SettingModel } from '../../shared/common.models';
 import { LocalStorageData } from '../../shared/local-storage-data';
 import { SessionService } from '../../session/session.service';
-import { StaffModel } from '../../finance/staff/staff.model';
-import { StaffService } from '../../finance/staff/staff.service';
-import { CommonServices } from '../../shared/services/common-services';
+import { StaffModel } from '../../staff/staff.model';
+import { StaffService } from '../../staff/staff.service';
 import { DashboardService } from '../dashboard.service';
 import { LoginModel } from '../../auth/login-model';
 import { UtilsService } from '../../shared/services/utils.service';
-import { CustomerLeadService } from '../../finance/customer-lead/customer-lead.service';
-import { CustomerLeadModel } from '../../finance/customer-lead/customer-lead.model';
 import { formatDate } from '@angular/common';
 
 export type areaChartOptions = {
@@ -63,7 +58,6 @@ export class MainDashBoardComponent implements OnInit {
   @ViewChild('chart') chart: ChartComponent;
 
   birthdayStaff: StaffModel[] = [];
-  upcomingHolidays: HolidayModel[] = [];
   announcementList: AnnouncementModel[] = [];
 
   apiURL: string = environment.apiUrl;
@@ -107,17 +101,12 @@ export class MainDashBoardComponent implements OnInit {
   public staffPieChartData: number[] = [];
   login: LoginModel;
   dashboardAclModels: number[] = [];
-  allCustomerLeadModels: CustomerLeadModel[];
   showDateFormat: string = settings.SHOW_DATE_FORMAT;
   staffMap: Map<number, StaffModel> = new Map<number, StaffModel>();
 
   constructor(
     private staffService: StaffService,
-    private sessionService: SessionService,
     private utilsService: UtilsService,
-    private customerLeadService: CustomerLeadService,
-
-    private holidayService: HolidayService,
     private announcementService: AnnouncementService,
     private dashboardService: DashboardService,
     private localStorageData: LocalStorageData,
@@ -152,10 +141,6 @@ export class MainDashBoardComponent implements OnInit {
       }
     }));
 
-    this.customerLeadService.getAllCustomerLeadDetailsByDate(this.login.companyId, formatDate(new Date, settings.SAVE_DATE_FORMAT, 'en')).subscribe(data => {
-      this.allCustomerLeadModels = data;
-    });
-
     this.staffService.getAllUsers(this.login.companyId).subscribe(data => {
       data.forEach(staffModel => this.staffMap.set(staffModel.id, staffModel));
     });
@@ -170,13 +155,6 @@ export class MainDashBoardComponent implements OnInit {
     if (this.login.userType == 1 || this.dashboardAclModels.indexOf(12) > -1) {
       this.announcementService.getAllActiveAnnouncements(this.login.companyId).subscribe(data => {
         this.announcementList = data;
-      });
-    }
-
-
-    if (this.login.userType == 1 || this.dashboardAclModels.indexOf(6) > -1) {
-      this.holidayService.getAllUpcomimgHolidays(session.id).subscribe(upcomingHolidays => {
-        this.upcomingHolidays = upcomingHolidays;
       });
     }
 
