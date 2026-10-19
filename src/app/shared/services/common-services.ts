@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FullName } from '../common.models';
-import { monthMap, weekMap } from '../../demo/data';
 
 @Injectable({
     providedIn: 'root'

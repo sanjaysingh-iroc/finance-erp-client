@@ -47,11 +47,11 @@ export class AllSessionsComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['pages/session/add-session']);
+    this.router.navigate(['billing/session/add-session']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('pages/session/add-session', { state: { sessionModel: row, action: 'edit' } });
+    this.router.navigateByUrl('billing/session/add-session', { state: { sessionModel: row, action: 'edit' } });
   }
 
   public loadData() {

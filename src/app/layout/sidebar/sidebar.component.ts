@@ -71,10 +71,10 @@ export class SidebarComponent implements OnInit {
     this.login = this.localStorageData.userValue;
     if (!this.login) {
       this.login = this.localStorageData.customerValue;
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_customer_avatar.png" : "assets/images/user/female_customer_avatar.png";
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/male_customer_avatar.png";
 
     } else {
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_teacher_avatar.png" : "assets/images/user/female_teacher_avatar.png";
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/avatar.png";
 
     }
     this.sidebarItems = this.localStorageData.navigationValue.filter(sidebarItem => sidebarItem);
@@ -84,13 +84,13 @@ export class SidebarComponent implements OnInit {
 
     this.localStorageData.staffSubscriber$.subscribe(data => {
       this.login = data;
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_teacher_avatar.png" : "assets/images/user/female_teacher_avatar.png";
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/avatar.png";
 
     });
 
     this.localStorageData.customerSubscriber$.subscribe(data => {
       this.login = data;
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_customer_avatar.png" : "assets/images/user/female_customer_avatar.png";
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/female_customer_avatar.png";
 
     });
 
@@ -98,7 +98,7 @@ export class SidebarComponent implements OnInit {
     this.bodyTag = this.document.body;
   }
   updateUrl(event) {
-    event.target.src = this.login.gender == 1 ? "assets/images/user/male_teacher_avatar.png" : "assets/images/user/female_teacher_avatar.png";
+    event.target.src = "assets/images/user/avatar.png";
   }
   initLeftSidebar() {
     const _this = this;

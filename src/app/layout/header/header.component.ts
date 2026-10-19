@@ -12,6 +12,7 @@ import { ConfigService } from '../../shared/services/config.service';
 import { Router } from '@angular/router';
 import { CompanyService } from '../../company-settings/company.service';
 import { Subject, Subscription, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CompanyModel } from '../../company-settings/company.model';
 import { AuthService } from '../../auth/auth.service';
 import { environment } from '@environments/environment';
@@ -57,23 +58,24 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
     if (!this.login) {
       this.login = this.localStorageData.customerValue;
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_customer_avatar.png" : "assets/images/user/female_customer_avatar.png";
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/male_customer_avatar.png";
       this.isStaff = false;
-      this.homeLink = '/pages/dashboard/customer-dashboard';
+      this.homeLink = '/billing/dashboard/customer-dashboard';
 
     } else {
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_teacher_avatar.png" : "assets/images/user/female_teacher_avatar.png";
-      this.homeLink = '/pages/dashboard/staff-dashboard';
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/avatar.png";
+      this.homeLink = '/billing/dashboard/staff-dashboard';
     }
+
 
     this.localStorageData.staffSubscriber$.subscribe(data => {
       this.login = data;
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_teacher_avatar.png" : "assets/images/user/female_teacher_avatar.png";
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/avatar.png";
     });
 
     this.localStorageData.customerSubscriber$.subscribe(data => {
       this.login = data;
-      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : this.login.gender == 1 ? "assets/images/user/male_customer_avatar.png" : "assets/images/user/female_customer_avatar.png";
+      this.uploadImg = this.login.uploadImg ? this.apiURL + this.login.uploadImg : "assets/images/user/male_customer_avatar.png";
 
     });
 
@@ -81,7 +83,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.company = data;
     });
 
-    this.companyService.getCompanyDetails().subscribe(
+    this.companyService.getCompanyDetails(this.login.companyId).subscribe(
       (companyModel) => {
         if (companyModel == undefined) {
           companyModel = new CompanyModel({});
@@ -94,30 +96,27 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   updateUrl(event) {
-    event.target.src = this.login.gender == 1 ? "assets/images/user/male_teacher_avatar.png" : "assets/images/user/female_teacher_avatar.png";
+    event.target.src = "assets/images/user/avatar.png";
   }
 
   viewStaffProfile() {
     if (this.isStaff) {
-      this.router.navigateByUrl('pages/staff/about-staff', { state: { staff: this.login, action: 'view' } });
+      this.router.navigateByUrl('billing/finance/staff/about-staff', { state: { staff: this.login, action: 'view' } });
     } else {
-      this.router.navigateByUrl('pages/customers/view-profile');
+      this.router.navigateByUrl('billing/finance/customers/view-profile');
 
     }
   }
 
   changePassword() {
     if (this.isStaff) {
-      this.router.navigateByUrl('pages/staff/changePassword');
+      this.router.navigateByUrl('billing/finance/staff/changePassword');
     }
   }
 
   redirectToSearch() {
-    this.router.navigateByUrl('pages/dashboard/search-people', { state: { search: this.search.value } });
+    this.router.navigateByUrl('billing/dashboard/search-people', { state: { search: this.search.value } });
     this.search.setValue('');
-  }
-
-  ngOnDestroy(): void {
   }
 
   ngAfterViewInit() {

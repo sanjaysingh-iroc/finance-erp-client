@@ -4,6 +4,8 @@ import { settings } from '../demo/data';
 export class CompanyModel {
     id: number;
     companyName: string;
+    companyPersonName: string;
+
     companyCode: string;
     establishmentDate: string;
     solarCode: string;
@@ -20,7 +22,9 @@ export class CompanyModel {
     stateId: number;
     pinCode: string
     logoImg: string;
-
+    upiImg: string;
+    signImg: string;
+    signWithStampImg: string;
     bankName: string
     accountNo: string;
     ifsc: string
@@ -31,10 +35,14 @@ export class CompanyModel {
     winterStartTime: string;
     winterEndTime: string;
 
+    active: boolean;
+
     constructor(formData) {
         {
             this.id = formData.id;
             this.companyName = formData.companyName || '';
+            this.companyPersonName = formData.companyPersonName || '';
+
             this.companyCode = formData.companyCode || '';
 
             this.establishmentDate = formData.establishmentDate ? formatDate(formData.establishmentDate, settings.SAVE_DATE_FORMAT, 'en') : '';
@@ -87,5 +95,6 @@ export interface AclInfoModel {
 
 export class UpdateAclInfoModel {
     navigationIds: number[];
+    companyId: number;
     userTypeId: number;
 }

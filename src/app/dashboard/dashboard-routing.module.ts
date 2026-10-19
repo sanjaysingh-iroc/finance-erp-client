@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MainComponent } from './main/main.component';
+import { MainDashBoardComponent } from './main-dashboard/main-dashboard.component';
 import { LoginGuard } from '../auth/guards/login-gaurd.component';
 import { StaffAuthGuard } from '../auth/guards/staff-auth-gaurd.component';
 import { SearchPeopleComponent } from './search-people/search-people.component';
@@ -14,7 +14,7 @@ const routes: Routes = [
     children: [
       {
         path: 'staff-dashboard',
-        component: MainComponent,
+        component: MainDashBoardComponent,
         canActivate: [LoginGuard, StaffAuthGuard],
       },
       {

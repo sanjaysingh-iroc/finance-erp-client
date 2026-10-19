@@ -5,5 +5,5 @@ cd /opt/tomcat/bin
 
 
 # Build project
-ng build --aot --configuration=production  --base-href=/IROC_FZD/
+ng build --aot --configuration=production  --base-href=/FINANCE_FZD/
 

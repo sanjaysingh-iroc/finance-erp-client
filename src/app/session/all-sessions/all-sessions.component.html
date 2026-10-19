@@ -8,7 +8,7 @@
                             <h4 class="page-title">All Session</h4>
                         </li>
                         <li class="breadcrumb-item bcrumb-1">
-                            <a routerLink="/pages/dashboard/staff-dashboard">
+                            <a routerLink="/billing/dashboard/staff-dashboard">
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
@@ -74,7 +74,7 @@
                                 No results
                             </div>
                             <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0"
-                                [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+                                [pageSize]="100" [pageSizeOptions]="[5, 10, 25, 100]">
                             </mat-paginator>
                         </div>
                     </div>

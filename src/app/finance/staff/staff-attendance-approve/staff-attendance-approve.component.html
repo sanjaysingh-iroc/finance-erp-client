@@ -1,0 +1,114 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">Staff Attendance Approve</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/billing/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/billing/finance/staff/all-staff">Staffs</a>
+                        </li>
+                        <li class="breadcrumb-item active">Attendance Approve</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                <div class="card" style="margin-bottom: 0px;">
+                    <div class="body">
+                        <form [formGroup]="attendanceForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4" style="margin-bottom: 0px;">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Enter a date range</mat-label>
+                                        <mat-date-range-input [rangePicker]="admDateRangePicker"
+                                            formGroupName="dateRange" [min]="minDate" [max]="maxDate" disabled>
+                                            <input matStartDate formControlName="startDate" placeholder="Start date">
+                                            <input matEndDate formControlName="endDate" (dateChange)="onDateChange()"
+                                                placeholder="End date">
+                                        </mat-date-range-input>
+                                        <mat-datepicker-toggle matSuffix [for]="admDateRangePicker">
+                                        </mat-datepicker-toggle>
+                                        <mat-date-range-picker #admDateRangePicker disabled="false">
+                                        </mat-date-range-picker>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <div class="card" style="margin-bottom: 10px;">
+                                        <div class="tableBody" style="position : relative; height: calc(100vh - 270px);"
+                                            [perfectScrollbar]>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                style="padding:0px;padding-left:10px;vertical-align: middle;min-width:200px;">
+                                                                Staff Name</th>
+                                                            <th style="padding:0px;padding-left:10px;"
+                                                                *ngFor="let cal of dateDataArray">
+                                                                <ul>
+                                                                    <li>{{cal.showDate}} </li>
+                                                                    <li> {{cal.day}}</li>
+                                                                </ul>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let staff of staffs">
+                                                            <td>{{staff.name}}</td>
+                                                            <td *ngFor="let cal of dateDataArray">
+
+                                                                <span
+                                                                    *ngIf="selectmap.get(cal.date) && selectmap.get(cal.date).get(staff.id) "
+                                                                    class="label bg-green m-b-10">P</span>
+                                                                <span *ngIf="weeklyOffMap.get(cal.weekDay)"
+                                                                    class="label bg-orange m-b-10">WF</span>
+
+                                                                <span *ngIf="(upcomingHolidays.indexOf(cal.date) >-1)"
+                                                                    class="label bg-blue m-b-10">PH</span>
+                                                                <span
+                                                                    *ngIf="!((selectmap.get(cal.date) && selectmap.get(cal.date).get(staff.id)) || (weeklyOffMap.get(cal.weekDay)) || (upcomingHolidays.indexOf(cal.date) >-1))"
+                                                                    class="label bg-red m-b-10">A</span>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td></td>
+                                                            <td *ngFor="let cal of dateDataArray; let i = index">
+                                                                <button mat-raised-button color="primary" type="button"
+                                                                    *ngIf="!(weeklyOffMap.get(cal.weekDay) || (upcomingHolidays.indexOf(cal.date) >-1) || (_dateAdapter.compareDate(cal.actualDate, minDate) < 0) || (_dateAdapter.compareDate(cal.actualDate, maxDate) > 0))"
+                                                                    (click)="toggle(cal.date)"
+                                                                    [disabled]="approvedDateList.indexOf(cal.date) != -1">Approve</button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                    <mat-spinner-button [options]="spinnerButtonOptions"
+                                        [disabled]="approvedDateList.length ==7">
+                                    </mat-spinner-button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

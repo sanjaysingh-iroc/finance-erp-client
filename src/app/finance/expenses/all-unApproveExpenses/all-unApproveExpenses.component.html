@@ -1,0 +1,93 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">All Unapprove Expenses</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/billing/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/billing/finance/expenses/all-expenses">Expenses</a>
+                        </li>
+                        <li class="breadcrumb-item active">All</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="body">
+                        <div class="table-responsive">
+                            <div class="materialTableHeader">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <ul class="header-buttons-left ml-0">
+                                            <li>
+                                                <div class="icon-button-demo m-l-10">
+                                                    <h2>
+                                                        <strong>Total : {{currency + ' ' +totalAmount}}/-</strong>
+                                                    </h2>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tableBody" style="position : relative; height: calc(100vh - 250px)"
+                                [perfectScrollbar]>
+                                <table class="table table-hover ">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px;">Expense Type</th>
+                                            <th style="min-width: 100px;">Other Info</th>
+                                            <th style="min-width: 70px;">Expense Date</th>
+                                            <th style="min-width: 100px;">Amount</th>
+                                            <th style="min-width: 100px;">Attachment</th>
+                                            <th style="min-width: 50px;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let row of expensesModels">
+                                            <td style="min-width: 50px">{{expenseTypeMap.get(row.expenseTypeId)}}</td>
+                                            <td style="min-width: 100px">{{expenseTypeMap.get(row.otherInfo)}}</td>
+
+                                            <td style="min-width: 100px">{{row.expensesDate | date: showDateFormat}}
+                                            </td>
+
+                                            <td style="min-width: 100px">{{currency + ' ' + row.amount}}/-</td>
+                                            <td style="min-width: 100px">
+                                                <a *ngIf="row.uploadDocument" href="{{apiURL + row.uploadDocument}}">
+                                                    <mat-icon matSuffix>archive</mat-icon>
+                                                </a>
+                                            </td>
+
+                                            <td style="min-width: 130px">
+                                                <button mat-icon-button color="accent" class="btn-tbl-done"
+                                                    (click)="$event.stopPropagation()" (click)="approveExpense(row)">
+                                                    <mat-icon aria-label="Edit"
+                                                        class="col-white">done_outline</mat-icon>
+                                                </button>
+                                                <button mat-icon-button color="accent" class="btn-tbl-delete"
+                                                    (click)="$event.stopPropagation()" (click)="deleteItem(row)">
+                                                    <mat-icon aria-label="Delete" class="col-white">delete</mat-icon>
+                                                </button>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

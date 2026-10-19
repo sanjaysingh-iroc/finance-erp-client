@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "finance-erp-client": {
+    "billing-erp-client": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/finance-erp-client",
+            "outputPath": "dist/billing-erp-client",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -87,19 +87,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "finance-erp-client:build",
+            "browserTarget": "billing-erp-client:build",
             "port": 4202
           },
           "configurations": {
             "production": {
-              "browserTarget": "finance-erp-client:build:production"
+              "browserTarget": "billing-erp-client:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "finance-erp-client:build"
+            "browserTarget": "billing-erp-client:build"
           }
         },
         "test": {
@@ -137,18 +137,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "finance-erp-client:serve"
+            "devServerTarget": "billing-erp-client:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "finance-erp-client:serve:production"
+              "devServerTarget": "billing-erp-client:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "finance-erp-client",
+  "defaultProject": "billing-erp-client",
   "cli": {
     "analytics": false
   },

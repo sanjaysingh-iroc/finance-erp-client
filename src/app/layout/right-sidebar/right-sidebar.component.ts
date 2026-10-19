@@ -14,6 +14,9 @@ import { Router } from '@angular/router';
 import { LocalStorageData } from '../../shared/local-storage-data';
 import { SessionService } from '../../session/session.service';
 import { SessionModel } from '../../session/session.model';
+import { CompanyModel } from '../../company-settings/company.model';
+import { CompanyService } from '../../company-settings/company.service';
+import { LoginModel } from '../../auth/login-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +34,11 @@ export class RightSidebarComponent implements OnInit, AfterViewInit {
   isDarTheme = false;
   public config: any = {};
   sessionMap: Map<number, SessionModel> = new Map<number, SessionModel>();
+  companyMap: Map<number, CompanyModel> = new Map<number, CompanyModel>();
+
   selectedSession: number;
+  selectedCompany: number;
+  login: LoginModel;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -40,10 +47,13 @@ export class RightSidebarComponent implements OnInit, AfterViewInit {
     private dataService: RightSidebarService,
     private configService: ConfigService,
     private sessionService: SessionService,
+    private companyService: CompanyService,
+
     private localStorageData: LocalStorageData,
     private router: Router,
   ) { }
   ngOnInit() {
+     this.login = this.localStorageData.userValue;
     this.config = this.configService.configData;
     this.dataService.currentStatus.subscribe((data: boolean) => {
       this.isOpenSidebar = data;
@@ -51,11 +61,22 @@ export class RightSidebarComponent implements OnInit, AfterViewInit {
 
     const session = this.localStorageData.sessionValue;
     this.selectedSession = session.id;
+
+     const login = this.localStorageData.userValue;
+    this.selectedCompany = login.companyId;
+
     this.sessionService.getAllSessionYears().subscribe(data => {
       data.forEach(element => {
         this.sessionMap.set(element.id, element);
       });
     });
+
+    this.companyService.getAllCompanyDetails().subscribe(data => {
+      data.forEach(element => {
+        this.companyMap.set(element.id, element);
+      });
+    });
+
     this.setRightSidebarWindowHeight();
   }
 
@@ -99,6 +120,16 @@ export class RightSidebarComponent implements OnInit, AfterViewInit {
     const element = this.sessionMap.get(value);
     if (element) {
       this.localStorageData.setSession(element);
+      this.reloadComponent(true);
+    }
+  }
+
+  updateCompany(value) {
+    const element = this.companyMap.get(value);
+    if (element) {
+      const login = this.localStorageData.userValue;
+      login.companyId = element.id;
+      this.localStorageData.updateLoginUser(login);
       this.reloadComponent(true);
     }
   }

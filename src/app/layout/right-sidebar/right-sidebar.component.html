@@ -77,6 +77,17 @@
               </mat-select>
             </mat-form-field>
           </li>
+
+          <li *ngIf="login.userType == 1">
+            <mat-form-field class="example-full-width mb-3" appearance="outline">
+              <mat-label>Session</mat-label>
+              <mat-select [(value)]="selectedCompany" (selectionChange)="updateCompany($event.value)">
+                <mat-option *ngFor="let session of companyMap | keyvalue" [value]="session.value.id">
+                  {{session.value.companyName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </li>
         </ul>
 
 

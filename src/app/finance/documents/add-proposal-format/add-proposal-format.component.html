@@ -1,0 +1,268 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">{{dialogTitle}} Proposal Format</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/billing/dashboard/customer-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/billing/finance/documents/all-proposal-format">Proposal Format</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{dialogTitle}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="body">
+                        <mat-horizontal-stepper [linear]=true #stepper>
+
+                            <mat-step [stepControl]="customerForm">
+                                <ng-template matStepLabel>Customer Information</ng-template>
+                                <form class="m-4" [formGroup]="customerForm">
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Proposal Number</mat-label>
+                                                <input matInput formControlName="serialNo" required>
+                                                <mat-icon matSuffix>beach_access</mat-icon>
+                                                <mat-error *ngIf="customerForm.get('serialNo').hasError('required')">
+                                                    Enter Proposal Name
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Proposal Date</mat-label>
+                                                <input matInput [matDatepicker]="picker" formControlName="proposalDate"
+                                                    disabled required>
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker disabled="false"></mat-datepicker>
+                                                <mat-error
+                                                    *ngIf="customerForm.get('proposalDate').hasError('required')">
+                                                    Please select Date of Proposal
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Name</mat-label>
+                                                <input matInput formControlName="customerName" required>
+                                                <mat-icon matSuffix>beach_access</mat-icon>
+                                                <mat-error
+                                                    *ngIf="customerForm.get('customerName').hasError('required')">
+                                                    Enter Customer Name
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Address</mat-label>
+                                                <input matInput formControlName="address" required>
+                                                <mat-icon matSuffix>beach_access</mat-icon>
+
+                                                <mat-error *ngIf="customerForm.get('address').hasError('required')">
+                                                    Enter Customer Address
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>District</mat-label>
+                                                <input matInput formControlName="district" required>
+                                                <mat-icon matSuffix>location_city</mat-icon>
+                                                <mat-error *ngIf="customerForm.get('district').hasError('required')">
+                                                    Enter District
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Pin Code</mat-label>
+                                                <input matInput formControlName="pinCode" required>
+                                                <mat-icon matSuffix>person_pin_circle</mat-icon>
+                                                <mat-error *ngIf="customerForm.get('pinCode').hasError('required')">
+                                                    Enter Pin Code
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <button mat-raised-button matStepperNext color="primary">Next</button>
+                                    </div>
+                                </form>
+                            </mat-step>
+
+                            <mat-step [stepControl]="productForm">
+                                <form class="m-4" [formGroup]="productForm" (ngSubmit)="onSubmit()" #formone="ngForm">
+                                    <ng-template matStepLabel>Product Information</ng-template>
+                                    <div class="row">
+
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>GST Percentage</mat-label>
+                                                <input matInput formControlName="gst" type="number"
+                                                    (input)="onGstChange($event)" required>
+                                                <mat-icon matSuffix>beach_access</mat-icon>
+                                                <mat-error *ngIf="productForm.get('gst').hasError('required')">
+                                                    Enter GST Percentage
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Price</mat-label>
+                                                <input matInput formControlName="amount" type="number"
+                                                    (input)="onPriceChange($event)" required>
+                                                <mat-icon matSuffix>currency_rupee</mat-icon>
+                                                <mat-hint align="start"><b>{{amountInWords[0]}}</b></mat-hint>
+
+                                                <mat-error *ngIf="productForm.get('amount').hasError('required')">
+                                                    Enter Price
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Price (With GST)</mat-label>
+                                                <input matInput formControlName="priceWithGST" type="number"
+                                                    (input)="onTotalPriceChange( $event)" required>
+                                                <mat-icon matSuffix>currency_rupee</mat-icon>
+                                                <mat-hint align="start"><b>{{amountInWords[1]}}</b></mat-hint>
+
+                                                <mat-error *ngIf="productForm.get('priceWithGST').hasError('required')">
+                                                    Enter Price
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Solar Model</mat-label>
+                                                <mat-select formControlName="solarModelId" required>
+                                                    <mat-option *ngFor="let product of solarProductList"
+                                                        [value]="product.id">
+                                                        {{product.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="productForm.get('solarModelId').hasError('required')">
+                                                    Please Select Product Type
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Quantity</mat-label>
+                                                <input matInput formControlName="solarQuantity" type="number" min="1">
+                                                <mat-icon matSuffix>class</mat-icon>
+                                                <mat-error *ngIf="productForm.get('solarQuantity').hasError('min')">
+                                                    Please Select Quantity
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Capacity (KW)</mat-label>
+                                                <input matInput formControlName="capacity" type="number" required>
+                                                <mat-icon matSuffix>beach_access</mat-icon>
+
+                                                <mat-error *ngIf="productForm.get('capacity').hasError('required')">
+                                                    Enter Capacity
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Inverter Model</mat-label>
+                                                <mat-select formControlName="inverterModelId" required>
+                                                    <mat-option *ngFor="let product of inverterProductList"
+                                                        [value]="product.id">
+                                                        {{product.name}}
+                                                    </mat-option>
+
+                                                </mat-select>
+                                                <mat-error
+                                                    *ngIf="productForm.get('inverterModelId').hasError('required')">
+                                                    Please Select Product Type
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Capacity (KW)</mat-label>
+                                                <input matInput formControlName="inverterCapacity" type="number"
+                                                    required>
+                                                <mat-icon matSuffix>beach_access</mat-icon>
+
+                                                <mat-error
+                                                    *ngIf="productForm.get('inverterCapacity').hasError('required')">
+                                                    Enter Capacity
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Battery Model</mat-label>
+                                                <mat-select formControlName="batteryModelId" required>
+                                                    <mat-option *ngFor="let product of batteryProductList"
+                                                        [value]="product.id">
+                                                        {{product.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                               
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Quantity</mat-label>
+                                                <input matInput formControlName="batteryQuantity" type="number" min="0">
+                                                <mat-icon matSuffix>class</mat-icon>
+                                                
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button mat-raised-button matStepperPrevious color="warn"
+                                            class="mr-2">Back</button>
+                                        <mat-spinner-button [options]="spinnerButtonOptions" type="submit"
+                                            [disabled]="!productForm.valid">
+                                        </mat-spinner-button>
+                                    </div>
+                                </form>
+                            </mat-step>
+
+                        </mat-horizontal-stepper>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

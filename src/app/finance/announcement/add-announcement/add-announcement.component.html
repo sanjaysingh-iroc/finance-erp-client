@@ -1,0 +1,80 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">{{dialogTitle}} Task</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/billing/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/billing/finance/announcement/all-announcement">Task</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{dialogTitle}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="body">
+                        <form class="m-4" [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Create Date</mat-label>
+                                        <input matInput [matDatepicker]="rpicker" formControlName="createDate"
+                                            [min]="minDate" disabled required>
+                                        <mat-datepicker-toggle matSuffix [for]="rpicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #rpicker disabled="false"></mat-datepicker>
+                                        <mat-error *ngIf="announcementForm.get('createDate').hasError('required')">
+                                            Please Select Date
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Associate Name</mat-label>
+                                        <mat-select formControlName="staffId" required>
+                                            <mat-option *ngFor="let recipient of staffMap | keyvalue"
+                                                [value]="recipient.value.id">
+                                                {{recipient.value.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="announcementForm.get('staffId').hasError('required')">
+                                            Please Select Agent
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Message</mat-label>
+                                        <textarea matInput formControlName="message" rows="8" required></textarea>
+                                        <mat-icon matSuffix>message</mat-icon>
+                                        <mat-error *ngIf="announcementForm.get('message').hasError('required')">
+                                            Please Enter Message
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                    <mat-spinner-button [options]="spinnerButtonOptions"
+                                        [disabled]="!announcementForm.valid">
+                                    </mat-spinner-button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

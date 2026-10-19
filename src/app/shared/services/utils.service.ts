@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
-import { BrandModel, CountryModel, GenderModel, IdProofModel, PaymentTypeModel, PdfStyleModel, ProductCategoryModel, SettingModel, StateModel, UserTypeModel, WeeklyOffModel } from '../common.models';
+import { BrandModel, CountryModel, IdProofModel, PaymentTypeModel, PdfStyleModel, ProductCategoryModel, SerialKeyModel, SettingModel, StateModel, UploadFileModel, UserTypeModel, WeeklyOffModel } from '../common.models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +14,6 @@ export class UtilsService {
 
   getAllPaymentType(): Observable<PaymentTypeModel[]> {
     return this.httpClient.get<PaymentTypeModel[]>(`${environment.apiUrl}/utils/getPaymentTypes`);
-  }
-
-  getAllGender(): Observable<GenderModel[]> {
-    return this.httpClient.get<GenderModel[]>(`${environment.apiUrl}/utils/getGenders`);
   }
 
   getAllSettings(): Observable<SettingModel[]> {
@@ -32,7 +28,7 @@ export class UtilsService {
     return this.httpClient.get<UserTypeModel[]>(`${environment.apiUrl}/utils/getUserType`);
   }
 
- 
+
   getWeeklyOff(): Observable<WeeklyOffModel[]> {
     return this.httpClient.get<WeeklyOffModel[]>(`${environment.apiUrl}/utils/getAllWeeklyOff`);
   }
@@ -57,6 +53,19 @@ export class UtilsService {
   getStates(countryId: number): Observable<StateModel[]> {
     let params = new HttpParams().append('countryId', countryId.toString());
     return this.httpClient.get<StateModel[]>(`${environment.apiUrl}/utils/getStates`, { params: params });
+  }
+
+  uploadFile(uploadImageData: FormData): Observable<UploadFileModel> {
+    return this.httpClient.post<UploadFileModel>(`${environment.apiUrl}/utils/uploadFile`, uploadImageData);
+  }
+
+  getSerialKey(companyId: number, sessionId: number): Observable<SerialKeyModel> {
+    let params = new HttpParams().append('companyId', companyId.toString()).append('sessionId', sessionId.toString());
+    return this.httpClient.get<SerialKeyModel>(`${environment.apiUrl}/utils/getSerialKey`, { params: params });
+  }
+
+  updateSerialKey(serialKeyModel: SerialKeyModel): Observable<SerialKeyModel> {
+    return this.httpClient.post<SerialKeyModel>(`${environment.apiUrl}/utils/updateSerialKey`, serialKeyModel);
   }
 
 }

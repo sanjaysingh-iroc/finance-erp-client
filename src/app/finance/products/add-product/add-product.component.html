@@ -1,0 +1,220 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">{{dialogTitle}} Product</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/billing/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/billing/finance/products/all-products">Products</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{dialogTitle}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="body">
+                        <form class="m-4" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Product Type</mat-label>
+                                        <mat-select formControlName="productType" required
+                                            (selectionChange)="onProductTypeChange($event)">
+                                            <mat-option *ngFor="let productCategoryModel of productCategoryModels"
+                                                [value]="productCategoryModel.id">
+                                                {{productCategoryModel.name}}
+                                            </mat-option>
+
+                                        </mat-select>
+                                        <mat-error *ngIf="productForm.get('productType').hasError('required')">
+                                            Please Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Brand</mat-label>
+                                        <mat-select formControlName="brandId" required>
+                                            <mat-option *ngFor="let brandModel of brandModels" [value]="brandModel.id">
+                                                {{brandModel.name}}
+                                            </mat-option>
+
+                                        </mat-select>
+                                        <mat-error *ngIf="productForm.get('brandId').hasError('required')">
+                                            Please Select Brand Make
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Model No</mat-label>
+                                        <input matInput formControlName="modelNo" required>
+                                        <mat-icon matSuffix>beach_access</mat-icon>
+
+                                        <mat-error *ngIf="productForm.get('modelNo').hasError('required')">
+                                            Enter Model Number
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>HSN CODE</mat-label>
+                                        <input matInput formControlName="hsnCode" required>
+                                        <mat-icon matSuffix>beach_access</mat-icon>
+
+                                        <mat-error *ngIf="productForm.get('hsnCode').hasError('required')">
+                                            Enter HSN CODE
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>GST Percentage</mat-label>
+                                        <input matInput [formControl]="gstPercentageControl" type="number" min="0"
+                                            required readonly>
+                                        <mat-icon matSuffix>beach_access</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Rate With GST</mat-label>
+                                        <input matInput [formControl]="rateWithGSTControl" type="number" min="0"
+                                            (input)="onPriceWithGSTChange(0,'rate', $event)">
+                                        <mat-icon matSuffix>currency_rupee</mat-icon>
+                                        <mat-hint align="start"><b>{{amountInWords[0]}}</b></mat-hint>
+
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Price With GST</mat-label>
+                                        <input matInput [formControl]="priceWithGSTControl" type="number" min="0"
+                                            (input)="onPriceWithGSTChange(1,'price', $event)">
+                                        <mat-icon matSuffix>currency_rupee</mat-icon>
+                                        <mat-hint align="start"><b>{{amountInWords[1]}}</b></mat-hint>
+
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Rate</mat-label>
+                                        <input matInput formControlName="rate" type="number" min="0" required
+                                            (input)="onPriceChange(0,rateWithGSTControl, $event)">
+                                        <mat-icon matSuffix>currency_rupee</mat-icon>
+                                        <mat-hint align="start"><b>{{amountInWords[2]}}</b></mat-hint>
+
+                                        <mat-error *ngIf="productForm.get('rate').hasError('required')">
+                                            Enter Rate
+                                        </mat-error>
+                                        <mat-error *ngIf="productForm.get('rate').hasError('min')">
+                                            Enter rate greater than zero
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Price</mat-label>
+                                        <input matInput formControlName="price" type="number" min="0" required
+                                            (input)="onPriceChange(1,priceWithGSTControl, $event)">
+                                        <mat-icon matSuffix>currency_rupee</mat-icon>
+                                        <mat-hint align="start"><b>{{amountInWords[3]}}</b></mat-hint>
+
+                                        <mat-error *ngIf="productForm.get('price').hasError('required')">
+                                            Enter Price
+                                        </mat-error>
+                                        <mat-error *ngIf="productForm.get('price').hasError('min')">
+                                            Enter price greater than zero
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Warranty In Year</mat-label>
+                                        <input matInput formControlName="warrantyInYear" type="number" min="0">
+                                        <mat-icon matSuffix>beach_access</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Warranty In Month</mat-label>
+                                        <input matInput formControlName="warrantyInMonth" type="number" min="0"
+                                            max="12">
+                                        <mat-icon matSuffix>beach_access</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>capacity</mat-label>
+                                        <input matInput formControlName="capacity">
+                                        <mat-icon matSuffix>beach_access</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Details</mat-label>
+                                        <textarea matInput formControlName="details" rows="4"></textarea>
+                                        <mat-icon matSuffix>place</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Upload Image</mat-label>
+                                        <ngx-mat-file-input accept="image/*" [multiple]="false"
+                                            formControlName="uploadImg">
+                                        </ngx-mat-file-input>
+                                        <mat-icon matSuffix>attachment</mat-icon>
+                                        <mat-error *ngIf="productForm.get('uploadImg').hasError('fileMinSize')">
+                                            File size exceeds More than 2 MB
+                                        </mat-error>
+                                        <mat-hint style="color: red;font-size: 16px;"> File Size should not be
+                                            exceed
+                                            more than 2
+                                            MB.</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <img [src]='apiURL+productModel.uploadImg' (error)="updateCustomerUrl($event)"
+                                    width="100" height="60" alt="avatar" />
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                    <mat-spinner-button [options]="spinnerButtonOptions"
+                                        [disabled]="!productForm.valid">
+                                    </mat-spinner-button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

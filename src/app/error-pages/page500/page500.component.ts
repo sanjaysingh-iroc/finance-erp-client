@@ -17,10 +17,10 @@ export class Page500Component implements OnInit {
 
     if (!this.login) {
       this.login = this.localStorageData.customerValue;
-      this.homeLink = '/pages/dashboard/customer-dashboard';
+      this.homeLink = '/billing/dashboard/customer-dashboard';
 
     } else {
-      this.homeLink = '/pages/dashboard/staff-dashboard';
+      this.homeLink = '/billing/dashboard/staff-dashboard';
     }
   }
 }

@@ -26,8 +26,6 @@ import { CustomMaterialModule } from './custom-material/custom-material.module';
 import { DeleteDialogComponent } from './shared/dialog/delete/delete.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  // suppressScrollX: true,
-  // suppressScrollY: true,
   wheelPropagation: true,
 };
 
@@ -63,7 +61,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       useClass: HeaderInterceptor,
       multi: true
     },
-    // DynamicScriptLoaderService,
     ConfigService,
     RightSidebarService
   ],

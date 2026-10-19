@@ -5,7 +5,6 @@ import { LoginGuard } from '../auth/guards/login-gaurd.component';
 
 import { CompanyDetailsComponent } from './company-details/company-details.component';
 import { AclSettingsComponent } from './acl-settings/acl-settings.component';
-
 const routes: Routes = [
   {
     path: '',

@@ -5,9 +5,10 @@ import { environment } from '@environments/environment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { CommonLayout } from '../../shared/shared-layout/share.layout';
-import { StaffService } from '../../staff/staff.service';
-import { StaffModel } from '../../staff/staff.model';
 import { Router } from '@angular/router';
+import { StaffModel } from '../../finance/staff/staff.model';
+import { StaffService } from '../../finance/staff/staff.service';
+import { LoginModel } from '../../auth/login-model';
 
 @Component({
   selector: 'app-search-people',
@@ -24,7 +25,7 @@ export class SearchPeopleComponent implements OnInit {
   staffs: StaffModel[] = [];
 
   classForm: FormGroup;
-
+  login: LoginModel;
   constructor(
     private staffService: StaffService,
     private localStorageData: LocalStorageData,
@@ -34,7 +35,7 @@ export class SearchPeopleComponent implements OnInit {
 
   ngOnInit() {
     this.session = this.localStorageData.sessionValue;
-
+    this.login = this.localStorageData.userValue;
 
     let search: string = '';
     if (history.state.search) {
@@ -50,12 +51,12 @@ export class SearchPeopleComponent implements OnInit {
   }
 
   viewStaffProfile(staff) {
-    this.router.navigateByUrl('pages/staff/about-staff', { state: { staff: staff, action: 'view' } });
+    this.router.navigateByUrl('billing/finance/staff/about-staff', { state: { staff: staff, action: 'view' } });
   }
 
 
   onSubmit() {
-    this.staffService.getUsersByName(this.session.id, this.classForm.get("search").value).subscribe(
+    this.staffService.getUsersByName(this.login.companyId, this.classForm.get("search").value).subscribe(
       data => {
         this.staffs = data;
       });

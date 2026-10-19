@@ -1,0 +1,459 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">{{dialogTitle}} Solar Customer</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/billing/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/billing/finance/solar/all-solar-customers">Solar Customers</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{dialogTitle}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                <div class="card" style="margin-bottom: 0px;">
+                    <div class="body">
+                        <mat-horizontal-stepper [linear]=false #stepper>
+
+                            <mat-step [stepControl]="customerPersonalForm">
+                                <form class="m-4" [formGroup]="customerPersonalForm">
+                                    <ng-template matStepLabel>Customer Information</ng-template>
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                            style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Name</mat-label>
+                                                <input matInput formControlName="name" required>
+                                                <mat-icon matSuffix>account_circle</mat-icon>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('name').hasError('required')">
+                                                    Please Add Name
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Mobile</mat-label>
+                                                <span matPrefix>
+                                                    <mat-icon class="mr-2">phone</mat-icon>
+                                                </span>
+                                                <input matInput formControlName="mobile" mask="000-000-0000"
+                                                    [showMaskTyped]="true" required />
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('mobile').hasError('required')">
+                                                    Please Enter Mobile
+                                                </mat-error>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('mobile').hasError('pattern')">
+                                                    Please Enter A Valid Mobile Number
+                                                </mat-error>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('mobile').hasError('notSame')">
+                                                    Mobile Number Already Exist
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Emergency Mobile</mat-label>
+                                                <span matPrefix>
+                                                    <mat-icon class="mr-2">phone</mat-icon>
+                                                </span>
+                                                <input matInput formControlName="emergencyMobile" mask="000-000-0000"
+                                                    [showMaskTyped]="true" />
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('emergencyMobile').hasError('pattern')">
+                                                    Please Enter A Valid Mobile Number
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Email</mat-label>
+                                                <input matInput formControlName="email">
+                                                <mat-icon matSuffix>mail</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Associate Name</mat-label>
+                                                <mat-select formControlName="generatedBy" required>
+                                                    <mat-option *ngFor="let recipient of staffMap | keyvalue"
+                                                        [value]="recipient.value.id">
+                                                        {{recipient.value.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('generatedBy').hasError('required')">
+                                                    Please Select Agent
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                            style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Address</mat-label>
+                                                <textarea matInput formControlName="address" rows="4"
+                                                    required></textarea>
+                                                <mat-icon matSuffix>place</mat-icon>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('address').hasError('required')">
+                                                    Please Add Address
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>District</mat-label>
+                                                <input matInput formControlName="district">
+                                                <mat-icon matSuffix>location_city</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Pin Code</mat-label>
+                                                <input matInput formControlName="pinCode">
+                                                <mat-icon matSuffix>person_pin_circle</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Country</mat-label>
+                                                <mat-select formControlName="countryId" required>
+                                                    <mat-option *ngFor="let countryModel of countryModels"
+                                                        [value]="countryModel.id">
+                                                        {{countryModel.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('countryId').hasError('required')">
+                                                    Please Select Country
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>State</mat-label>
+                                                <mat-select formControlName="stateId" required>
+                                                    <mat-option *ngFor="let stateModel of stateModels"
+                                                        [value]="stateModel.id">
+                                                        {{stateModel.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('stateId').hasError('required')">
+                                                    Please Select State
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Electricity Meter No</mat-label>
+                                                <input matInput formControlName="electricityMeterNo">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>UPPCL Password</mat-label>
+                                                <input matInput formControlName="uppclPassword">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Aadhar No.</mat-label>
+                                                <input matInput formControlName="aadharNo" mask="0000-0000-0000"
+                                                    [showMaskTyped]="true">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Pan No.</mat-label>
+                                                <input matInput formControlName="panNo">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Bank Name</mat-label>
+                                                <input matInput formControlName="bankName">
+                                                <mat-icon matSuffix>account_balance</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Bank IFSC</mat-label>
+                                                <input matInput formControlName="bankIfsc">
+                                                <mat-icon matSuffix>account_balance</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Bank Account No</mat-label>
+                                                <input matInput formControlName="bankAccountNo">
+                                                <mat-icon matSuffix>account_balance</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>GST No</mat-label>
+                                                <span matPrefix>
+                                                    <mat-icon class="mr-2">phone</mat-icon>
+                                                </span>
+                                                <input matInput formControlName="gstNo" />
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                            style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Upload Sign</mat-label>
+                                                <ngx-mat-file-input [multiple]="false" formControlName="uploadSign">
+                                                </ngx-mat-file-input>
+                                                <mat-icon matSuffix>attachment</mat-icon>
+                                                <mat-error
+                                                    *ngIf="customerPersonalForm.get('uploadSign').hasError('fileMinSize')">
+                                                    File size exceeds More than 2 MB
+                                                </mat-error>
+                                                <mat-hint style="color: red;font-size: 16px;"> File Size should not be
+                                                    exceed more than 2 MB.</mat-hint>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <img [src]='apiURL+solarCustomerModel.uploadSign'
+                                            (error)="updateCustomerUrl($event)" width="100" height="60" alt="avatar" />
+                                    </div>
+                                    <div>
+                                        <button mat-raised-button matStepperNext color="primary">Next</button>
+                                    </div>
+                                </form>
+                            </mat-step>
+
+                            <mat-step [stepControl]="billForm">
+                                <form [formGroup]="billForm" (ngSubmit)="onSubmit()">
+                                    <ng-template matStepLabel>
+                                        <div style="position:absolute; top: 0;left: 0;width: 100%;height: 100%;">Product
+                                            Information</div>
+                                    </ng-template>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Solar Price</mat-label>
+                                                <input matInput formControlName="price" type="number" min="1"
+                                                    (input)="onPriceChange(0,$event)" required>
+                                                <mat-icon matSuffix>currency_rupee</mat-icon>
+                                                <mat-hint align="start"><b>{{amountInWords[0]}}</b></mat-hint>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Solar Advance</mat-label>
+                                                <input matInput formControlName="advancePrice"
+                                                    (input)="onPriceChange(1,$event)" type="number" min="1" required>
+                                                <mat-icon matSuffix>currency_rupee</mat-icon>
+                                                <mat-hint align="start"><b>{{amountInWords[1]}}</b></mat-hint>
+
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>capacity</mat-label>
+                                                <input matInput formControlName="capacity" type="number" min="1"
+                                                    required>
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>application Number</mat-label>
+                                                <input matInput formControlName="applicationNumber">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Loan Application Number</mat-label>
+                                                <input matInput formControlName="loanApplicationNumber">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row"
+                                        style="margin-bottom: 15px !important;color: #ffffff;fill: blueviolet;border: solid 1px green;background-color: #007bff;font-size: 20px;justify-content: center;">
+                                        <h4 style="margin:5px;">Solar Panel Details</h4>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Select Panel Product</mat-label>
+                                                <mat-select formControlName="solarProductId">
+                                                    <mat-option [value]="">--</mat-option>
+                                                    <mat-option *ngFor="let product of solarProductList"
+                                                        [value]="product.id">
+                                                        {{product.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                    </div>
+                                    <ng-container formArrayName="purchaseProducts">
+                                        <div *ngFor="let  section of purchaseProducts.controls; let i = index">
+                                            <div [formGroup]="section">
+
+                                                <div class="row">
+                                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12"
+                                                        style="margin-bottom: 0px;">
+                                                        <mat-form-field class="example-full-width" appearance="outline">
+                                                            <mat-label>panel Serial</mat-label>
+                                                            <input matInput formControlName="panelSerial">
+                                                            <mat-icon matSuffix>class</mat-icon>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12"
+                                                        style="margin-bottom: 0px;">
+                                                        <button type="button" mat-button (click)="addNewRow()">
+                                                            <mat-icon matSuffix>add_circle</mat-icon>
+                                                        </button>
+                                                        <button type="button" *ngIf="i>0" mat-button
+                                                            (click)="removeNewRow(i)">
+                                                            <mat-icon matSuffix>remove_circle</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+
+
+                                    <div class="row"
+                                        style="margin-bottom: 15px !important;color: #ffffff;fill: blueviolet;border: solid 1px green;background-color: #007bff;font-size: 20px;justify-content: center;">
+                                        <h4 style="margin:5px;">Solar Inverter Details</h4>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Select inverter Product</mat-label>
+                                                <mat-select formControlName="inverterProductId">
+                                                    <mat-option [value]="">--</mat-option>
+                                                    <mat-option *ngFor="let product of inverterProductList"
+                                                        [value]="product.id">
+                                                        {{product.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>inverter Serial</mat-label>
+                                                <input matInput formControlName="inverterSerial">
+                                                <mat-icon matSuffix>person</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row"
+                                        style="margin-bottom: 15px !important;color: #ffffff;fill: blueviolet;border: solid 1px green;background-color: #007bff;font-size: 20px;justify-content: center;">
+                                        <h4 style="margin:5px;">Solar Battery Details</h4>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                                <mat-label>Select Battery Product</mat-label>
+                                                <mat-select formControlName="solarBatteryProductId">
+                                                    <mat-option [value]="">--</mat-option>
+                                                    <mat-option *ngFor="let product of solarBatteryProductList"
+                                                        [value]="product.id">
+                                                        {{product.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <button type="button" mat-button (click)="addNewBatteryRow()">
+                                                <mat-icon matSuffix>add_circle</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <ng-container formArrayName="batteryPurchaseProducts">
+                                        <div *ngFor="let  section of batteryPurchaseProducts.controls; let i = index">
+                                            <div [formGroup]="section">
+
+                                                <div class="row">
+                                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12"
+                                                        style="margin-bottom: 0px;">
+                                                        <mat-form-field class="example-full-width" appearance="outline">
+                                                            <mat-label>Battery Serial</mat-label>
+                                                            <input matInput formControlName="serialNo">
+                                                            <mat-icon matSuffix>class</mat-icon>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12"
+                                                        style="margin-bottom: 0px;">
+                                                        <button type="button" mat-button (click)="addNewBatteryRow()">
+                                                            <mat-icon matSuffix>add_circle</mat-icon>
+                                                        </button>
+                                                        <button type="button" mat-button
+                                                            (click)="removeBatteryRow(i)">
+                                                            <mat-icon matSuffix>remove_circle</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                    <div>
+                                        <button mat-raised-button matStepperPrevious color="warn"
+                                            class="mr-2">Back</button>
+                                        <mat-spinner-button [options]="spinnerButtonOptions" type="submit"
+                                            [disabled]="!billForm.valid">
+                                        </mat-spinner-button>
+                                    </div>
+                                </form>
+                            </mat-step>
+
+
+                        </mat-horizontal-stepper>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

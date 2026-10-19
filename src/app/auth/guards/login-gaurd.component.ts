@@ -33,7 +33,7 @@ export class LoginGuard implements CanActivate {
         this.authService.logout();
         return false;
       } else {
-        date.setMinutes(date.getMinutes() + 15);
+        date.setMinutes(date.getMinutes() + 60);
         token.expiredAt = date.toString();
         this.localStorageData.setToken(token);
       }

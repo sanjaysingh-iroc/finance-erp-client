@@ -22,7 +22,7 @@ export class CustomerAuthGuard implements CanActivate {
     const login = this.localStorageData.customerValue;
 
     if (login == null) {
-      this.router.navigate(['pages/error/page401']);
+      this.router.navigate(['billing/error/page401']);
       return false;
     }
     return true;

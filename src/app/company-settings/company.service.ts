@@ -23,8 +23,13 @@ export class CompanyService {
     return this.httpClient.post<CompanyModel>(`${environment.apiUrl}/company/create`, company);
   }
 
-  public getCompanyDetails(): Observable<CompanyModel> {
-    return this.httpClient.get<CompanyModel>(`${environment.apiUrl}/company/getCompanyDetails`);
+  public getCompanyDetails(companyId: number): Observable<CompanyModel> {
+    let params = new HttpParams().append('companyId', companyId.toString());
+    return this.httpClient.get<CompanyModel>(`${environment.apiUrl}/company/getCompanyDetails`, { params: params });
+  }
+
+  public getAllCompanyDetails(): Observable<CompanyModel[]> {
+    return this.httpClient.get<CompanyModel[]>(`${environment.apiUrl}/company/getAllCompanyDetails`);
   }
 
   uploadCompanyLogo(uploadImageData: FormData): Observable<UploadFileModel> {
@@ -34,8 +39,8 @@ export class CompanyService {
   public getAllNavigationDetails(): Observable<RouteInfoModel[]> {
     return this.httpClient.get<RouteInfoModel[]>(`${environment.apiUrl}/company/getAllNavigationDetails`);
   }
-  public getAllNavigationAclDetails(userTypeId: number): Observable<AclInfoModel[]> {
-    let params = new HttpParams().append('userTypeId', userTypeId.toString());
+  public getAllNavigationAclDetails(userTypeId: number, companyId: number): Observable<AclInfoModel[]> {
+    let params = new HttpParams().append('userTypeId', userTypeId.toString()).append('companyId', companyId.toString());
     return this.httpClient.get<AclInfoModel[]>(`${environment.apiUrl}/company/getAllNavigationAclDetails`, { params: params });
   }
 

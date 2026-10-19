@@ -22,7 +22,7 @@ export class StaffAuthGuard implements CanActivate {
     const login = this.localStorageData.userValue;
 
     if (login == null) {
-      this.router.navigate(['pages/error/page401']);
+      this.router.navigate(['billing/error/page401']);
       return false;
     }
     return true;

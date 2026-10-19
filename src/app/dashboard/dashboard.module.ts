@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { MainComponent } from './main/main.component';
+import { MainDashBoardComponent } from './main-dashboard/main-dashboard.component';
 import { CustomMaterialModule } from '../custom-material/custom-material.module';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { ChartsModule as chartjsModule } from 'ng2-charts';
@@ -16,7 +16,7 @@ import {
   PerfectScrollbarModule,
 } from 'ngx-perfect-scrollbar';
 @NgModule({
-  declarations: [MainComponent, SearchPeopleComponent, DashboardAclComponent],
+  declarations: [MainDashBoardComponent, SearchPeopleComponent, DashboardAclComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,

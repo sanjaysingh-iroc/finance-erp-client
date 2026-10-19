@@ -1,16 +1,11 @@
-import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { first } from 'rxjs/operators';
 import { CompanyModel } from '../../company-settings/company.model';
-import { CompanyService } from '../../company-settings/company.service';
-import { settings } from '../../demo/data';
 import { PdfStyleModel } from '../common.models';
 import { UtilsService } from '../services/utils.service';
-import { SessionService } from '../../session/session.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Injectable({
@@ -18,23 +13,14 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 })
 export class PdfService {
     apiURL: string = environment.apiUrl;
-
     constructor(
-        private companyService: CompanyService,
-        private sessionService: SessionService,
         private utilsService: UtilsService,
     ) {
     }
 
     generatePDF(title: any, titleData: any[], tableData: any[][], tableStyle, pageOrientation, action, headerRow, postTableData: any[] = []) {
-        this.companyService.getCompanyDetails().pipe(first()).subscribe(companyModel => {
-            if (companyModel == undefined) {
-                companyModel = new CompanyModel({});
-            }
-            this.utilsService.getPdfStyles().subscribe(pdfStyleModelList => {
-                this.generateDocument(companyModel, title, titleData, tableData, postTableData, pageOrientation, tableStyle, action, headerRow, pdfStyleModelList);
-            });
-
+        this.utilsService.getPdfStyles().subscribe(pdfStyleModelList => {
+            this.generateDocument(new CompanyModel({}), title, titleData, tableData, postTableData, pageOrientation, tableStyle, action, headerRow, pdfStyleModelList);
         });
     }
 
@@ -79,7 +65,7 @@ export class PdfService {
             content: content,
 
             images: {
-                logo: companyModel.logoImg ? this.apiURL + companyModel.logoImg : await this.getBase64ImageFromURL("assets/images/logo.png"),
+                logo: companyModel.logoImg ? this.apiURL + companyModel.logoImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
             },
             styles: this.getStyle(pdfStyleModelList, tableStyle)
         };
@@ -94,6 +80,219 @@ export class PdfService {
         }
     }
 
+    generateInvoicePDF(title: any, companyModel, postTableData, tableStyle, pageOrientation, action) {
+        this.utilsService.getPdfStyles().subscribe(pdfStyleModelList => {
+            this.generateInvoice(companyModel, title, postTableData, pageOrientation, tableStyle, action, pdfStyleModelList);
+        });
+    }
+
+    async generateInvoice(companyModel: CompanyModel, title: string, postTableData, pageOrientation, tableStyle, action, pdfStyleModelList: PdfStyleModel[]) {
+        let content: any[] = [];
+        content.push({
+            text: title, style: 'sectionHeader'
+        });
+        postTableData.forEach(row => {
+            content.push(row);
+        });
+
+        const docDefinition = {
+            pageOrientation: pageOrientation,
+            background: {
+                columns: [
+                    this.getbackgorundLogoPosition(pageOrientation)]
+            },
+            content: content,
+
+            images: {
+                logo: companyModel.logoImg ? this.apiURL + companyModel.logoImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+            },
+            styles: this.getStyle(pdfStyleModelList, tableStyle)
+        };
+
+
+        if (action == 'download') {
+            pdfMake.createPdf(docDefinition).download();
+        } else if (action == 'print') {
+            pdfMake.createPdf(docDefinition).print();
+        } else {
+            pdfMake.createPdf(docDefinition).open();
+        }
+    }
+
+    generateProposalPDF(companyModel, postTableData, tableStyle, pageOrientation, action) {
+        this.utilsService.getPdfStyles().subscribe(pdfStyleModelList => {
+            this.generateProposal(companyModel, postTableData, pageOrientation, tableStyle, action, pdfStyleModelList);
+        });
+    }
+
+    async generateProposal(companyModel: CompanyModel, postTableData, pageOrientation, tableStyle, action, pdfStyleModelList: PdfStyleModel[]) {
+        let content: any[] = [];
+        postTableData.forEach(row => {
+            content.push(row);
+        });
+        const docDefinition = {
+            pageOrientation: pageOrientation,
+            pageMargins: [20, 80, 20, 70],
+            header: {
+                columns: [
+                    {
+                        image: 'logo',
+                        width: 60,
+                        height: 60,
+                        alignment: 'right',
+                        absolutePosition: { x: 40, y: 5 }
+                    },
+
+                ]
+            },
+            footer: {
+                stack: [
+                    { canvas: [{ type: 'line', x1: 10, y1: 0, x2: 550, y2: 0, lineWidth: 1 }] },
+                    {
+                        layout: 'noBorders',
+                        table: {
+                            widths: ['65%', '30%'],
+                            body: [
+                                [
+                                    {
+                                        columns: [
+                                            { image: 'mobileIcon', width: 30, height: 30, },
+                                            { text: companyModel.mobile + '\n' + companyModel.phoneNo, margin: [0, 5, 0, 0], style: 'subheaderLeft' }
+                                        ]
+                                    },
+                                    {
+                                        columns: [
+                                            { image: 'mailIcon', width: 25, height: 25, },
+                                            { text: companyModel.email, margin: [0, 8, 0, 0], style: 'subheaderLeft' }
+                                        ]
+                                    },
+                                ],
+                                [
+                                    {
+                                        colSpan: 2, columns: [
+                                            { image: 'placeIcon', width: 30, height: 20, },
+                                            { text: companyModel.address + ', ' + companyModel.district + '-' + companyModel.pinCode + ' (U.P.)', style: 'sectionHeader1', margin: [0, 5, 0, 0] }
+                                        ]
+                                    }
+                                ]
+                            ]
+                        },
+                    }
+                ],
+                margin: [30, 10, 0, 0]
+            },
+            background: {
+                columns: [
+                    this.getbackgorundLogoPosition(pageOrientation)]
+            },
+            content: content,
+
+            images: {
+                logo: companyModel.logoImg ? this.apiURL + companyModel.logoImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+                mobileIcon: await this.getBase64ImageFromURL("assets/images/mobile-icon.png"),
+                placeIcon: await this.getBase64ImageFromURL("assets/images/place-icon.png"),
+                mailIcon: await this.getBase64ImageFromURL("assets/images/mail-icon.png"),
+
+            },
+            styles: this.getStyle(pdfStyleModelList, tableStyle)
+        };
+
+
+        if (action == 'download') {
+            pdfMake.createPdf(docDefinition).download();
+        } else if (action == 'print') {
+            pdfMake.createPdf(docDefinition).print();
+        } else {
+            pdfMake.createPdf(docDefinition).open();
+        }
+    }
+
+    generateEstimatePDF(companyModel, postTableData, header, tableStyle, pageOrientation, action) {
+        this.utilsService.getPdfStyles().subscribe(pdfStyleModelList => {
+            this.generateEstimate(companyModel, postTableData, header, pageOrientation, tableStyle, action, pdfStyleModelList);
+        });
+    }
+
+    async generateEstimate(companyModel: CompanyModel, postTableData, header, pageOrientation, tableStyle, action, pdfStyleModelList: PdfStyleModel[]) {
+        let content: any[] = [];
+        postTableData.forEach(row => {
+            content.push(row);
+        });
+        const docDefinition = {
+            pageOrientation: pageOrientation,
+            pageMargins: [20, 100, 20, 70],
+            header: header,
+            
+            content: content,
+
+            images: {
+                logo: companyModel.logoImg ? this.apiURL + companyModel.logoImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+                upiImg: companyModel.upiImg ? this.apiURL + companyModel.upiImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+
+                mobileIcon: await this.getBase64ImageFromURL("assets/images/mobile-icon.png"),
+                placeIcon: await this.getBase64ImageFromURL("assets/images/place-icon.png"),
+                mailIcon: await this.getBase64ImageFromURL("assets/images/mail-icon.png"),
+
+            },
+            styles: this.getStyle(pdfStyleModelList, tableStyle)
+        };
+
+
+        if (action == 'download') {
+            pdfMake.createPdf(docDefinition).download();
+        } else if (action == 'print') {
+            pdfMake.createPdf(docDefinition).print();
+        } else {
+            pdfMake.createPdf(docDefinition).open();
+        }
+    }
+
+    generateCustomPDF(companyModel, postTableData, header, footer, pageMargin, background, customerSign, tableStyle, pageOrientation, action) {
+        this.utilsService.getPdfStyles().subscribe(pdfStyleModelList => {
+            this.downloadCustomPDF(companyModel, postTableData, header, footer, pageMargin, background, customerSign, pageOrientation, tableStyle, action, pdfStyleModelList);
+        });
+    }
+
+    async downloadCustomPDF(companyModel: CompanyModel, postTableData, header, footer, pageMargin, background, customerSign, pageOrientation, tableStyle, action, pdfStyleModelList: PdfStyleModel[]) {
+        let content: any[] = [];
+        postTableData.forEach(row => {
+            content.push(row);
+        });
+        if (background == undefined) {
+            background = this.getbackgorundLogoPosition();
+        }
+        const docDefinition = {
+            pageOrientation: pageOrientation,
+            pageMargins: pageMargin,
+            header: header,
+            footer: footer,
+            background: background,
+            content: content,
+            images: {
+                logo: companyModel.logoImg ? this.apiURL + companyModel.logoImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+                upiImg: companyModel.upiImg ? this.apiURL + companyModel.upiImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+                signImg: companyModel.signImg ? this.apiURL + companyModel.signImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+                signWithStampImg: companyModel.signWithStampImg ? this.apiURL + companyModel.signWithStampImg : await this.getBase64ImageFromURL("assets/images/blank_image.png"),
+
+                customerSign: await this.getBase64ImageFromURL(customerSign ? customerSign : "assets/images/blank_image.png"),
+
+                mobileIcon: await this.getBase64ImageFromURL("assets/images/mobile-icon.png"),
+                placeIcon: await this.getBase64ImageFromURL("assets/images/place-icon.png"),
+                mailIcon: await this.getBase64ImageFromURL("assets/images/mail-icon.png"),
+
+            },
+            styles: this.getStyle(pdfStyleModelList, tableStyle)
+        };
+
+
+        if (action == 'download') {
+            pdfMake.createPdf(docDefinition).download();
+        } else if (action == 'print') {
+            pdfMake.createPdf(docDefinition).print();
+        } else {
+            pdfMake.createPdf(docDefinition).open();
+        }
+    }
 
     getStyle(pdfStyleModelList: PdfStyleModel[] = [], tableStyle = {}) {
         const pdfStyle = {
@@ -225,13 +424,6 @@ export class PdfService {
 
     getCompanyHeader(companyModel: CompanyModel, color = "black") {
         const content: any[] = [
-            // {
-            //     image: 'logo',
-            //     width: 50,
-            //     height: 50,
-            //     alignment: 'center',
-            //     margin: [0, 0, 0, 50]
-            // },
             { text: companyModel.companyName, style: 'schoolNameHeader1', color: color },
             { text: companyModel.address, style: 'schoolDataHeader1', color: color },
             { text: companyModel.mobile + (companyModel.phoneNo ? " / " + companyModel.phoneNo : ''), style: 'schoolDataHeader1', color: color },

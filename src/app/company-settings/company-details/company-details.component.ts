@@ -10,6 +10,10 @@ import { CompressImageService } from '../../shared/services/CompressImageService
 import { CommonServices } from '../../shared/services/common-services';
 import { UtilsService } from '../../shared/services/utils.service';
 import { CountryModel, StateModel } from '../../shared/common.models';
+import { forkJoin, of } from 'rxjs';
+import { LoginModel } from '../../auth/login-model';
+import { LocalStorageData } from '../../shared/local-storage-data';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-company-details',
@@ -25,6 +29,8 @@ export class CompanyDetailsComponent implements OnInit {
   minTimeMap: Map<string, string> = new Map<string, string>();
   stateModels: StateModel[];
   countryModels: CountryModel[];
+  login: LoginModel;
+  apiURL: string = environment.apiUrl;
 
   constructor(
     private fb: FormBuilder,
@@ -33,14 +39,14 @@ export class CompanyDetailsComponent implements OnInit {
     private commonLayout: CommonLayout,
     private compressImage: CompressImageService,
     private utilsService: UtilsService,
-
+    private localStorageData: LocalStorageData,
   ) {
   }
 
   ngOnInit(): void {
     this.minTimeMap.set('summer', '05:00 AM');
     this.minTimeMap.set('winter', '06:00 AM');
-
+    this.login = this.localStorageData.userValue;
     this.spinnerButtonOptions = this.commonLayout.getprogressButton();
     this.maxDate = new Date();
 
@@ -51,10 +57,12 @@ export class CompanyDetailsComponent implements OnInit {
     this.utilsService.getStates(1).subscribe(data => {
       this.stateModels = data;
     });
-    this.companyService.getCompanyDetails().pipe(first()).subscribe(data => {
+    this.companyService.getCompanyDetails(this.login.companyId).pipe(first()).subscribe(data => {
       if (data) {
         this.companyModel = data;
         this.stdForm.controls.companyName.setValue(data.companyName);
+        this.stdForm.controls.companyPersonName.setValue(data.companyPersonName);
+
         this.stdForm.controls.companyCode.setValue(data.companyCode);
 
         this.stdForm.controls.establishmentDate.setValue(data.establishmentDate);
@@ -90,6 +98,7 @@ export class CompanyDetailsComponent implements OnInit {
 
     this.stdForm = this.fb.group({
       companyName: ['', [Validators.required]],
+      companyPersonName: ['', [Validators.required]],
       establishmentDate: [{ value: '', disabled: false }, [Validators.required]],
       companyCode: [''],
       solarCode: [''],
@@ -113,7 +122,11 @@ export class CompanyDetailsComponent implements OnInit {
       summerEndTime: ['', [Validators.required]],
       winterStartTime: ['', [Validators.required]],
       winterEndTime: ['', [Validators.required]],
-      logoImg: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
+      logoImg: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      upiImg: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      signImg: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      signWithStampImg: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
+
     });
   }
 
@@ -125,33 +138,34 @@ export class CompanyDetailsComponent implements OnInit {
     this.minTimeMap.set(summer, this.stdForm.get(summer + "StartTime").value);
   }
 
+  updateCustomerUrl(event) {
+    event.target.src = 'assets/images/blank_image.png';
+  }
+
   onSubmit() {
     const companyModel: CompanyModel = new CompanyModel(this.stdForm.value);
+    companyModel.id = this.companyModel.id;
     this.spinnerButtonOptions.active = true;
-    if (this.stdForm.value.logoImg) {
-      let uploadImageData = new FormData();
-      const file = this.stdForm.value.logoImg.files[0];
-      uploadImageData.append("file", file);
-      this.companyService.uploadCompanyLogo(uploadImageData).subscribe(
-        (response) => {
-          companyModel.logoImg = response.fileDownloadUri;
-          this.companyService.addNewCompany(companyModel).subscribe(
-            (data) => {
-              this.companyModel = data;
-              this.companyService.emitData(data);
-              this.spinnerButtonOptions.active = false;
-              this.notification.showSuccessNotification(
-                'Add Settings Successfully...!!!',
-                'bottom'
-              );
-            });
-        }
-      );
 
-    } else {
-      companyModel.logoImg = this.companyModel.logoImg;
-      this.companyService.addNewCompany(companyModel).subscribe(
-        (data) => {
+    this.uploadAllDoc(companyModel);
+  }
+
+  uploadAllDoc(companyModel: CompanyModel) {
+    const apiCalls = {
+      logoImg: this.uploadDoc(this.stdForm.value.logoImg),
+      upiImg: this.uploadDoc(this.stdForm.value.upiImg),
+      signImg: this.uploadDoc(this.stdForm.value.signImg),
+      signWithStampImg: this.uploadDoc(this.stdForm.value.signWithStampImg),
+    };
+
+    forkJoin(apiCalls).subscribe({
+      next: (results) => {
+        companyModel.logoImg = (results as any).logoImg.fileDownloadUri ? (results as any).logoImg.fileDownloadUri : this.companyModel.logoImg;
+        companyModel.upiImg = (results as any).upiImg.fileDownloadUri ? (results as any).upiImg.fileDownloadUri : this.companyModel.upiImg;
+        companyModel.signImg = (results as any).signImg.fileDownloadUri ? (results as any).signImg.fileDownloadUri : this.companyModel.signImg;
+        companyModel.signWithStampImg = (results as any).signWithStampImg.fileDownloadUri ? (results as any).signWithStampImg.fileDownloadUri : this.companyModel.signWithStampImg;
+
+        this.companyService.addNewCompany(companyModel).pipe(first()).subscribe((data) => {
           this.spinnerButtonOptions.active = false;
           this.companyModel = data;
           this.notification.showSuccessNotification(
@@ -159,8 +173,21 @@ export class CompanyDetailsComponent implements OnInit {
             'bottom'
           );
         });
-    }
+      },
+      error: (err) => console.error('One or more requests failed:', err)
+    });
+  }
 
+  uploadDoc(uploadDoc) {
+    if (uploadDoc) {
+      let uploadImageData = new FormData();
+      const file = uploadDoc.files[0];
+      uploadImageData.append("file", file);
+      uploadImageData.append("location", "company");
+      return this.utilsService.uploadFile(uploadImageData);
+    } else {
+      return of({});;
+    }
   }
 
 }

@@ -8,7 +8,7 @@
                             <h4 class="page-title">Company Settings</h4>
                         </li>
                         <li class="breadcrumb-item bcrumb-1">
-                            <a routerLink="/pages/dashboard/staff-dashboard">
+                            <a routerLink="/billing/dashboard/staff-dashboard">
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
@@ -25,12 +25,23 @@
                     <div class="body">
                         <form [formGroup]="stdForm" (ngSubmit)="onSubmit()">
                             <div class="row">
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Company Name</mat-label>
                                         <input matInput formControlName="companyName" required>
                                         <mat-icon matSuffix>school</mat-icon>
                                         <mat-error *ngIf="stdForm.get('companyName').hasError('required')">
+                                            Please Add School Name
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Company Person Name</mat-label>
+                                        <input matInput formControlName="companyPersonName" required>
+                                        <mat-icon matSuffix>school</mat-icon>
+                                        <mat-error *ngIf="stdForm.get('companyPersonName').hasError('required')">
                                             Please Add School Name
                                         </mat-error>
                                     </mat-form-field>
@@ -124,7 +135,7 @@
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>District</mat-label>
                                         <span matPrefix>
-                                            <mat-icon class="mr-2">phone</mat-icon>
+                                            <mat-icon class="mr-2">location_city</mat-icon>
                                         </span>
                                         <input matInput formControlName="district" required>
                                         <mat-error *ngIf="stdForm.get('district').hasError('required')">
@@ -134,11 +145,15 @@
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Pan No</mat-label>
+                                        <mat-label>Pin Code</mat-label>
                                         <span matPrefix>
-                                            <mat-icon class="mr-2">phone</mat-icon>
+                                            <mat-icon class="mr-2">person_pin_circle</mat-icon>
                                         </span>
-                                        <input matInput formControlName="panNo">
+                                        <input matInput formControlName="pinCode" required>
+                                        <mat-error *ngIf="stdForm.get('pinCode').hasError('required')">
+                                            Please Add Pin Code
+                                        </mat-error>
+
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -174,17 +189,14 @@
                             <div class="row">
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Pin Code</mat-label>
+                                        <mat-label>Pan No</mat-label>
                                         <span matPrefix>
                                             <mat-icon class="mr-2">phone</mat-icon>
                                         </span>
-                                        <input matInput formControlName="pinCode" required>
-                                        <mat-error *ngIf="stdForm.get('pinCode').hasError('required')">
-                                            Please Add Pin Code
-                                        </mat-error>
-
+                                        <input matInput formControlName="panNo">
                                     </mat-form-field>
                                 </div>
+
                             </div>
                             <div class="row">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
@@ -203,14 +215,14 @@
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Bank Name</mat-label>
-                                        <mat-icon matSuffix>app_registration</mat-icon>
+                                        <mat-icon matSuffix>account_balance</mat-icon>
                                         <input matInput formControlName="bankName">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Account No.</mat-label>
-                                        <mat-icon matSuffix>app_registration</mat-icon>
+                                        <mat-icon matSuffix>account_balance</mat-icon>
                                         <input matInput formControlName="accountNo">
                                     </mat-form-field>
                                 </div>
@@ -219,7 +231,7 @@
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>IFSC</mat-label>
-                                        <mat-icon matSuffix>app_registration</mat-icon>
+                                        <mat-icon matSuffix>account_balance</mat-icon>
                                         <input matInput formControlName="ifsc">
                                     </mat-form-field>
                                 </div>
@@ -270,9 +282,70 @@
                                             more than 2
                                             MB.</mat-hint>
                                     </mat-form-field>
-
+                                    <img [src]='apiURL+companyModel.logoImg' (error)="updateCustomerUrl($event)"
+                                        width="100" height="60" alt="avatar" />
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Upload UPI</mat-label>
+                                        <ngx-mat-file-input accept="image/*" formControlName="upiImg">
+                                        </ngx-mat-file-input>
+                                        <mat-icon matSuffix>attachment</mat-icon>
+                                        <mat-error *ngIf="stdForm.get('upiImg').hasError('fileMinSize')">
+                                            File size exceeds than 2 MB
+                                        </mat-error>
+                                        <mat-hint style="color: red;font-size: 16px;"> File Size should not be exceed
+                                            more than 2
+                                            MB.</mat-hint>
+                                    </mat-form-field>
+
+                                </div>
+                                <img [src]='apiURL+companyModel.upiImg' (error)="updateCustomerUrl($event)" width="100"
+                                    height="60" alt="avatar" />
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Upload Sign</mat-label>
+                                        <ngx-mat-file-input accept="image/*" formControlName="signImg">
+                                        </ngx-mat-file-input>
+                                        <mat-icon matSuffix>attachment</mat-icon>
+                                        <mat-error *ngIf="stdForm.get('signImg').hasError('fileMinSize')">
+                                            File size exceeds than 2 MB
+                                        </mat-error>
+                                        <mat-hint style="color: red;font-size: 16px;"> File Size should not be exceed
+                                            more than 2
+                                            MB.</mat-hint>
+                                    </mat-form-field>
+
+                                </div>
+                                <img [src]='apiURL+companyModel.signImg' (error)="updateCustomerUrl($event)" width="100"
+                                    height="60" alt="avatar" />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Upload Sign With Stamp</mat-label>
+                                        <ngx-mat-file-input accept="image/*" formControlName="signWithStampImg">
+                                        </ngx-mat-file-input>
+                                        <mat-icon matSuffix>attachment</mat-icon>
+                                        <mat-error *ngIf="stdForm.get('signWithStampImg').hasError('fileMinSize')">
+                                            File size exceeds than 2 MB
+                                        </mat-error>
+                                        <mat-hint style="color: red;font-size: 16px;"> File Size should not be exceed
+                                            more than 2
+                                            MB.</mat-hint>
+                                    </mat-form-field>
+
+                                </div>
+                                <img [src]='apiURL+companyModel.signWithStampImg' (error)="updateCustomerUrl($event)" width="100"
+                                    height="60" alt="avatar" />
+                            </div>
+
                             <div class="row">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                     <mat-spinner-button [options]="spinnerButtonOptions" [disabled]="!stdForm.valid">

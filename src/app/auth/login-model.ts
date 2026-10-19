@@ -20,12 +20,12 @@ export class LoginResponseModel {
 export class LoginModel {
   id: number;
   name: string;
-  gender: number;
   dob: string;
   email: string;
   mobile: string;
   userType: number;
   uploadImg: string;
+  companyId: number;
 }
 
 export class LoginCustomerModel extends LoginModel {

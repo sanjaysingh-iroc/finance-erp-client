@@ -13,12 +13,6 @@ export class PaymentTypeModel {
 
 }
 
-export class GenderModel {
-  id: number;
-  name: string;
-}
-
-
 export class SettingModel {
   id: number;
   settingKey: string;
@@ -77,6 +71,13 @@ export class StateModel {
   countryId: number;
 }
 
+export class SerialKeyModel {
+  id?: number;
+  companyId: number;
+  serialKey: number;
+  sessionId: number;
+}
+
 export class FullName {
   id: number;
   short: string;
@@ -100,6 +101,8 @@ export class AttendanceDataModel {
 export class AttendanceDtoModel {
   startDate: string;
   endDate: string;
+  companyId: number;
+
   attendanceDates: AttendanceRequestModel[];
 }
 
