@@ -26,7 +26,7 @@
                     <div class="m-b-20">
                         <div class="contact-grid">
                             <div class="profile-header bg-dark">
-                                <div class="user-name">{{ customer.contactPersonName}}</div>
+                                <div class="user-name">{{ customer.name}}</div>
                             </div>
                             <img [src]='apiURL+customer.uploadImg' (error)="updateCustomerUrl($event, customer)"
                                 width="120" height="120" class="user-img" alt="avatar" />
@@ -110,7 +110,7 @@
                                                                     <th style="text-align: center;">Date</th>
                                                                     <th style="text-align: center;">Amount</th>
                                                                     <th style="color: #ff0000;text-align: center;">
-                                                                        Guarantor</th>
+                                                                        Associate</th>
                                                                     <th style="text-align: center;">Paid Amt</th>
                                                                     <th>EMI Amt</th>
                                                                     <th>Doc</th>
@@ -121,9 +121,9 @@
                                                                     <td>{{customerLoan.customerLoanName}}</td>
                                                                     <td>{{customerLoan.customerLoanDate}}</td>
                                                                     <td>{{customerLoan.amount}}</td>
-                                                                    <td>{{customerLoan.Guarantor}}
+                                                                    <td>{{customerLoan.Associate}}
                                                                         <br />
-                                                                        {{customerLoan.guarantorMobile}}
+                                                                        {{customerLoan.associateMobile}}
                                                                     </td>
 
                                                                     <td>{{(loanTotalPaidAmountMap.get(customerLoan.id)?loanTotalPaidAmountMap.get(customerLoan.id):0)}}
@@ -163,7 +163,7 @@
                                                                     <th style="text-align: center;">Date</th>
                                                                     <th style="text-align: center;">Amount</th>
                                                                     <th style="color: #ff0000;text-align: center;">
-                                                                        Guarantor</th>
+                                                                        Associate</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -171,7 +171,7 @@
                                                                     <td>{{customerLoan.customerLoanName}}</td>
                                                                     <td>{{customerLoan.customerLoanDate}}</td>
                                                                     <td>{{customerLoan.amount}}</td>
-                                                                    <td>{{customerLoan.guarantorName}}
+                                                                    <td>{{customerLoan.associateName}}
                                                                     </td>
                                                                 </tr>
                                                             </tbody>

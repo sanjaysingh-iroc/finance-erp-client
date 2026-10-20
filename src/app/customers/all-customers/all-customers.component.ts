@@ -30,7 +30,7 @@ export class AllCustomerComponent implements OnInit {
   displayedColumns = [
     'id',
     'name',
-    'contactPersonName',
+    'fatherName',
     'email',
     'mobile',
     'emergencyMobile',
@@ -85,7 +85,7 @@ export class AllCustomerComponent implements OnInit {
   }
 
   viewCustomerProfile(customer) {
-    this.router.navigateByUrl('finance/finance/customers/about-customer', { state: { customer: customer, action: 'view' } });
+    this.router.navigateByUrl('finance/customers/about-customer', { state: { customer: customer, action: 'view' } });
   }
 
   get data(): CustomerModel[] {
@@ -93,11 +93,11 @@ export class AllCustomerComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/customers/add-customer']);
+    this.router.navigate(['finance/customers/add-customer']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/customers/add-customer', { state: { customerModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/customers/add-customer', { state: { customerModel: row, action: 'edit' } });
   }
 
   updateCustomer(customer, id) {
@@ -183,7 +183,7 @@ export class AllCustomerComponent implements OnInit {
     this.dataChange = new BehaviorSubject<CustomerModel[]>([]);
     this.customerService.getAllCustomers(this.login.companyId).subscribe(
       data => {
-        data.sort((a, b) => a.contactPersonName.localeCompare(b.contactPersonName));
+        data.sort((a, b) => a.name.localeCompare(b.name));
         this.dataChange.next(data);
       }
     );
@@ -241,7 +241,7 @@ export class ExampleDataSource extends DataSource<CustomerModel> {
           .slice()
           .filter((customer: CustomerModel) => {
             const searchStr = (
-              customer.contactPersonName +
+              customer.name +
               customer.mobile
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
@@ -269,7 +269,7 @@ export class ExampleDataSource extends DataSource<CustomerModel> {
       let propertyB: number | string = '';
       switch (this._sort.active) {
         case 'name':
-          [propertyA, propertyB] = [a.contactPersonName, b.contactPersonName];
+          [propertyA, propertyB] = [a.name, b.name];
           break;
         case 'mobile':
           [propertyA, propertyB] = [a.mobile, b.mobile];

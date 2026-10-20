@@ -13,8 +13,8 @@ import {
   ApexYAxis,
   ChartComponent
 } from 'ng-apexcharts';
-import { AnnouncementModel } from '../../announcement/announcement.model';
-import { AnnouncementService } from '../../announcement/announcement.service';
+import { TaskModel } from '../../task/task.model';
+import { TaskService } from '../../task/task.service';
 import { monthMap, settings, weekMap } from '../../demo/data';
 import { FullName, SettingModel } from '../../shared/common.models';
 import { LocalStorageData } from '../../shared/local-storage-data';
@@ -58,7 +58,7 @@ export class MainDashBoardComponent implements OnInit {
   @ViewChild('chart') chart: ChartComponent;
 
   birthdayStaff: StaffModel[] = [];
-  announcementList: AnnouncementModel[] = [];
+  taskList: TaskModel[] = [];
 
   apiURL: string = environment.apiUrl;
   weekMap: Map<number, FullName> = weekMap;
@@ -107,7 +107,7 @@ export class MainDashBoardComponent implements OnInit {
   constructor(
     private staffService: StaffService,
     private utilsService: UtilsService,
-    private announcementService: AnnouncementService,
+    private taskService: TaskService,
     private dashboardService: DashboardService,
     private localStorageData: LocalStorageData,
   ) { }
@@ -153,8 +153,8 @@ export class MainDashBoardComponent implements OnInit {
     }
 
     if (this.login.userType == 1 || this.dashboardAclModels.indexOf(12) > -1) {
-      this.announcementService.getAllActiveAnnouncements(this.login.companyId).subscribe(data => {
-        this.announcementList = data;
+      this.taskService.getAllActiveTasks(this.login.companyId).subscribe(data => {
+        this.taskList = data;
       });
     }
 

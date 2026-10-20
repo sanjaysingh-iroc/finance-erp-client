@@ -23,9 +23,9 @@ const routes: Routes = [{
         .then(m => m.CompanyDetailsModule),
     },
     {
-      path: 'announcement',
-      loadChildren: () => import('../announcement/announcement.module')
-        .then(m => m.AnnouncementModule),
+      path: 'task',
+      loadChildren: () => import('../task/task.module')
+        .then(m => m.TaskModule),
     },
 
     {
@@ -50,7 +50,11 @@ const routes: Routes = [{
       loadChildren: () => import('../staff/staff.module')
         .then(m => m.StaffModule),
     },
-
+    {
+      path: 'associates',
+      loadChildren: () => import('../associate/associate.module')
+        .then(m => m.AssociateModule),
+    },
     {
       path: 'error',
       loadChildren: () => import('../error-pages/error-pages.module')

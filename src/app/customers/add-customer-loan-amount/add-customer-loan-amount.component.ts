@@ -131,7 +131,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
 
       this.selectedCustomer = this.customerMap.get(this.customerLoanAmountModel.customerId);
 
-      this.customers.sort((a, b) => a.contactPersonName.localeCompare(b.contactPersonName));
+      this.customers.sort((a, b) => a.name.localeCompare(b.name));
       this.filteredOptions = this.customerDetails.valueChanges.pipe(
         startWith<any>({ id: 0, name: "" }),
         map(value => (value == null || typeof value == "string" ? value : value.name)),
@@ -139,7 +139,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
       );
       if (this.action == 'edit') {
 
-        this.customerDetails.setValue({ name: this.customerMap.get(this.customerLoanAmountModel.customerId)?.contactPersonName });
+        this.customerDetails.setValue({ name: this.customerMap.get(this.customerLoanAmountModel.customerId)?.name });
 
       }
     });
@@ -182,7 +182,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
   private _filter(name: string): CustomerModel[] {
     const filterValue = name.toLowerCase();
     return this.customers.filter(
-      option => option.contactPersonName.toLowerCase().indexOf(filterValue) == 0
+      option => option.name.toLowerCase().indexOf(filterValue) == 0
     );
   }
 

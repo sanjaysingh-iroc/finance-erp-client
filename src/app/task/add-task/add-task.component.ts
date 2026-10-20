@@ -3,9 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { AnnouncementService } from '../../announcement/announcement.service';
+import { TaskService } from '../../task/task.service';
 import { settings } from '../../demo/data';
-import { AnnouncementModel } from '../announcement.model';
+import { TaskModel } from '../task.model';
 import { CommonLayout } from '../../shared/shared-layout/share.layout';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { LoginModel } from '../../auth/login-model';
@@ -14,22 +14,22 @@ import { StaffService } from '../../staff/staff.service';
 import { StaffModel } from '../../staff/staff.model';
 
 @Component({
-  selector: 'app-add-announcement',
-  templateUrl: './add-announcement.component.html',
-  styleUrls: ['./add-announcement.component.css']
+  selector: 'app-add-task',
+  templateUrl: './add-task.component.html',
+  styleUrls: ['./add-task.component.css']
 })
-export class AddAnnouncementComponent implements OnInit {
+export class AddTaskComponent implements OnInit {
   action: string;
   dialogTitle: string = 'Add';
-  announcementModel: AnnouncementModel;
-  announcementForm: FormGroup;
+  taskModel: TaskModel;
+  taskForm: FormGroup;
   minDate: Date;
   spinnerButtonOptions: MatProgressButtonOptions;
   login: LoginModel;
   staffMap: Map<number, StaffModel> = new Map<number, StaffModel>();
 
   constructor(private fb: FormBuilder,
-    private announcementService: AnnouncementService,
+    private taskService: TaskService,
     private staffService: StaffService,
     private commonLayout: CommonLayout,
     private localStorageData: LocalStorageData,
@@ -48,31 +48,31 @@ export class AddAnnouncementComponent implements OnInit {
     });
 
     if (this.action === 'edit') {
-      this.announcementModel = history.state.announcementModel;
+      this.taskModel = history.state.taskModel;
       this.dialogTitle = 'Edit'
     } else {
-      this.announcementModel = new AnnouncementModel({});
-      this.announcementModel.createDate = formatDate(new Date, settings.SAVE_DATE_FORMAT, 'en');
+      this.taskModel = new TaskModel({});
+      this.taskModel.createDate = formatDate(new Date, settings.SAVE_DATE_FORMAT, 'en');
     }
 
-    this.announcementForm = this.fb.group({
-      staffId: [this.announcementModel.staffId, [Validators.required]],
-      message: [this.announcementModel.message, [Validators.required]],
-      createDate: [this.announcementModel.createDate, [Validators.required]],
+    this.taskForm = this.fb.group({
+      staffId: [this.taskModel.staffId, [Validators.required]],
+      message: [this.taskModel.message, [Validators.required]],
+      createDate: [this.taskModel.createDate, [Validators.required]],
     });
   }
 
   onSubmit() {
     this.spinnerButtonOptions.active = true;
-    const announcementModel: AnnouncementModel = new AnnouncementModel(this.announcementForm.value);
-    announcementModel.companyId = this.login.companyId;
+    const taskModel: TaskModel = new TaskModel(this.taskForm.value);
+    taskModel.companyId = this.login.companyId;
 
     if (this.action === 'edit') {
-      announcementModel.id = this.announcementModel.id;
+      taskModel.id = this.taskModel.id;
     }
 
-    this.announcementService.addNewAnnouncement(announcementModel).pipe(first()).subscribe(data => {
-      this.router.navigate(['finance/finance/announcement/all-announcement']);
+    this.taskService.addNewTask(taskModel).pipe(first()).subscribe(data => {
+      this.router.navigate(['finance/finance/task/all-task']);
     });
   }
 

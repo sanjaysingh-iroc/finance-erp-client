@@ -1,9 +1,7 @@
-import { formatDate } from '@angular/common';
-import { settings } from '../demo/data';
-
 export class CustomerModel {
   id: number;
-  contactPersonName: string;
+  name: string;
+  fatherName: string;
   email: string;
   mobile: string;
   emergencyMobile: string;
@@ -14,13 +12,17 @@ export class CustomerModel {
   district: string;
   countryId: number;
   stateId: number;
-  pinCode: string
-  uploadImg: string;
-  uploadDoc: string;
-  details: string;
+  pinCode: string;
+
 
   panNo: string;
   aadharNo: string;
+  details: string;
+  uploadImg: string;
+  uploadAdharDoc: string;
+  uploadPanDoc: string;
+
+
   createdBy: number;
   active: boolean;
 
@@ -28,7 +30,9 @@ export class CustomerModel {
     {
 
       this.id = formPersonalData.id;
-      this.contactPersonName = formPersonalData.contactPersonName || '';
+      this.name = formPersonalData.name || '';
+      this.fatherName = formPersonalData.fatherName || '';
+
       this.email = formPersonalData.email || '';
       this.mobile = formPersonalData.mobile || '';
       this.emergencyMobile = formPersonalData.emergencyMobile || '';
@@ -62,8 +66,8 @@ export class CustomerLoanModel {
   amount: number;
   interestAmount: number;
   emiAmount: number;
-  guarantorName: string;
-  guarantorMobile: string;
+  associateName: string;
+  associateMobile: string;
   companyId: number;
 
   comment: string;
@@ -80,8 +84,8 @@ export class CustomerLoanModel {
       this.amount = formData.amount || '';
       this.emiAmount = formData.emiAmount || 0;
       this.interestAmount = formData.interestAmount || 0;
-      this.guarantorName = formData.guarantorName || '';
-      this.guarantorMobile = formData.guarantorMobile || '';
+      this.associateName = formData.associateName || '';
+      this.associateMobile = formData.associateMobile || '';
 
       this.customerLoanName = formData.customerLoanName || '';
       this.comment = formData.comment || '';

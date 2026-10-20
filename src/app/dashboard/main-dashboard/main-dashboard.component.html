@@ -34,15 +34,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let announcement of announcementList">
+                  <tr *ngFor="let task of taskList">
                     <td>
-                      {{announcement.message}}
+                      {{task.message}}
                     </td>
                     <td>
-                      {{staffMap.get(announcement.staffId)?.name}}
+                      {{staffMap.get(task.staffId)?.name}}
                     </td>
                     <td>
-                      {{announcement.createDate | date: showDateFormat}}
+                      {{task.createDate | date: showDateFormat}}
                     </td>
                   </tr>
                 </tbody>
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="text-center">
-            <a routerLink="/finance/finance/announcement/all-announcement" class="b-b-primary text-primary"> View All
+            <a routerLink="/finance/finance/task/all-task" class="b-b-primary text-primary"> View All
               Posts</a>
           </div>
         </div>

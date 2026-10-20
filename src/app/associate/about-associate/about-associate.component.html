@@ -1,0 +1,93 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">associate Profile</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/finance/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a routerLink="/finance/finance/staff/all-staff">associate</a>
+                        </li>
+                        <li class="breadcrumb-item active">Profile</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Your content goes here  -->
+        <div class="row clearfix">
+            <div class="col-lg-4 col-md-12">
+                <div class="card">
+                    <div class="m-b-20">
+                        <div class="contact-grid">
+                            <div class="profile-header bg-dark">
+                                <div class="user-name">{{ associate.name}}</div>
+                            </div>
+                            <img [src]='apiURL+associate.uploadImg' (error)="updateAssociateUrl($event, associate)"
+                                width="120" height="120" class="user-img" alt="avatar" />
+                            <p>
+                                {{ associate.address}}
+                                <br />
+                            </p>
+                            <div>
+                                <span class="phone">
+                                    <i class="material-icons">phone</i>{{associate.mobile}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item m-l-10">
+                            <a class="nav-link active" data-toggle="tab" href="#about">About</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane body active" id="about">
+                            <ul class="list-group list-group-unbordered">
+                                <li class="list-group-item">
+                                    <b>Date Of Birth </b>
+                                    <div class="profile-desc-item pull-right">{{ associate.dob | date: showDateFormat}}
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Emergency Mobile </b>
+                                    <div class="profile-desc-item pull-right">{{ associate.emergencyMobile}}</div>
+                                </li>
+
+
+
+                            </ul>
+                            <small class="text-muted">Email address: </small>
+                            <p>{{associate.email}}</p>
+                            <hr>
+                            <small class="text-muted">Mobile: </small>
+                            <p>{{associate.mobile}}</p>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="card">
+                    <div class="profile-tab-box">
+                        <div class="p-l-20">
+                            <ul class="nav ">
+
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

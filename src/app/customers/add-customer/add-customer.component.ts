@@ -66,7 +66,8 @@ export class AddCustomerComponent {
     }
 
     this.customerPersonalForm = this.fb.group({
-      contactPersonName: [this.customerModel.contactPersonName],
+      name: [this.customerModel.name],
+      fatherName: [this.customerModel.fatherName],
       email: [this.customerModel.email, [Validators.email, Validators.minLength(5)]],
       mobile: [this.customerModel.mobile, [Validators.required, Validators.pattern("^[0-9]{10}$")]],
       emergencyMobile: [this.customerModel.emergencyMobile, [Validators.pattern("^[0-9]{10}$")]],
@@ -79,9 +80,10 @@ export class AddCustomerComponent {
       details: [this.customerModel.details],
       panNo: [this.customerModel.panNo],
       aadharNo: [this.customerModel.aadharNo],
-
       uploadImg: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
-      uploadDoc: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
+      uploadAdharDoc: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]],
+      uploadPanDoc: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
+
     });
 
     this.companyService.getCompanyDetails(this.login.companyId).pipe(first()).subscribe(companyModel => {
@@ -118,18 +120,21 @@ export class AddCustomerComponent {
 
   uploadAllDoc(customerData: CustomerModel) {
     const apiCalls = {
-      uploadDoc: this.uploadDoc(customerData.id, this.customerPersonalForm.value.uploadDoc),
+      uploadAdharDoc: this.uploadDoc(customerData.id, this.customerPersonalForm.value.uploadAdharDoc),
+      uploadPanDoc: this.uploadDoc(customerData.id, this.customerPersonalForm.value.uploadPanDoc),
       uploadImg: this.uploadDoc(customerData.id, this.customerPersonalForm.value.uploadImg),
 
     };
 
     forkJoin(apiCalls).subscribe({
       next: (results) => {
-        customerData.uploadDoc = (results as any).uploadDoc.fileDownloadUri ? (results as any).uploadDoc.fileDownloadUri : this.customerModel.uploadDoc;
+        customerData.uploadAdharDoc = (results as any).uploadAdharDoc.fileDownloadUri ? (results as any).uploadAdharDoc.fileDownloadUri : this.customerModel.uploadAdharDoc;
+        customerData.uploadPanDoc = (results as any).uploadPanDoc.fileDownloadUri ? (results as any).uploadPanDoc.fileDownloadUri : this.customerModel.uploadPanDoc;
+
         customerData.uploadImg = (results as any).uploadImg.fileDownloadUri ? (results as any).uploadImg.fileDownloadUri : this.customerModel.uploadImg;
 
         this.customerService.addNewCustomer(customerData).subscribe((customerData) => {
-          this.router.navigate(['finance/finance/customers/all-customers']);
+          this.router.navigate(['finance/customers/all-customers']);
 
         });
       },

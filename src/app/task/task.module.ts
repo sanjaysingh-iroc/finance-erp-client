@@ -18,16 +18,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { AddAnnouncementComponent } from './add-announcement/add-announcement.component';
-import { AllAnnouncementComponent } from './all-announcement/all-announcement.component';
-import { AnnouncementRoutingModule } from './announcement-routing.module';
+import { AddTaskComponent } from './add-task/add-task.component';
+import { AllTaskComponent } from './all-task/all-task.component';
+import { TaskRoutingModule } from './task-routing.module';
 import { CustomMaterialModule } from '../custom-material/custom-material.module';
 
 @NgModule({
-  declarations: [AddAnnouncementComponent, AllAnnouncementComponent],
+  declarations: [AddTaskComponent, AllTaskComponent],
   imports: [
     CommonModule,
-    AnnouncementRoutingModule,
+    TaskRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -51,4 +51,4 @@ import { CustomMaterialModule } from '../custom-material/custom-material.module'
 
   ]
 })
-export class AnnouncementModule { }
+export class TaskModule { }

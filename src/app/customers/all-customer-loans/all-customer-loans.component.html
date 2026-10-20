@@ -91,13 +91,13 @@
                                                 {{customerModelMap.get(row.customerId)?.location}}
                                             </mat-cell>
                                         </ng-container>
-                                        <ng-container matColumnDef="guarantor">
+                                        <ng-container matColumnDef="associate">
                                             <mat-header-cell *matHeaderCellDef
-                                                mat-sort-header>Guarantor</mat-header-cell>
+                                                mat-sort-header>Associate</mat-header-cell>
                                             <mat-cell *matCellDef="let row"
                                                 [ngStyle]="{'color': dayCalculate.get(row.customerId)>=alertNumber ? 'red' : 'black'}">
-                                                {{row.guarantorName}}<br />
-                                                {{row.guarantorMobile}}
+                                                {{row.associateName}}<br />
+                                                {{row.associateMobile}}
                                             </mat-cell>
                                         </ng-container>
                                         <ng-container matColumnDef="customerLoanDate">

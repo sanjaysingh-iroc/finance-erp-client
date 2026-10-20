@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AllAnnouncementComponent } from './all-announcement/all-announcement.component';
-import { AddAnnouncementComponent } from './add-announcement/add-announcement.component';
+import { AllTaskComponent } from './all-task/all-task.component';
+import { AddTaskComponent } from './add-task/add-task.component';
 import { AuthGuard } from '../auth/guards/auth-gaurd.component';
 import { LoginGuard } from '../auth/guards/login-gaurd.component';
 
@@ -11,13 +11,13 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'all-announcement',
-        component: AllAnnouncementComponent,
+        path: 'all-task',
+        component: AllTaskComponent,
         canActivate: [AuthGuard, LoginGuard]
       },
       {
-        path: 'add-announcement',
-        component: AddAnnouncementComponent,
+        path: 'add-task',
+        component: AddTaskComponent,
         canActivate: [AuthGuard, LoginGuard]
       }
     ]
@@ -28,4 +28,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AnnouncementRoutingModule { }
+export class TaskRoutingModule { }

@@ -260,7 +260,7 @@
 .ti-camera:before {
 	content: "\e64e";
 }
-.ti-announcement:before {
+.ti-task:before {
 	content: "\e64f";
 }
 .ti-brush:before {

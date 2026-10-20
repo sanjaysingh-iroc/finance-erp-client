@@ -12,7 +12,7 @@
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
-                            <a routerLink="/finance/finance/announcement/all-announcement">Task</a>
+                            <a routerLink="/finance/finance/task/all-task">Task</a>
                         </li>
                         <li class="breadcrumb-item active">{{dialogTitle}}</li>
                     </ul>
@@ -23,7 +23,7 @@
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="card">
                     <div class="body">
-                        <form class="m-4" [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
+                        <form class="m-4" [formGroup]="taskForm" (ngSubmit)="onSubmit()">
                             <div class="row">
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                                     <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -32,7 +32,7 @@
                                             [min]="minDate" disabled required>
                                         <mat-datepicker-toggle matSuffix [for]="rpicker"></mat-datepicker-toggle>
                                         <mat-datepicker #rpicker disabled="false"></mat-datepicker>
-                                        <mat-error *ngIf="announcementForm.get('createDate').hasError('required')">
+                                        <mat-error *ngIf="taskForm.get('createDate').hasError('required')">
                                             Please Select Date
                                         </mat-error>
                                     </mat-form-field>
@@ -46,7 +46,7 @@
                                                 {{recipient.value.name}}
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error *ngIf="announcementForm.get('staffId').hasError('required')">
+                                        <mat-error *ngIf="taskForm.get('staffId').hasError('required')">
                                             Please Select Agent
                                         </mat-error>
                                     </mat-form-field>
@@ -58,7 +58,7 @@
                                         <mat-label>Message</mat-label>
                                         <textarea matInput formControlName="message" rows="8" required></textarea>
                                         <mat-icon matSuffix>message</mat-icon>
-                                        <mat-error *ngIf="announcementForm.get('message').hasError('required')">
+                                        <mat-error *ngIf="taskForm.get('message').hasError('required')">
                                             Please Enter Message
                                         </mat-error>
                                     </mat-form-field>
@@ -66,8 +66,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
-                                    <mat-spinner-button [options]="spinnerButtonOptions"
-                                        [disabled]="!announcementForm.valid">
+                                    <mat-spinner-button [options]="spinnerButtonOptions" [disabled]="!taskForm.valid">
                                     </mat-spinner-button>
                                 </div>
                             </div>

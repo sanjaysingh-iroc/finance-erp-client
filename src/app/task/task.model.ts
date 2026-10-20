@@ -1,7 +1,7 @@
 import { formatDate } from '@angular/common';
 import { settings } from '../demo/data';
 
-export class AnnouncementModel {
+export class TaskModel {
   id: number;
   message: string;
   createDate: string;

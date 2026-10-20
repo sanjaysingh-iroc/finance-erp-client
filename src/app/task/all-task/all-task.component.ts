@@ -10,9 +10,9 @@ import { map } from 'rxjs/operators';
 import { ExcelExportService } from '../../shared/excelExport/excelExport-service';
 import { NotificationsService } from '../../shared/notifications-service';
 import { PdfService } from '../../shared/pdfServices/pdfExport';
-import { AnnouncementService } from '../../announcement/announcement.service';
+import { TaskService } from '../../task/task.service';
 import { DeleteDialogComponent } from '../../shared/dialog/delete/delete.component';
-import { AnnouncementModel } from '../announcement.model';
+import { TaskModel } from '../task.model';
 import { Router } from '@angular/router';
 import { settings } from '../../demo/data';
 import { formatDate } from '@angular/common';
@@ -22,11 +22,11 @@ import { StaffModel } from '../../staff/staff.model';
 import { StaffService } from '../../staff/staff.service';
 
 @Component({
-  selector: 'app-all-announcement',
-  templateUrl: './all-announcement.component.html',
-  styleUrls: ['./all-announcement.component.sass']
+  selector: 'app-all-task',
+  templateUrl: './all-task.component.html',
+  styleUrls: ['./all-task.component.sass']
 })
-export class AllAnnouncementComponent implements OnInit {
+export class AllTaskComponent implements OnInit {
 
   displayedColumns = [
     'message',
@@ -35,9 +35,9 @@ export class AllAnnouncementComponent implements OnInit {
     'actions'
   ];
   dataSource: ExampleDataSource | null;
-  selection = new SelectionModel<AnnouncementModel>(true, []);
-  announcementModel: AnnouncementModel | null;
-  dataChange: BehaviorSubject<AnnouncementModel[]> = new BehaviorSubject<AnnouncementModel[]>([]);
+  selection = new SelectionModel<TaskModel>(true, []);
+  taskModel: TaskModel | null;
+  dataChange: BehaviorSubject<TaskModel[]> = new BehaviorSubject<TaskModel[]>([]);
   showDateFormat: string = settings.SHOW_DATE_FORMAT;
   login: LoginModel;
   staffMap: Map<number, StaffModel> = new Map<number, StaffModel>();
@@ -45,7 +45,7 @@ export class AllAnnouncementComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private announcementService: AnnouncementService,
+    private taskService: TaskService,
     private notification: NotificationsService,
     private staffService: StaffService,
     private localStorageData: LocalStorageData,
@@ -73,11 +73,11 @@ export class AllAnnouncementComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/announcement/add-announcement']);
+    this.router.navigate(['finance/finance/task/add-task']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/announcement/add-announcement', { state: { announcementModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/finance/task/add-task', { state: { taskModel: row, action: 'edit' } });
   }
 
   deleteItem(row) {
@@ -88,7 +88,7 @@ export class AllAnnouncementComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result == 1) {
 
-        this.announcementService.deleteAnnouncement(id).subscribe(() => {
+        this.taskService.deleteTask(id).subscribe(() => {
           const foundIndex = this.dataChange.value.findIndex(
             (x) => x.id == id
           );
@@ -114,8 +114,8 @@ export class AllAnnouncementComponent implements OnInit {
   }
 
   public loadData() {
-    this.dataChange = new BehaviorSubject<AnnouncementModel[]>([]);
-    this.announcementService.getAllActiveAnnouncements(this.login.companyId).subscribe(
+    this.dataChange = new BehaviorSubject<TaskModel[]>([]);
+    this.taskService.getAllActiveTasks(this.login.companyId).subscribe(
       data => {
         this.dataChange.next(data);
       }
@@ -136,7 +136,7 @@ export class AllAnnouncementComponent implements OnInit {
 
 
 }
-export class ExampleDataSource extends DataSource<AnnouncementModel> {
+export class ExampleDataSource extends DataSource<TaskModel> {
   _filterChange = new BehaviorSubject('');
   get filter(): string {
     return this._filterChange.value;
@@ -144,10 +144,10 @@ export class ExampleDataSource extends DataSource<AnnouncementModel> {
   set filter(filter: string) {
     this._filterChange.next(filter);
   }
-  filteredData: AnnouncementModel[] = [];
-  renderedData: AnnouncementModel[] = [];
+  filteredData: TaskModel[] = [];
+  renderedData: TaskModel[] = [];
   constructor(
-    public dataChange: BehaviorSubject<AnnouncementModel[]>,
+    public dataChange: BehaviorSubject<TaskModel[]>,
     public _paginator: MatPaginator,
     public _sort: MatSort
   ) {
@@ -156,12 +156,12 @@ export class ExampleDataSource extends DataSource<AnnouncementModel> {
     this._filterChange.subscribe(() => (this._paginator.pageIndex = 0));
   }
 
-  get data(): AnnouncementModel[] {
+  get data(): TaskModel[] {
     return this.dataChange.value;
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<AnnouncementModel[]> {
+  connect(): Observable<TaskModel[]> {
     // Listen for any changes in the base data, sorting, filtering, or pagination
     const displayDataChanges = [
       this.dataChange,
@@ -174,10 +174,10 @@ export class ExampleDataSource extends DataSource<AnnouncementModel> {
         // Filter data
         this.filteredData = this.data
           .slice()
-          .filter((announcementModel: AnnouncementModel) => {
+          .filter((taskModel: TaskModel) => {
             const searchStr = (
-              announcementModel.message +
-              announcementModel.createDate
+              taskModel.message +
+              taskModel.createDate
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
           });
@@ -195,7 +195,7 @@ export class ExampleDataSource extends DataSource<AnnouncementModel> {
   }
   disconnect() { }
   /** Returns a sorted copy of the database data. */
-  sortData(data: AnnouncementModel[]): AnnouncementModel[] {
+  sortData(data: TaskModel[]): TaskModel[] {
     if (!this._sort.active || this._sort.direction == '') {
       return data;
     }

@@ -87,7 +87,7 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
       if (customerList.length > 0) {
         this.customerService.getAllCustomersByIds(customerList).subscribe(data => {
           data.forEach(customerModel => {
-            this.customerModelMap.set(customerModel.id, customerModel.contactPersonName);
+            this.customerModelMap.set(customerModel.id, customerModel.name);
           });
           this.customerMapChange.next(this.customerModelMap);
 

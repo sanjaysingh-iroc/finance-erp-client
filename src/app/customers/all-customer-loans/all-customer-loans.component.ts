@@ -25,7 +25,7 @@ export class AllCustomerLoanComponent implements OnInit {
   displayedColumns = [
     'customerLoanName',
     'customerId',
-    'guarantor',
+    'associate',
     'customerLoanDate',
     'amount',
     'totalPendingAmount',
@@ -273,7 +273,7 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
             const searchStr = (
               customer.customerLoanName.toLowerCase() +
               invoiceMap.get(customer.invoiceId)?.toLowerCase() +
-              customerMapChange.get(customer.customerId)?.contactPersonName.toLowerCase()
+              customerMapChange.get(customer.customerId)?.name.toLowerCase()
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
           });
@@ -306,7 +306,7 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
           [propertyA, propertyB] = [invoiceMap.get(a.invoiceId)?.toLowerCase(), invoiceMap.get(b.invoiceId)?.toLowerCase()];
           break;
         case 'customerId':
-          [propertyA, propertyB] = [customerMapChange.get(a.customerId)?.contactPersonName.toLowerCase(), customerMapChange.get(b.customerId)?.contactPersonName.toLowerCase()];
+          [propertyA, propertyB] = [customerMapChange.get(a.customerId)?.name.toLowerCase(), customerMapChange.get(b.customerId)?.name.toLowerCase()];
           break;
         case 'amount':
           [propertyA, propertyB] = [a.amount, b.amount];

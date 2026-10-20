@@ -26,13 +26,37 @@
 
                         <form [formGroup]="customerLoansForm" (ngSubmit)="onSubmit()">
                             <div class="row">
+
+                                <div class=" col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <input tab-directive type="text" matInput [formControl]="customerDetails"
+                                            [matAutocomplete]="auto" required>
+                                        <mat-label>Customer Name</mat-label>
+                                        <mat-icon matSuffix>account_circle</mat-icon>
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                            autoActiveFirstOption="true"
+                                            (optionSelected)='getCustomer($event.option.value)'>
+                                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                {{option.name+ ' S/O '+option.fatherName}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="customerDetails.errors?.required">
+                                            Please Select Customer
+                                        </mat-error>
+                                        <mat-error *ngIf="customerDetails.hasError('forbiddenNames')">
+                                            Please Select Customer from choosen List.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+
+
                                 <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Customer Name</mat-label>
                                         <span matPrefix>
                                             <mat-icon class="mr-2">phone</mat-icon>
                                         </span>
-                                        <input matInput value="{{selectedCustomer.contactPersonName}}" readonly>
+                                        <input matInput value="{{selectedCustomer.name}}" readonly>
 
                                     </mat-form-field>
                                 </div>
@@ -60,15 +84,6 @@
                                             *ngIf="customerLoansForm.get('customerLoanDate').hasError('required')">
                                             Please select date
                                         </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div class=" col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                    <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Loan Amount</mat-label>
-                                        <input matInput [formControl]="maxLoanAmountControl" readonly>
-                                        <mat-icon matSuffix>currency_rupee</mat-icon>
-                                        <mat-hint align="start"><b>{{amountInWords[0]}}</b></mat-hint>
-
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -118,16 +133,16 @@
                             <div class="row">
                                 <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Guarantor Name</mat-label>
-                                        <input matInput formControlName="guarantorName">
+                                        <mat-label>Associate Name</mat-label>
+                                        <input matInput formControlName="associateName">
                                         <mat-icon matSuffix>face</mat-icon>
                                     </mat-form-field>
                                 </div>
 
                                 <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Guarantor Mobile</mat-label>
-                                        <input matInput formControlName="guarantorMobile" mask="000-000-0000"
+                                        <mat-label>Associate Mobile</mat-label>
+                                        <input matInput formControlName="associateMobile" mask="000-000-0000"
                                             [showMaskTyped]="true">
                                         <mat-icon matSuffix>face</mat-icon>
                                     </mat-form-field>
