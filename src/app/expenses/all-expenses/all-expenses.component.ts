@@ -76,11 +76,11 @@ export class AllExpensesComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/expenses/add-expenses']);
+    this.router.navigate(['finance/expenses/add-expenses']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/expenses/add-expenses', { state: { expensesModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/expenses/add-expenses', { state: { expensesModel: row, action: 'edit' } });
   }
 
   deleteItem(row) {

@@ -131,7 +131,7 @@ export class AddExpensesComponent implements OnInit {
         expensesModel.uploadDocument = (results as any).uploadDocument.fileDownloadUri ? (results as any).uploadDocument.fileDownloadUri : this.expensesModel.uploadDocument;
 
         this.expensesService.addNewExpenses(expensesModel).pipe(first()).subscribe(data => {
-          this.router.navigate(['finance/finance/expenses/all-expenses']);
+          this.router.navigate(['finance/expenses/all-expenses']);
         });
       },
       error: (err) => console.error('One or more requests failed:', err)

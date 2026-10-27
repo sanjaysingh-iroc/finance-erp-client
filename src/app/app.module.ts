@@ -24,6 +24,7 @@ import { HeaderInterceptor } from './shared/request/HeaderInterceptor';
 import { RightSidebarService } from './shared/services/rightsidebar.service';
 import { CustomMaterialModule } from './custom-material/custom-material.module';
 import { DeleteDialogComponent } from './shared/dialog/delete/delete.component';
+import { ApproveDialogComponent } from './shared/dialog/approve/approve.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   wheelPropagation: true,
@@ -32,7 +33,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 @NgModule({
   declarations: [
     AppComponent,
-    DeleteDialogComponent
+    DeleteDialogComponent,
+    ApproveDialogComponent
   ],
   imports: [
     BrowserModule,

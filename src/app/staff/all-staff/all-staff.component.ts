@@ -86,7 +86,7 @@ export class AllstaffComponent implements OnInit {
   }
 
   viewStaffProfile(staff) {
-    this.router.navigateByUrl('finance/finance/staff/about-staff', { state: { staff: staff, action: 'view' } });
+    this.router.navigateByUrl('finance/staff/about-staff', { state: { staff: staff, action: 'view' } });
   }
 
   get data(): StaffModel[] {
@@ -94,11 +94,11 @@ export class AllstaffComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/staff/add-staff']);
+    this.router.navigate(['finance/staff/add-staff']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/staff/add-staff', { state: { staffModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/staff/add-staff', { state: { staffModel: row, action: 'edit' } });
   }
 
   updateStaff(staff, id) {

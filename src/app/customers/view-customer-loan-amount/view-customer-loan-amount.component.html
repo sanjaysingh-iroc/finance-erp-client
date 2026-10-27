@@ -60,6 +60,16 @@
                                                             class="browser-default search-field"
                                                             aria-label="Search box">
                                                     </li>
+                                                    <li>
+                                                        <div class="icon-button-demo m-l-10"
+                                                            [hidden]=!selection.hasValue()>
+                                                            <button mat-mini-fab color="accent"
+                                                                (click)="approveSelectedRows()">
+                                                                <mat-icon class="col-white">done_outline
+                                                                </mat-icon>
+                                                            </button>
+                                                        </div>
+                                                    </li>
                                                 </ul>
                                             </div>
                                             <div class="col-4">
@@ -83,6 +93,23 @@
                                         </div>
                                     </div>
                                     <mat-table #table [dataSource]="dataSource" matSort class="mat-cell">
+                                        <ng-container matColumnDef="select">
+                                            <mat-header-cell *matHeaderCellDef [ngClass]="'tbl-col-width-per-6'">
+                                                <mat-checkbox (change)="$event ? masterToggle($event) : null"
+                                                    [checked]="selection.hasValue() && isAllSelected()"
+                                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                                    [ngClass]="'tbl-checkbox'">
+                                                </mat-checkbox>
+                                            </mat-header-cell>
+                                            <mat-cell *matCellDef="let row" [ngClass]="'tbl-col-width-per-6'">
+                                                <mat-checkbox (click)="$event.stopPropagation()"
+                                                    [disabled]="row.approved"
+                                                    (change)="$event ? selection.toggle(row) : null"
+                                                    [checked]="selection.isSelected(row)" [ngClass]="'tbl-checkbox'">
+                                                </mat-checkbox>
+                                            </mat-cell>
+                                        </ng-container>
+                                        <!-- ID Column -->
                                         <ng-container matColumnDef="id">
                                             <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
                                             <mat-cell *matCellDef="let row">{{row.id}}</mat-cell>

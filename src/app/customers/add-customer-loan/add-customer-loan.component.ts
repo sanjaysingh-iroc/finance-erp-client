@@ -15,6 +15,10 @@ import { Utils } from '../../shared/util-class';
 import { LoginModel } from '../../auth/login-model';
 import { environment } from '@environments/environment';
 import { Observable } from 'rxjs';
+import { AssociateModel } from '../../associate/associate.model';
+import { AssociateService } from '../../associate/associate.service';
+import { UtilsService } from '../../shared/services/utils.service';
+import { GroupModel, PaymentFrequencyModel } from '../../shared/common.models';
 
 
 @Component({
@@ -42,10 +46,29 @@ export class AddCustomerLoanComponent implements OnInit {
   customers: CustomerModel[] = [];
   filteredOptions: Observable<CustomerModel[]>;
 
+
+  selectedAssociate: AssociateModel = new AssociateModel({});
+
+  associateDetails = new FormControl(null, [
+    Validators.required,
+    this.associateForbiddenNamesValidator()
+  ]);
+  associates: AssociateModel[] = [];
+  associateFilteredOptions: Observable<AssociateModel[]>;
+
+
+  minDate: Date;
+  maxDate: Date;
+
+  paymentFrequencyModels: PaymentFrequencyModel[] = [];
+  groupModels: GroupModel[] = [];
+
   constructor(private fb: FormBuilder,
     private customerService: CustomerService,
+    private associateService: AssociateService,
     private compressImage: CompressImageService,
     public utils: Utils,
+    private utilsService: UtilsService,
 
     private commonLayout: CommonLayout,
     private localStorageData: LocalStorageData,
@@ -57,34 +80,55 @@ export class AddCustomerLoanComponent implements OnInit {
     this.spinnerButtonOptions = this.commonLayout.getprogressButton();
     this.session = this.localStorageData.sessionValue;
 
+    this.maxDate = new Date();
+    this.minDate = new Date(this.session.fromDate);
+
     this.action = history.state.action;
     if (this.action == 'edit') {
+      this.selectedCustomer = history.state.customer;
       this.customerLoanModel = history.state.customerLoanModel;
       this.dialogTitle = 'Edit';
 
-      this.customerDetails.setValue({ name: this.selectedCustomer.name });
+
+      // this.customerDetails.setValue({ name: this.selectedCustomer.name + ' S/O ' + this.selectedCustomer.fatherName });
+      // this.associateDetails.setValue({ name: this.selectedAssociate.name });
 
     } else {
       this.customerLoanModel = new CustomerLoanModel({});
-      this.customerLoanModel.customerLoanDate = formatDate(new Date, settings.SAVE_DATE_FORMAT, 'en');
+      this.customerLoanModel.loanDate = formatDate(new Date, settings.SAVE_DATE_FORMAT, 'en');
     }
 
-    this.customerLoansForm = this.fb.group({
-      customerLoanDate: [this.customerLoanModel.customerLoanDate, [Validators.required]],
+    this.utilsService.getAllPaymentFrequency().subscribe(data => {
+      this.paymentFrequencyModels = data;
 
-      amount: [this.customerLoanModel.amount, [Validators.required, Validators.min(0)]],
-      interestAmount: [this.customerLoanModel.interestAmount, [Validators.required, Validators.min(0)]],
-      emiAmount: [this.customerLoanModel.emiAmount, [Validators.required, Validators.min(0)]],
-      associateName: [this.customerLoanModel.associateName],
-      associateMobile: [this.customerLoanModel.associateMobile],
+    });
+
+    this.utilsService.getAllGroupDetails().subscribe(data => {
+      this.groupModels = data;
+
+    });
+
+    this.customerLoansForm = this.fb.group({
+      customerDetails: this.customerDetails,
+      loanDate: [this.customerLoanModel.loanDate],
+
+      groupId: [this.customerLoanModel.groupId, [Validators.required]],
+      fosId: [this.customerLoanModel.fosId, [Validators.required]],
+
+      lendedAmount: [this.customerLoanModel.lendedAmount, [Validators.required]],
+      refundableAmount: [this.customerLoanModel.refundableAmount, [Validators.required]],
+      fileChargeAmount: [this.customerLoanModel.fileChargeAmount, [Validators.required]],
+      installmentAmount: [this.customerLoanModel.installmentAmount, [Validators.required]],
+      duration: [this.customerLoanModel.duration, [Validators.required]],
+      associateDetails: this.associateDetails,
       comment: [this.customerLoanModel.comment],
       uploadDoc: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
 
     });
 
     this.customerService.getAllCustomers(this.login.companyId).subscribe(data => {
-      console.log(data);
       this.customerDetails.reset(null);
+
       this.customers = [];
       data.forEach(customer => {
         if (customer.active) {
@@ -101,16 +145,42 @@ export class AddCustomerLoanComponent implements OnInit {
       );
 
       if (this.action == 'edit') {
-        this.customerDetails.setValue({ name: this.selectedCustomer.name });
+        this.customerDetails.setValue(this.selectedCustomer);
       }
     });
 
+    this.associateService.getAllActiveAssociates(this.login.companyId).subscribe(data => {
+      this.associateDetails.reset(null);
+
+      this.associates = [];
+      data.forEach(customer => {
+        if (customer.active) {
+          this.associates.push(customer);
+          if (this.action == 'edit' && customer.id == this.customerLoanModel.associateId) {
+            this.selectedAssociate = customer;
+            this.associateDetails.setValue(this.selectedAssociate);
+          }
+        }
+      });
+
+      this.associates.sort((a, b) => a.name.localeCompare(b.name));
+      this.associateFilteredOptions = this.associateDetails.valueChanges.pipe(
+        startWith<any>({ id: 0, name: "" }),
+        map(value => (value == null || typeof value == "string" ? value : value.name)),
+        map(name => (name ? this.associate_filter(name) : this.associates.slice()))
+      );
+
+      // if (this.action == 'edit') {
+      //   this.associateDetails.setValue(this.selectedAssociate);
+      // }
+    });
 
   }
 
   updateCustomerUrl(event) {
     event.target.src = 'assets/images/blank_image.png';
   }
+
   forbiddenNamesValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
       if (typeof control.value == 'string') {
@@ -131,12 +201,32 @@ export class AddCustomerLoanComponent implements OnInit {
     );
   }
 
+  associateForbiddenNamesValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      if (typeof control.value == 'string') {
+        return { forbiddenNames: { value: control.value } };
+      }
+      return null;
+    };
+  }
+
+  associateDisplayFn(user: any): string {
+    return user ? user.name + ' S/O ' + user.fatherName : '';
+  }
+
+  private associate_filter(name: string): AssociateModel[] {
+    const filterValue = name.toLowerCase();
+    return this.customers.filter(
+      option => option.name.toLowerCase().indexOf(filterValue) == 0
+    );
+  }
+
   getCustomer(value) {
     this.selectedCustomer = value;
+  }
 
-
-    console.log(this.selectedCustomer);
-    // this.billForm.get('solarPanelId').setValue(this.selectedCustomer.solarProductId);
+  getAssociate(value) {
+    this.selectedAssociate = value;
   }
 
   convertAmtInWords(index: number, event) {
@@ -149,30 +239,29 @@ export class AddCustomerLoanComponent implements OnInit {
   }
 
   onSubmit() {
-    this.customerService.getMaxCustomerLoanId(this.login.companyId).subscribe(data => {
-      const loanName: string = 'LOAN/' + this.session.name + '/' + this.utils.formatToThreeDigits(data + 1, 3, '0')
-      this.addNewCustomerLoanModel(loanName);
-    });
+    this.addNewCustomerLoanModel();
   }
 
-  addNewCustomerLoanModel(loanName: string) {
+  addNewCustomerLoanModel() {
     const login = this.localStorageData.userValue;
 
     const customerLoansModel: CustomerLoanModel = new CustomerLoanModel(this.customerLoansForm.value);
     customerLoansModel.companyId = this.login.companyId;
 
     customerLoansModel.customerId = this.selectedCustomer.id;
-    customerLoansModel.customerLoanDate = formatDate(this.customerLoansForm.get("customerLoanDate").value, settings.SAVE_DATE_FORMAT, 'en');
+    customerLoansModel.associateId = this.selectedAssociate.id;
+    // customerLoansModel.fosId = this.selectedCustomer.id;
+
+    customerLoansModel.loanDate = formatDate(this.customerLoansForm.get("loanDate").value, settings.SAVE_DATE_FORMAT, 'en');
     customerLoansModel.createdBy = login.id;
 
     if (this.action == 'edit') {
       customerLoansModel.id = this.customerLoanModel.id;
-      customerLoansModel.customerLoanName = this.customerLoanModel.customerLoanName;
-    } else {
-      customerLoansModel.customerLoanName = loanName;
     }
+
+
     this.customerService.addNewCustomerLoan(customerLoansModel).subscribe((data) => {
-      this.router.navigate(['finance/finance/customers/all-customer-loans']);
+      this.router.navigate(['finance/customers/all-customer-loans']);
     });
 
   }

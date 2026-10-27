@@ -13,6 +13,18 @@ export class PaymentTypeModel {
 
 }
 
+export class PaymentFrequencyModel {
+  id: number;
+  name: string;
+}
+
+export class GroupModel {
+  id: number;
+  name: string;
+  companyId: number;
+
+}
+
 export class SettingModel {
   id: number;
   settingKey: string;
@@ -20,22 +32,6 @@ export class SettingModel {
 }
 
 
-export class ProductCategoryModel {
-  id: number;
-  name: string;
-  gstPercentage: number;
-
-}
-
-export class ProductBrandModel {
-  id: number;
-  name: string;
-}
-
-export class BrandModel {
-  id: number;
-  name: string;
-}
 export class UserTypeModel {
   id: number;
   name: string;
@@ -110,12 +106,3 @@ export class AttendanceRequestModel {
   ids: number[];
   attendanceDate: string;
 }
-
-
-export class HsnCodeModel {
-  code: string;
-  amount: number;
-  gstPercentage: number;
-  taxableAmount: number;
-}
-

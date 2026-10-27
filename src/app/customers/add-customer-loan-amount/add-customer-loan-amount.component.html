@@ -12,7 +12,7 @@
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
-                            <a routerLink="/finance/finance/customers/all-customer-loans">Customer Loan Amount</a>
+                            <a routerLink="/finance/customers/all-customer-loans">Customer Loan Amount</a>
                         </li>
                         <li class="breadcrumb-item active">{{dialogTitle}}</li>
                     </ul>
@@ -37,7 +37,7 @@
                                             (optionSelected)='getCustomer($event.option.value)'>
                                             <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                                                 {{
-                                                option.name}}
+                                                option.name + ' S/O '+option.fatherName}}
                                             </mat-option>
                                         </mat-autocomplete>
                                         <mat-error *ngIf="customerDetails.errors?.required">
@@ -50,13 +50,12 @@
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Loan Name</mat-label>
-
+                                        <mat-label>Card Number</mat-label>
                                         <mat-select formControlName="loanId"
                                             (selectionChange)="onCustomerLoanSelect($event)" required>
                                             <mat-option *ngFor="let customerLoanModel of allCustomerLoanModels"
                                                 [value]="customerLoanModel.id">
-                                                {{customerLoanModel.customerLoanName }}
+                                                {{customerLoanModel.id }}
                                             </mat-option>
                                         </mat-select>
                                         <mat-error *ngIf="customerLoansForm.get('loanId').hasError('required')">
@@ -80,7 +79,7 @@
                                 </div>
                                 <div class=" col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Amount</mat-label>
+                                        <mat-label>Amount To Recieve</mat-label>
                                         <input matInput formControlName="amount" type="number" min="1"
                                             (input)="onPriceChange($event)" required>
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
@@ -91,6 +90,21 @@
                                         </mat-error>
                                         <mat-error *ngIf="customerLoansForm.get('amount').hasError('notSame')">
                                             Amount Can not be grater than Pending Amount
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Payment Type</mat-label>
+                                        <mat-select formControlName="paymentMode" required>
+                                            <mat-option *ngFor="let recipient of paymentTypeMap | keyvalue"
+                                                [value]="recipient.value.id">
+                                                {{recipient.value.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="customerLoansForm.get('paymentMode').hasError('required')">
+                                            Select Payment Type
                                         </mat-error>
                                     </mat-form-field>
                                 </div>

@@ -97,6 +97,12 @@ export class CustomerService {
     return this.httpClient.post<CustomerLoanAmountModel>(`${environment.apiUrl}/customer/createCustomerLoanAmount`, customerLoanAmountModel);
   }
 
+  addAllNewCustomerLoanAmount(customerLoanAmountModel: CustomerLoanAmountModel[], depositDate: string, groupId: number): Observable<CustomerLoanAmountModel[]> {
+    let params = new HttpParams().append('depositDate', depositDate).append('groupId', groupId.toString());
+
+    return this.httpClient.post<CustomerLoanAmountModel[]>(`${environment.apiUrl}/customer/createAllCustomerLoanAmount`, customerLoanAmountModel, { params: params });
+  }
+
   public getAllCustomerLoanAmountDetails(companyId: number,): Observable<CustomerLoanAmountModel[]> {
     let params = new HttpParams().append('companyId', companyId.toString());
 
@@ -115,6 +121,11 @@ export class CustomerService {
     return this.httpClient.get<CustomerLoanAmountModel>(`${environment.apiUrl}/customer/approveCustomerLoanAmount`, { params: params });
   }
 
+  approveAllCustomerLoanAmount(id: string, staffId: number): Observable<CustomerLoanAmountModel> {
+    let params = new HttpParams().append('ids', id).append('staffId', staffId.toString());;
+    return this.httpClient.get<CustomerLoanAmountModel>(`${environment.apiUrl}/customer/approveAllLoanAmount`, { params: params });
+  }
+
   deleteCustomerLoanAmount(id: string): Observable<CustomerLoanAmountModel> {
     return this.httpClient.delete<CustomerLoanAmountModel>(`${environment.apiUrl}/customer/deleteCustomerLoanAmount/${id}`);
   }
@@ -123,6 +134,21 @@ export class CustomerService {
     let params = new HttpParams().append('companyId', companyId.toString());
 
     return this.httpClient.get<CustomerLoanAmountModel[]>(`${environment.apiUrl}/customer/getCustomerLoanByLastDeposit`, { params: params });
+  }
+
+  public getCustomerLoansByDate(companyId: number, depositDate: string): Observable<any[]> {
+    let params = new HttpParams().append('companyId', companyId.toString()).append('depositDate', depositDate);
+    return this.httpClient.get<any[]>(`${environment.apiUrl}/customer/getCustomerLoansByDate`, { params: params });
+  }
+
+  public getCustomerLoansByGroupAndDate(companyId: number, depositDate: string, groupId: number): Observable<any[]> {
+    let params = new HttpParams().append('companyId', companyId.toString()).append('depositDate', depositDate).append('groupId', groupId.toString());
+    return this.httpClient.get<any[]>(`${environment.apiUrl}/customer/getCustomerLoansByGroupAndDate`, { params: params });
+  }
+
+  public getAllLoanAmountByDepositDate(companyId: number, depositDate: string, groupId: number): Observable<CustomerLoanAmountModel[]> {
+    let params = new HttpParams().append('companyId', companyId.toString()).append('depositDate', depositDate.toString()).append('groupId', groupId.toString());
+    return this.httpClient.get<CustomerLoanAmountModel[]>(`${environment.apiUrl}/customer/getAllLoanAmountByDepositDate`, { params: params });
   }
 
 }

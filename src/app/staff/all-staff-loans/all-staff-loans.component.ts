@@ -73,11 +73,11 @@ export class AllStaffLoanComponent implements OnInit {
 
 
   addNew() {
-    this.router.navigate(['finance/finance/staff/add-staff-loan']);
+    this.router.navigate(['finance/staff/add-staff-loan']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/staff/add-staff-loan', { state: { staffLoansModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/staff/add-staff-loan', { state: { staffLoansModel: row, action: 'edit' } });
   }
 
   deleteItem(row) {

@@ -3,7 +3,7 @@ import { CustomerService } from '../customer.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { CustomerLoanAmountModel } from '../customer.model';
-import { DataSource } from '@angular/cdk/collections';
+import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { BehaviorSubject, fromEvent, merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -18,6 +18,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LoginModel } from '../../auth/login-model';
 import { StaffService } from '../../staff/staff.service';
 import { StaffModel } from '../../staff/staff.model';
+import { formatDate } from '@angular/common';
+import { ApproveDialogComponent } from '../../shared/dialog/approve/approve.component';
 
 @Component({
   selector: 'app-view-customer-loan-amount',
@@ -26,7 +28,7 @@ import { StaffModel } from '../../staff/staff.model';
 })
 export class ViewCustomerLoanAmountComponent implements OnInit {
   displayedColumns = [
-    'id',
+    'select',
     'name',
     'loanName',
     'DepositDate',
@@ -39,13 +41,14 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
   dataChange: BehaviorSubject<CustomerLoanAmountModel[]> = new BehaviorSubject<CustomerLoanAmountModel[]>([]);
   showDateFormat: string;
   customerModelMap: Map<number, string> = new Map<number, string>();
-  loanModelMap: Map<number, string> = new Map<number, string>();
+  loanModelMap: Map<number, number> = new Map<number, number>();
   customerId = new FormControl('');
   allCustomerLoanAmountModels: CustomerLoanAmountModel[];
   login: LoginModel;
   staffMap: Map<number, StaffModel> = new Map<number, StaffModel>();
   customerMapChange: BehaviorSubject<Map<number, string>> = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
-  loanMapChange: BehaviorSubject<Map<number, string>> = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
+  loanMapChange: BehaviorSubject<Map<number, number>> = new BehaviorSubject<Map<number, number>>(new Map<number, number>());
+  selection = new SelectionModel<CustomerLoanAmountModel>(true, []);
 
   constructor(
     private dialog: MatDialog,
@@ -66,7 +69,7 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
 
   ngOnInit() {
     this.customerMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
-    this.loanMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
+    this.loanMapChange = new BehaviorSubject<Map<number, number>>(new Map<number, number>());
 
     this.showDateFormat = settings.SHOW_DATE_FORMAT;
     this.login = this.localStorageData.userValue;
@@ -78,7 +81,7 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
       const customerList: number[] = [];
       data.forEach(loanModel => {
         customerList.push(loanModel.customerId);
-        this.loanModelMap.set(loanModel.id, loanModel.customerLoanName);
+        this.loanModelMap.set(loanModel.id, loanModel.id);
 
       });
 
@@ -124,11 +127,56 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/customers/add-customer-loan-amount']);
+    this.router.navigate(['finance/customers/add-customer-loan-amount']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/customers/add-customer-loan-amount', { state: { customerLoanAmountModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/customers/add-customer-loan-amount', { state: { customerLoanAmountModel: row, action: 'edit' } });
+  }
+
+  isAllSelected() {
+    let numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.renderedData.length;
+    this.dataSource.renderedData.forEach((row) => {
+      if (row.approved) {
+        numSelected++;
+      }
+    });
+    return numSelected == numRows;
+  }
+
+  masterToggle(event) {
+
+    if (event.checked) {
+      this.dataSource.renderedData.forEach((row) => {
+        if (!row.approved) {
+          this.selection.select(row);
+        }
+
+      });
+    } else {
+      this.selection.clear();
+    }
+  }
+
+  approveSelectedRows() {
+    const dialogRef = this.dialog.open(ApproveDialogComponent);
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const ids = [];
+        this.selection.selected.forEach((item) => {
+          ids.push(item.id);
+        });
+        this.customerService.approveAllCustomerLoanAmount(ids.toString(), this.login.id).subscribe(() => {
+          this.selection = new SelectionModel<CustomerLoanAmountModel>(true, []);
+          this.loadData();
+          this.notification.showSuccessNotification(
+            ' All Selected Record Approved Successfully...!!!',
+            'bottom'
+          );
+        });
+      }
+    });
   }
 
   deleteItem(row) {
@@ -251,7 +299,7 @@ export class ExampleDataSource extends DataSource<CustomerLoanAmountModel> {
     public _paginator: MatPaginator,
     public _sort: MatSort,
     public dataChange1: BehaviorSubject<Map<number, string>>,
-    public dataChange2: BehaviorSubject<Map<number, string>>,
+    public dataChange2: BehaviorSubject<Map<number, number>>,
 
   ) {
     super();

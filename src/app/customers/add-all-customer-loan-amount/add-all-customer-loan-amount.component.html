@@ -1,0 +1,108 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">Assign Student Roll</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/pages/dashboard/staff-dashboard">
+                                <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-2">
+                            <a href="#" onClick="return false;">Students</a>
+                        </li>
+                        <li class="breadcrumb-item active">Assign Roll</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0px;">
+                <div class="card" style="margin-bottom: 0px;">
+                    <div class="body">
+
+                        <form [formGroup]="classForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Loan Date</mat-label>
+                                        <input matInput [matDatepicker]="picker1" formControlName="depositDate"
+                                            (dateChange)="onDateChange()" disabled required>
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Select Group</mat-label>
+                                        <mat-select formControlName="groupId" (selectionChange)="onDateChange()"
+                                            required>
+                                            <mat-option *ngFor="let recipient of groupModels" [value]="recipient.id">
+                                                {{recipient.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+
+                                </div>
+                            </div>
+                            <div formArrayName="students" class="tableBody table-responsive"
+                                style="position : relative; height: calc(100vh - 300px)" [perfectScrollbar]>
+
+
+                                <div *ngFor="let  student of studentFormArray.controls; let i = index">
+                                    <div class="row" [formGroup]="student">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Card ID</mat-label>
+                                                <input matInput formControlName="loanId" readonly>
+                                                <mat-icon matSuffix>class</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Client Name</mat-label>
+                                                <input matInput formControlName="name" readonly>
+                                                <mat-icon matSuffix>class</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Payment Type</mat-label>
+                                                <mat-select formControlName="paymentMode" required>
+                                                    <mat-option *ngFor="let recipient of paymentTypeMap | keyvalue"
+                                                        [value]="recipient.value.id">
+                                                        {{recipient.value.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Amount </mat-label>
+                                                <input matInput formControlName="amount" type="number"
+                                                    [readonly]="student.value.approved">
+                                                <mat-icon matSuffix>class</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-spinner-button [options]="spinnerButtonOptions" [disabled]="!classForm.valid">
+                                    </mat-spinner-button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

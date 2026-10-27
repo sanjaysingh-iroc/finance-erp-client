@@ -60,14 +60,19 @@ export class DeleteAll {
 export class CustomerLoanModel {
   id: number;
   customerId: number;
-  invoiceId: number;
-  customerLoanDate: string;
-  customerLoanName: string;
-  amount: number;
-  interestAmount: number;
-  emiAmount: number;
-  associateName: string;
-  associateMobile: string;
+  loanDate: string;
+
+  lendedAmount: number;
+  refundableAmount: number;
+  fileChargeAmount: number;
+  installmentAmount: number;
+
+  associateId: number;
+  fosId: number;
+
+  duration: number;
+  groupId: number;
+
   companyId: number;
 
   comment: string;
@@ -79,15 +84,16 @@ export class CustomerLoanModel {
   constructor(formData) {
     {
       this.id = formData.id;
-      this.invoiceId = formData.invoiceId || '';
-      this.customerLoanDate = formData.customerLoanDate || '';
-      this.amount = formData.amount || '';
-      this.emiAmount = formData.emiAmount || 0;
-      this.interestAmount = formData.interestAmount || 0;
-      this.associateName = formData.associateName || '';
-      this.associateMobile = formData.associateMobile || '';
+      this.loanDate = formData.loanDate || '';
+      this.lendedAmount = formData.lendedAmount || '';
+      this.refundableAmount = formData.refundableAmount || '';
+      this.fileChargeAmount = formData.fileChargeAmount || '';
+      this.installmentAmount = formData.installmentAmount || '';
+      this.fosId = formData.fosId || '';
 
-      this.customerLoanName = formData.customerLoanName || '';
+      this.duration = formData.duration || '';
+      this.groupId = formData.groupId || '';
+
       this.comment = formData.comment || '';
     }
   }
@@ -98,11 +104,12 @@ export class CustomerLoanAmountModel {
   customerId: number;
   loanId: number;
   depositDate: string;
+  paymentMode: number;
   amount: number;
   comment: string;
   createdBy: number;
   approvedBy: number;
-  isApproved: boolean;
+  approved: boolean;
   companyId: number;
 
   constructor(formData) {
@@ -112,6 +119,7 @@ export class CustomerLoanAmountModel {
       this.loanId = formData.loanId || '';
       this.depositDate = formData.depositDate || '';
       this.amount = formData.amount || '';
+      this.paymentMode = formData.paymentMode || '';
       this.comment = formData.comment || '';
     }
   }

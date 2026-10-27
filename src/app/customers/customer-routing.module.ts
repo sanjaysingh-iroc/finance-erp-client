@@ -9,6 +9,7 @@ import { AddCustomerLoanComponent } from './add-customer-loan/add-customer-loan.
 import { AllCustomerLoanComponent } from './all-customer-loans/all-customer-loans.component';
 import { AddCustomerLoanAmountComponent } from './add-customer-loan-amount/add-customer-loan-amount.component';
 import { ViewCustomerLoanAmountComponent } from './view-customer-loan-amount/view-customer-loan-amount.component';
+import { AddAllCustomerLoanAmountComponent } from './add-all-customer-loan-amount/add-all-customer-loan-amount.component';
 const routes: Routes = [
   {
     path: '',
@@ -34,17 +35,23 @@ const routes: Routes = [
         component: AddCustomerLoanComponent,
         canActivate: [AuthGuard, LoginGuard]
       },
-       {
+
+      {
+        path: 'add-all-customer-loan-amount',
+        component: AddAllCustomerLoanAmountComponent,
+        canActivate: [AuthGuard, LoginGuard]
+      },
+      {
         path: 'all-customer-loans',
         component: AllCustomerLoanComponent,
         canActivate: [AuthGuard, LoginGuard]
       },
-       {
+      {
         path: 'add-customer-loan-amount',
         component: AddCustomerLoanAmountComponent,
         canActivate: [AuthGuard, LoginGuard]
       },
-       {
+      {
         path: 'view-customer-loan-amount',
         component: ViewCustomerLoanAmountComponent,
         canActivate: [AuthGuard, LoginGuard]

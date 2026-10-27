@@ -51,16 +51,6 @@
                                                                         class="browser-default search-field"
                                                                         aria-label="Search box">
                                                                 </li>
-                                                                <li>
-                                                                    <div class="icon-button-demo m-l-10"
-                                                                        [hidden]=!selection.hasValue()>
-                                                                        <button mat-mini-fab color="warn"
-                                                                            (click)="removeSelectedRows()">
-                                                                            <mat-icon class="col-white">delete
-                                                                            </mat-icon>
-                                                                        </button>
-                                                                    </div>
-                                                                </li>
                                                             </ul>
                                                         </div>
                                                         <div class="col-4">
@@ -87,32 +77,7 @@
                                                     </div>
                                                 </div>
                                                 <mat-table #table [dataSource]="dataSource" matSort class="mat-cell">
-                                                    <!-- Checkbox Column -->
-                                                    <ng-container matColumnDef="select">
-                                                        <mat-header-cell *matHeaderCellDef
-                                                            [ngClass]="'tbl-col-width-per-6'">
-                                                            <mat-checkbox
-                                                                (change)="$event ? masterToggle($event) : null"
-                                                                [checked]="selection.hasValue() && isAllSelected()"
-                                                                [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                                                [ngClass]="'tbl-checkbox'">
-                                                            </mat-checkbox>
-                                                        </mat-header-cell>
-                                                        <mat-cell *matCellDef="let row"
-                                                            [ngClass]="'tbl-col-width-per-6'">
-                                                            <mat-checkbox (click)="$event.stopPropagation()"
-                                                                [disabled]="!row.active"
-                                                                (change)="$event ? selection.toggle(row) : null"
-                                                                [checked]="selection.isSelected(row)"
-                                                                [ngClass]="'tbl-checkbox'">
-                                                            </mat-checkbox>
-                                                        </mat-cell>
-                                                    </ng-container>
                                                     <!-- ID Column -->
-                                                    <ng-container matColumnDef="id">
-                                                        <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
-                                                        <mat-cell *matCellDef="let row">{{row.id}}</mat-cell>
-                                                    </ng-container>
                                                     <ng-container matColumnDef="img">
                                                         <mat-header-cell mat-header-cell *matHeaderCellDef
                                                             [ngClass]="'tbl-col-width-per-6'"> Image </mat-header-cell>
@@ -129,11 +94,11 @@
                                                         <mat-cell *matCellDef="let row">
                                                             {{row.name}}</mat-cell>
                                                     </ng-container>
-                                                    <ng-container matColumnDef="dob">
-                                                        <mat-header-cell *matHeaderCellDef
-                                                            mat-sort-header>DOB</mat-header-cell>
+                                                    <ng-container matColumnDef="fatherName">
+                                                        <mat-header-cell *matHeaderCellDef mat-sort-header>Father
+                                                            Name</mat-header-cell>
                                                         <mat-cell *matCellDef="let row">
-                                                            {{row.dob | date: showDateFormat}}</mat-cell>
+                                                            {{row.fatherName}}</mat-cell>
                                                     </ng-container>
                                                     <ng-container matColumnDef="mobile">
                                                         <mat-header-cell *matHeaderCellDef
@@ -141,26 +106,14 @@
                                                         <mat-cell *matCellDef="let row">
                                                             {{row.mobile}}</mat-cell>
                                                     </ng-container>
-                                                    <ng-container matColumnDef="doj">
-                                                        <mat-header-cell *matHeaderCellDef mat-sort-header>Joining
-                                                            Date</mat-header-cell>
+                                                    <ng-container matColumnDef="idProof">
+                                                        <mat-header-cell *matHeaderCellDef mat-sort-header>Id
+                                                            Proof</mat-header-cell>
                                                         <mat-cell *matCellDef="let row">
-                                                            {{row.dateOfJoining | date: showDateFormat}}</mat-cell>
-                                                    </ng-container>
-                                                    <ng-container matColumnDef="password">
-                                                        <mat-header-cell *matHeaderCellDef
-                                                            [ngClass]="'tbl-col-width-per-10'">Password</mat-header-cell>
-                                                        <mat-cell *matCellDef="let row"
-                                                            [ngClass]="'tbl-col-width-per-10'">
-                                                            {{row.password}}</mat-cell>
-                                                    </ng-container>
-                                                    <ng-container matColumnDef="userType">
-                                                        <mat-header-cell *matHeaderCellDef mat-sort-header
-                                                            [ngClass]="'tbl-col-width-per-25'">User
-                                                            Type</mat-header-cell>
-                                                        <mat-cell *matCellDef="let row"
-                                                            [ngClass]="'tbl-col-width-per-25'">
-                                                            {{userTypeMap.get(row.userType)}}</mat-cell>
+                                                            {{row.panNo}}
+                                                            <br />
+                                                            {{row.aadharNo}}
+                                                        </mat-cell>
                                                     </ng-container>
                                                     <!-- actions -->
                                                     <ng-container matColumnDef="actions">

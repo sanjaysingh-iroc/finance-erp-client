@@ -73,11 +73,11 @@ export class AllTaskComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/task/add-task']);
+    this.router.navigate(['finance/task/add-task']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/task/add-task', { state: { taskModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/task/add-task', { state: { taskModel: row, action: 'edit' } });
   }
 
   deleteItem(row) {

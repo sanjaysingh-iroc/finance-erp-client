@@ -5,7 +5,6 @@ import { first } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { AssociateService } from '../associate.service';
 import { MyErrorStateMatcher } from '../../shared/content-matching-error-state';
-import { UserTypeModel } from '../../shared/common.models';
 import { CommonLayout } from '../../shared/shared-layout/share.layout';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { LocalStorageData } from '../../shared/local-storage-data';
@@ -26,9 +25,7 @@ export class AddAssociateComponent {
   dialogTitle: string = 'Add';
   associateModel: AssociateModel;
   associatePersonalForm: FormGroup;
-  associateProfessionalForm: FormGroup;
 
-  userTypeList: UserTypeModel[];
   matcher = new MyErrorStateMatcher();
   minDate: Date;
   maxDate: Date;
@@ -59,19 +56,15 @@ export class AddAssociateComponent {
     minDate.setFullYear(minDate.getFullYear() - 60);
     this.minDate = minDate;
 
-    this.utilsService.getAllUserType().subscribe(data => {
-      this.userTypeList = data;
-    });
-
     this.action = history.state.action;
     if (this.action == 'edit') {
       this.associateModel = history.state.associateModel;
       this.dialogTitle = 'Edit'
     } else {
-      this.associateModel = new AssociateModel({}, {});
+      this.associateModel = new AssociateModel({});
     }
 
-    this.associateService.getAllActiveUsers(this.login.companyId, undefined).subscribe(associates => {
+    this.associateService.getAllActiveAssociates(this.login.companyId).subscribe(associates => {
       this.associates = associates;
       associates.forEach(associate => {
         this.associateMobiles.push(associate.mobile);
@@ -84,24 +77,17 @@ export class AddAssociateComponent {
     });
 
     this.associatePersonalForm = this.fb.group({
-      empCode: [this.associateModel.empCode, [Validators.required]],
       name: [this.associateModel.name, [Validators.required]],
-      dob: [this.associateModel.dob, [Validators.required]],
+      fatherName: [this.associateModel.fatherName, [Validators.required]],
       email: [this.associateModel.email, [Validators.email, Validators.minLength(5)]],
       mobile: [this.associateModel.mobile, [Validators.required, Validators.pattern("^[0-9]{10}$")]],
       emergencyMobile: [this.associateModel.emergencyMobile, [Validators.pattern("^[0-9]{10}$")]],
       address: [this.associateModel.address, [Validators.required]],
+      panNo: [this.associateModel.panNo],
+      aadharNo: [this.associateModel.aadharNo],
+
       uploadImg: ['', [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
     });
-
-    this.associateProfessionalForm = this.fb.group({
-      dateOfJoining: [this.associateModel.dateOfJoining, [Validators.required]],
-      salary: [this.associateModel.salary, [Validators.required]],
-      password: [this.associateModel.password, [Validators.required]],
-      confirmPassword: [this.associateModel.password, [Validators.required]],
-      userType: [this.associateModel.userType, [Validators.required]],
-      education: [this.associateModel.education, [Validators.required]]
-    }, { validator: this.checkPasswords });
 
   }
 
@@ -116,15 +102,10 @@ export class AddAssociateComponent {
     }
   }
 
-  checkPasswords(group: FormGroup) { // here we have the 'passwords' group
-    let pass = group.controls.password.value;
-    let confirmPass = group.controls.confirmPassword.value;
-    return pass == confirmPass ? group.controls.confirmPassword.setErrors(null) : group.controls.confirmPassword.setErrors({ notSame: true });
-  }
 
   onSubmit() {
     this.spinnerButtonOptions.active = true;
-    const associate: AssociateModel = new AssociateModel(this.associatePersonalForm.value, this.associateProfessionalForm.value);
+    const associate: AssociateModel = new AssociateModel(this.associatePersonalForm.value);
     associate.companyId = this.login.companyId;
 
     if (this.action == 'edit') {
@@ -147,12 +128,7 @@ export class AddAssociateComponent {
         associate.uploadImg = (results as any).uploadImg.fileDownloadUri ? (results as any).uploadImg.fileDownloadUri : this.associateModel.uploadImg;
 
         this.associateService.addNewAssociate(associate).pipe(first()).subscribe((customerData) => {
-          const loginUser = this.localStorageData.userValue;
-          if (associate.id == loginUser.id) {
-            this.localStorageData.updateLoginUser(customerData);
-          }
-
-          this.router.navigate(['finance/finance/associate/all-associate']);
+          this.router.navigate(['finance/associates/all-associates']);
         });
       },
       error: (err) => console.error('One or more requests failed:', err)

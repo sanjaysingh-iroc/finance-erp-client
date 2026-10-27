@@ -13,6 +13,8 @@ import { Observable } from 'rxjs';
 import { CompressImageService } from '../../shared/services/CompressImageService';
 import { LoginModel } from '../../auth/login-model';
 import { Utils } from '../../shared/util-class';
+import { PaymentTypeModel } from '../../shared/common.models';
+import { UtilsService } from '../../shared/services/utils.service';
 
 
 @Component({
@@ -44,6 +46,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
   totalAmountControl = new FormControl('0');
   login: LoginModel;
   amountInWords: string;
+  paymentTypeMap: Map<number, PaymentTypeModel> = new Map<number, PaymentTypeModel>();
 
   constructor(private fb: FormBuilder,
     private customerService: CustomerService,
@@ -51,6 +54,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
     private commonLayout: CommonLayout,
     private localStorageData: LocalStorageData,
     public utils: Utils,
+    private utilsService: UtilsService,
 
     private router: Router
   ) { }
@@ -74,7 +78,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
             this.allCustomerLoanMap.set(customerLoan.id, customerLoan);
           });
 
-          const totalAmount = this.allCustomerLoanMap.get(this.customerLoanAmountModel.loanId)?.amount;
+          const totalAmount = this.allCustomerLoanMap.get(this.customerLoanAmountModel.loanId)?.lendedAmount;
           const paidAmount = (this.loanTotalPaidAmountMap.get(this.customerLoanAmountModel.loanId) ? this.loanTotalPaidAmountMap.get(this.customerLoanAmountModel.loanId) : 0) - this.customerLoanAmountModel.amount;
 
           this.paidAmountControl.setValue(paidAmount);
@@ -108,12 +112,16 @@ export class AddCustomerLoanAmountComponent implements OnInit {
     this.customerLoansForm = this.fb.group({
       customerDetails: this.customerDetails,
       loanId: [this.customerLoanAmountModel.loanId, [Validators.required]],
-
+      paymentMode: [this.customerLoanAmountModel.paymentMode, [Validators.required]],
       depositDate: [this.customerLoanAmountModel.depositDate, [Validators.required]],
       amount: [this.customerLoanAmountModel.amount, [Validators.required, Validators.min(1)]],
       comment: [this.customerLoanAmountModel.comment],
       uploadDoc: [undefined, [this.compressImage.fileMaxSize(2 * 1024 * 1024)]]
 
+    });
+
+    this.utilsService.getAllPaymentType().subscribe(data => {
+      data.forEach(paymentType => this.paymentTypeMap.set(paymentType.id, paymentType));
     });
   }
 
@@ -139,7 +147,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
       );
       if (this.action == 'edit') {
 
-        this.customerDetails.setValue({ name: this.customerMap.get(this.customerLoanAmountModel.customerId)?.name });
+        this.customerDetails.setValue( this.customerMap.get(this.customerLoanAmountModel.customerId));
 
       }
     });
@@ -174,8 +182,8 @@ export class AddCustomerLoanAmountComponent implements OnInit {
       paidAmount = paidAmount - this.customerLoanAmountModel.amount;
     }
     this.paidAmountControl.setValue(paidAmount);
-    this.pendingAmountControl.setValue(this.allCustomerLoanMap.get(event.value)?.amount - paidAmount);
-    this.totalAmountControl.setValue(this.allCustomerLoanMap.get(event.value)?.amount);
+    this.pendingAmountControl.setValue(this.allCustomerLoanMap.get(event.value)?.lendedAmount - paidAmount);
+    this.totalAmountControl.setValue(this.allCustomerLoanMap.get(event.value)?.lendedAmount);
 
   }
 
@@ -196,7 +204,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
   }
 
   displayFn(user: any): string {
-    return user ? user.name : '';
+    return user ? user.name + ' S/O ' + user.fatherName : '';
   }
 
 
@@ -213,7 +221,7 @@ export class AddCustomerLoanAmountComponent implements OnInit {
       customerLoanAmountModel.id = this.customerLoanAmountModel.id;
     }
     this.customerService.addNewCustomerLoanAmount(customerLoanAmountModel).pipe(first()).subscribe(data => {
-      this.router.navigate(['finance/finance/customers/all-customer-loans']);
+      this.router.navigate(['finance/customers/all-customer-loans']);
     });
 
 

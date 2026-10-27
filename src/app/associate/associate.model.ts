@@ -3,43 +3,34 @@ import { settings } from '../demo/data';
 
 export class AssociateModel {
   id: number;
-  empCode: string;
   name: string;
-  dob: string;
-  dateOfJoining: string;
-  salary: number;
+  fatherName: string;
   companyId: number;
-
   email: string;
   mobile: string;
-  password: string;
-  userType: number;
   emergencyMobile: string;
   address: string;
-  education: string;
+  panNo: string;
+  aadharNo: string;
   uploadImg: string;
-  exitDate: string;
-  exitSession: number;
   active: boolean;
 
-  constructor(formPersonalData, formProfessionalData) {
+  constructor(formPersonalData) {
     {
+      this.id = formPersonalData.id;
+      this.name = formPersonalData.name || '';
+      this.fatherName = formPersonalData.fatherName || '';
+
       this.email = formPersonalData.email || '';
       this.mobile = formPersonalData.mobile || '';
 
-      this.id = formPersonalData.id;
-      this.empCode = formPersonalData.empCode || '';
-      this.name = formPersonalData.name || '';
-      this.dob = formPersonalData.dob ? formatDate(formPersonalData.dob, settings.SAVE_DATE_FORMAT, 'en') : '';
+
       this.emergencyMobile = formPersonalData.emergencyMobile || '';
+      this.panNo = formPersonalData.panNo || '';
+      this.aadharNo = formPersonalData.aadharNo || '';
+
       this.address = formPersonalData.address || '';
       this.active = formPersonalData.active || 1;
-
-      this.password = formProfessionalData.password || '';
-      this.userType = formProfessionalData.userType || '';
-      this.dateOfJoining = formProfessionalData.dateOfJoining ? formatDate(formProfessionalData.dateOfJoining, settings.SAVE_DATE_FORMAT, 'en') : '';
-      this.salary = formProfessionalData.salary || '';
-      this.education = formProfessionalData.education || '';
 
     }
   }

@@ -72,7 +72,7 @@ export class AddTaskComponent implements OnInit {
     }
 
     this.taskService.addNewTask(taskModel).pipe(first()).subscribe(data => {
-      this.router.navigate(['finance/finance/task/all-task']);
+      this.router.navigate(['finance/task/all-task']);
     });
   }
 

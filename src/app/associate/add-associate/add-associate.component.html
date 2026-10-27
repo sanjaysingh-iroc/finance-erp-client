@@ -12,7 +12,7 @@
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
-                            <a routerLink="/finance/finance/staff/all-staff">Associates</a>
+                            <a routerLink="/finance/staff/all-staff">Associates</a>
                         </li>
                         <li class="breadcrumb-item active">{{dialogTitle}}</li>
                     </ul>
@@ -26,44 +26,34 @@
                         <mat-horizontal-stepper [linear]=true #stepper>
 
                             <mat-step [stepControl]="associatePersonalForm">
-                                <form class="m-4" [formGroup]="associatePersonalForm">
+                                <form class="m-4" [formGroup]="associatePersonalForm" (ngSubmit)="onSubmit()">
                                     <ng-template matStepLabel>Personal Information</ng-template>
                                     <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Emp Code</mat-label>
-                                                <input matInput formControlName="empCode">
-                                                <mat-icon matSuffix>person</mat-icon>
-                                            </mat-form-field>
-                                        </div>
-
                                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                             <mat-form-field class="example-full-width" appearance="outline">
                                                 <mat-label>Name</mat-label>
                                                 <input matInput formControlName="name" required>
                                                 <mat-icon matSuffix>account_circle</mat-icon>
-
                                                 <mat-error
                                                     *ngIf="associatePersonalForm.get('name').hasError('required')">
                                                     Please Add Name
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                             <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Date Of Birth</mat-label>
-                                                <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate"
-                                                    formControlName="dob" disabled required>
-                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                                <mat-datepicker #picker disabled="false"></mat-datepicker>
+                                                <mat-label>Father's Name</mat-label>
+                                                <input matInput formControlName="fatherName" required>
+                                                <mat-icon matSuffix>account_circle</mat-icon>
                                                 <mat-error
-                                                    *ngIf="associatePersonalForm.get('dob').hasError('required')">
-                                                    Please select date
+                                                    *ngIf="associatePersonalForm.get('fatherName').hasError('required')">
+                                                    Please Add Father Name
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
+                                    </div>
+                                    <div class="row">
+
                                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                             <mat-form-field class="example-full-width" appearance="outline">
                                                 <mat-label>Email</mat-label>
@@ -115,6 +105,23 @@
                                             </mat-form-field>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Pan No.</mat-label>
+                                                <input matInput formControlName="panNo">
+                                                <mat-icon matSuffix>account_circle</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                            <mat-form-field class="example-full-width" appearance="outline">
+                                                <mat-label>Aadhar No.</mat-label>
+                                                <input matInput formControlName="aadharNo">
+                                                <mat-icon matSuffix>account_circle</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
                                             style="margin-bottom: 0px;">
@@ -153,117 +160,8 @@
                                             width="100" height="60" alt="avatar" />
                                     </div>
                                     <div>
-                                        <button mat-raised-button matStepperNext color="primary">Next</button>
-                                    </div>
-                                </form>
-                            </mat-step>
-
-                            <mat-step [stepControl]="associateProfessionalForm">
-                                <form class="m-4" [formGroup]="associateProfessionalForm" (ngSubmit)="onSubmit()"
-                                    #formone="ngForm">
-                                    <ng-template matStepLabel>Professional Information</ng-template>
-                                    <div class="row">
-                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Password</mat-label>
-                                                <input matInput [type]="hide ? 'password' : 'text'"
-                                                    formControlName="password">
-                                                <button type="button" mat-icon-button matSuffix (click)="hide = !hide"
-                                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                                                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                                </button>
-                                                <mat-error
-                                                    *ngIf="associateProfessionalForm.get('password').hasError('required')">
-                                                    Please Add Password
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Re-Enter Password</mat-label>
-                                                <input matInput [type]="hide2 ? 'password' : 'text'"
-                                                    formControlName="confirmPassword" [errorStateMatcher]="matcher">
-                                                <button type="button" mat-icon-button matSuffix (click)="hide2 = !hide2"
-                                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide2">
-                                                    <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                                </button>
-                                                <mat-error
-                                                    *ngIf="associateProfessionalForm.get('confirmPassword').hasError('notSame')">
-                                                    Passwords do not match
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Select User type</mat-label>
-                                                <mat-select formControlName="userType" required>
-                                                    <mat-option *ngFor="let userType of userTypeList"
-                                                        [value]="userType.id">
-                                                        {{userType.name}}
-                                                    </mat-option>
-                                                </mat-select>
-                                                <mat-error
-                                                    *ngIf="associateProfessionalForm.get('userType').hasError('required')">
-                                                    Please Select Any User Type
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
-
-                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Salary</mat-label>
-                                                <input matInput formControlName="salary" type="number" min="0" required>
-                                                <mat-icon matSuffix>payment</mat-icon>
-                                                <mat-error
-                                                    *ngIf="associateProfessionalForm.get('salary').hasError('required')">
-                                                    Please Add Salary
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline">
-                                                <mat-label>Date Of Joining</mat-label>
-                                                <input matInput [matDatepicker]="picker1"
-                                                    formControlName="dateOfJoining" disabled required>
-                                                <mat-datepicker-toggle matSuffix
-                                                    [for]="picker1"></mat-datepicker-toggle>
-                                                <mat-datepicker #picker1 disabled="false"></mat-datepicker>
-                                                <mat-error
-                                                    *ngIf="associateProfessionalForm.get('dateOfJoining').hasError('required')">
-                                                    Please Select Date of Joining
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"
-                                            style="margin-bottom: 0px;">
-                                            <mat-form-field class="example-full-width" appearance="outline"
-                                                appearance="outline">
-                                                <mat-label>Education</mat-label>
-                                                <textarea matInput formControlName="education" required></textarea>
-                                                <mat-icon matSuffix>cast_for_education</mat-icon>
-                                                <mat-error
-                                                    *ngIf="associateProfessionalForm.get('education').hasError('required')">
-                                                    Please Add Education Details
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <button mat-raised-button matStepperPrevious color="warn"
-                                            class="mr-2">Back</button>
                                         <mat-spinner-button [options]="spinnerButtonOptions" type="submit"
-                                            [disabled]="!associateProfessionalForm.valid">
+                                            [disabled]="!associatePersonalForm.valid">
                                         </mat-spinner-button>
                                     </div>
                                 </form>

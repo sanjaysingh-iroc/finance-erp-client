@@ -41,7 +41,7 @@ export class AboutCustomerComponent implements OnInit {
     private commonLayout: CommonLayout,
   ) {
     if (history.state.action != 'view') {
-      this.router.navigate(['finance/finance/customers/all-customers']);
+      this.router.navigate(['finance/customers/all-customers']);
     }
   }
 

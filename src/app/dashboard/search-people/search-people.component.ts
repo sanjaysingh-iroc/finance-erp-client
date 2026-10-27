@@ -51,7 +51,7 @@ export class SearchPeopleComponent implements OnInit {
   }
 
   viewStaffProfile(staff) {
-    this.router.navigateByUrl('finance/finance/staff/about-staff', { state: { staff: staff, action: 'view' } });
+    this.router.navigateByUrl('finance/staff/about-staff', { state: { staff: staff, action: 'view' } });
   }
 
 

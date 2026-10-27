@@ -12,7 +12,7 @@
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
-                            <a routerLink="/finance/finance/staff/all-staff">associate</a>
+                            <a routerLink="/finance/staff/all-staff">associate</a>
                         </li>
                         <li class="breadcrumb-item active">Profile</li>
                     </ul>
@@ -50,18 +50,11 @@
                     <div class="tab-content">
                         <div class="tab-pane body active" id="about">
                             <ul class="list-group list-group-unbordered">
-                                <li class="list-group-item">
-                                    <b>Date Of Birth </b>
-                                    <div class="profile-desc-item pull-right">{{ associate.dob | date: showDateFormat}}
-                                    </div>
-                                </li>
+
                                 <li class="list-group-item">
                                     <b>Emergency Mobile </b>
                                     <div class="profile-desc-item pull-right">{{ associate.emergencyMobile}}</div>
                                 </li>
-
-
-
                             </ul>
                             <small class="text-muted">Email address: </small>
                             <p>{{associate.email}}</p>

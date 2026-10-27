@@ -58,7 +58,7 @@ export class AboutStaffComponent implements OnInit {
     private commonLayout: CommonLayout,
   ) {
     if (history.state.action != 'view') {
-      this.router.navigate(['finance/finance/staff/all-staff']);
+      this.router.navigate(['finance/staff/all-staff']);
     }
   }
 

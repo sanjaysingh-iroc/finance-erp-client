@@ -31,23 +31,18 @@ import { LoginModel } from '../../auth/login-model';
 })
 export class AllassociateComponent implements OnInit {
   displayedColumns = [
-    'select',
     'img',
     'name',
-    'dob',
+    'fatherName',
     'mobile',
-    'doj',
-    'password',
-    'userType',
+    'idProof',
     'actions'
   ];
 
   dataSource: ExampleDataSource | null;
-  selection = new SelectionModel<AssociateModel>(true, []);
   associate: AssociateModel | null;
   dataChange: BehaviorSubject<AssociateModel[]> = new BehaviorSubject<AssociateModel[]>([]);
   showDateFormat: string;
-  userTypeMap: Map<number, string> = new Map<number, string>();
   apiURL: string = environment.apiUrl;
   session: SessionModel;
   login: LoginModel;
@@ -86,7 +81,7 @@ export class AllassociateComponent implements OnInit {
   }
 
   viewAssociateProfile(associate) {
-    this.router.navigateByUrl('finance/finance/associate/about-associate', { state: { associate: associate, action: 'view' } });
+    this.router.navigateByUrl('finance/associates/about-associate', { state: { associate: associate, action: 'view' } });
   }
 
   get data(): AssociateModel[] {
@@ -94,11 +89,11 @@ export class AllassociateComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/associate/add-associate']);
+    this.router.navigate(['finance/associates/add-associate']);
   }
 
   editCall(row) {
-    this.router.navigateByUrl('finance/finance/associate/add-associate', { state: { associateModel: row, action: 'edit' } });
+    this.router.navigateByUrl('finance/associates/add-associate', { state: { associateModel: row, action: 'edit' } });
   }
 
   updateAssociate(associate, id) {
@@ -148,62 +143,10 @@ export class AllassociateComponent implements OnInit {
   private refreshTable() {
     this.paginator._changePageSize(this.paginator.pageSize);
   }
-  isAllSelected() {
-
-    let numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.renderedData.length;
-    this.dataSource.renderedData.forEach((row) => {
-      if (!row.active) {
-        numSelected++;
-      }
-    });
-    return numSelected == numRows;
-  }
-
-  masterToggle(event) {
-
-    if (event.checked) {
-      this.dataSource.renderedData.forEach((row) => {
-        if (row.active) {
-          this.selection.select(row);
-        }
-      });
-    } else {
-      this.selection.clear();
-    }
-  }
-
-  removeSelectedRows() {
-    const dialogRef = this.dialog.open(DeleteAllDialogComponent, {
-      data: { sessionYear: this.session.id, exitDate: formatDate(new Date(), settings.SAVE_DATE_FORMAT, 'en') }
-    }
-    );
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        const totalSelect = this.selection.selected.length;
-        const ids = [];
-        this.selection.selected.forEach((item) => {
-          ids.push(item.id);
-        });
-        this.associateService.deleteAssociate(ids.toString(), formatDate(result.exitDate, settings.SAVE_DATE_FORMAT, 'en')).subscribe(() => {
-          this.selection = new SelectionModel<AssociateModel>(true, []);
-          this.loadData();
-          this.notification.showDangerNotification(
-            totalSelect + 'All Selected Record Delete Successfully...!!!',
-            'bottom'
-          );
-        });
-      }
-    });
-  }
 
   public loadData() {
-
-    this.utilsService.getAllUserType()
-      .subscribe(data => data.forEach(element => this.userTypeMap.set(element.id, element.name)));
-
     this.dataChange = new BehaviorSubject<AssociateModel[]>([]);
-    this.associateService.getAllActiveUsers(this.login.companyId, undefined).subscribe(
+    this.associateService.getAllActiveAssociates(this.login.companyId).subscribe(
       data => {
         data.sort((a, b) => a.name.localeCompare(b.name));
         this.dataChange.next(data);
@@ -295,9 +238,6 @@ export class ExampleDataSource extends DataSource<AssociateModel> {
           break;
         case 'name':
           [propertyA, propertyB] = [a.name, b.name];
-          break;
-        case 'date':
-          [propertyA, propertyB] = [a.dob, b.dob];
           break;
         case 'mobile':
           [propertyA, propertyB] = [a.mobile, b.mobile];

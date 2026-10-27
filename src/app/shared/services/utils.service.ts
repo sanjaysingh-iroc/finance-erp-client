@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
-import { BrandModel, CountryModel, IdProofModel, PaymentTypeModel, PdfStyleModel, ProductCategoryModel, SerialKeyModel, SettingModel, StateModel, UploadFileModel, UserTypeModel, WeeklyOffModel } from '../common.models';
+import {  CountryModel, GroupModel, IdProofModel, PaymentFrequencyModel, PaymentTypeModel, PdfStyleModel,  SerialKeyModel, SettingModel, StateModel, UploadFileModel, UserTypeModel, WeeklyOffModel } from '../common.models';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +16,17 @@ export class UtilsService {
     return this.httpClient.get<PaymentTypeModel[]>(`${environment.apiUrl}/utils/getPaymentTypes`);
   }
 
-  getAllSettings(): Observable<SettingModel[]> {
-    return this.httpClient.get<SettingModel[]>(`${environment.apiUrl}/utils/getSettings`);
+   getAllPaymentFrequency(): Observable<PaymentFrequencyModel[]> {
+    return this.httpClient.get<PaymentFrequencyModel[]>(`${environment.apiUrl}/utils/getAllPaymentFrequency`);
   }
 
-  getAllProductCategory(): Observable<ProductCategoryModel[]> {
-    return this.httpClient.get<ProductCategoryModel[]>(`${environment.apiUrl}/utils/getProductCategory`);
+   getAllGroupDetails(): Observable<GroupModel[]> {
+    return this.httpClient.get<GroupModel[]>(`${environment.apiUrl}/utils/getAllGroupDetails`);
+  }
+
+
+  getAllSettings(): Observable<SettingModel[]> {
+    return this.httpClient.get<SettingModel[]>(`${environment.apiUrl}/utils/getSettings`);
   }
 
   getAllUserType(): Observable<UserTypeModel[]> {
@@ -31,10 +36,6 @@ export class UtilsService {
 
   getWeeklyOff(): Observable<WeeklyOffModel[]> {
     return this.httpClient.get<WeeklyOffModel[]>(`${environment.apiUrl}/utils/getAllWeeklyOff`);
-  }
-
-  getBrandDetails(): Observable<BrandModel[]> {
-    return this.httpClient.get<BrandModel[]>(`${environment.apiUrl}/utils/getBrands`);
   }
 
 

@@ -101,16 +101,16 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   viewStaffProfile() {
     if (this.isStaff) {
-      this.router.navigateByUrl('finance/finance/staff/about-staff', { state: { staff: this.login, action: 'view' } });
+      this.router.navigateByUrl('finance/staff/about-staff', { state: { staff: this.login, action: 'view' } });
     } else {
-      this.router.navigateByUrl('finance/finance/customers/view-profile');
+      this.router.navigateByUrl('finance/customers/view-profile');
 
     }
   }
 
   changePassword() {
     if (this.isStaff) {
-      this.router.navigateByUrl('finance/finance/staff/changePassword');
+      this.router.navigateByUrl('finance/staff/changePassword');
     }
   }
 

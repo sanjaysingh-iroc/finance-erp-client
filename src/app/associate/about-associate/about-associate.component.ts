@@ -57,7 +57,7 @@ export class AboutAssociateComponent implements OnInit {
     private commonLayout: CommonLayout,
   ) {
     if (history.state.action != 'view') {
-      this.router.navigate(['finance/finance/associate/all-associate']);
+      this.router.navigate(['finance/associate/all-associate']);
     }
   }
 

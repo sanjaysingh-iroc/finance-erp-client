@@ -16,6 +16,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginModel } from '../../auth/login-model';
 import { Utils } from '../../shared/util-class';
+import { AssociateService } from '../../associate/associate.service';
+import { AssociateModel } from '../../associate/associate.model';
 @Component({
   selector: 'app-all-customer-loans',
   templateUrl: './all-customer-loans.component.html',
@@ -23,7 +25,7 @@ import { Utils } from '../../shared/util-class';
 })
 export class AllCustomerLoanComponent implements OnInit {
   displayedColumns = [
-    'customerLoanName',
+    'id',
     'customerId',
     'associate',
     'customerLoanDate',
@@ -51,7 +53,10 @@ export class AllCustomerLoanComponent implements OnInit {
   currentDate: Date = new Date();
   dayCalculate: Map<number, number> = new Map<number, number>();
 
-  alertNumber = 170;
+  associates: AssociateModel[] = [];
+  associateMap: Map<number, AssociateModel> = new Map<number, AssociateModel>();
+
+
   constructor(
     private dialog: MatDialog,
     private utils: Utils,
@@ -59,6 +64,8 @@ export class AllCustomerLoanComponent implements OnInit {
     private notification: NotificationsService,
     private router: Router,
     private localStorageData: LocalStorageData,
+    private associateService: AssociateService,
+
   ) { }
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -75,6 +82,15 @@ export class AllCustomerLoanComponent implements OnInit {
     this.invoiceMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
     this.customerLoanAmountMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
 
+
+    this.associateService.getAllActiveAssociates(this.login.companyId).subscribe(data => {
+      this.associates = data;
+      data.forEach(customer => {
+        this.associateMap.set(customer.id, customer);
+      });
+
+
+    });
 
     this.customerService.calculateAmountByLoanId(this.login.companyId).subscribe(data => {
       data.forEach(loanTotalPaidAmount => {
@@ -128,7 +144,7 @@ export class AllCustomerLoanComponent implements OnInit {
   }
 
   viewCustomerProfile(customer) {
-    this.router.navigateByUrl('finance/finance/customers/about-customer', { state: { customer: customer, action: 'view' } });
+    this.router.navigateByUrl('finance/customers/about-customer', { state: { customer: customer, action: 'view' } });
   }
 
   get data(): CustomerLoanModel[] {
@@ -136,11 +152,11 @@ export class AllCustomerLoanComponent implements OnInit {
   }
 
   addNew() {
-    this.router.navigate(['finance/finance/customers/add-customer-loan']);
+    this.router.navigate(['finance/customers/add-customer-loan']);
   }
 
-  editCall(row) {
-    this.router.navigateByUrl('finance/finance/customers/add-customer-loan', { state: { customerLoanModel: row, action: 'edit' } });
+  editCall(row, customer) {
+    this.router.navigateByUrl('finance/customers/add-customer-loan', { state: { customerLoanModel: row, customer: customer, action: 'edit' } });
   }
 
   deleteItem(row) {
@@ -195,7 +211,7 @@ export class AllCustomerLoanComponent implements OnInit {
       const customerList: number[] = [];
       data.forEach(customerModel => {
         customerList.push(customerModel.customerId);
-        this.dayCalculate.set(customerModel.customerId, this.calculateDays(customerModel.customerLoanDate));
+        this.dayCalculate.set(customerModel.customerId, this.calculateDays(customerModel.loanDate));
       });
       if (customerList.length > 0) {
         this.customerService.getAllCustomersByIds(customerList).subscribe(data => {
@@ -271,8 +287,8 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
           .slice()
           .filter((customer: CustomerLoanModel) => {
             const searchStr = (
-              customer.customerLoanName.toLowerCase() +
-              invoiceMap.get(customer.invoiceId)?.toLowerCase() +
+              customer.comment.toLowerCase() +
+              // invoiceMap.get(customer.invoiceId)?.toLowerCase() +
               customerMapChange.get(customer.customerId)?.name.toLowerCase()
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
@@ -299,17 +315,13 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
       let propertyA: number | string = '';
       let propertyB: number | string = '';
       switch (this._sort.active) {
-        case 'customerLoanName':
-          [propertyA, propertyB] = [a.customerLoanName.toLowerCase(), b.customerLoanName.toLowerCase()];
-          break;
-        case 'invoiceId':
-          [propertyA, propertyB] = [invoiceMap.get(a.invoiceId)?.toLowerCase(), invoiceMap.get(b.invoiceId)?.toLowerCase()];
-          break;
+
+
         case 'customerId':
           [propertyA, propertyB] = [customerMapChange.get(a.customerId)?.name.toLowerCase(), customerMapChange.get(b.customerId)?.name.toLowerCase()];
           break;
         case 'amount':
-          [propertyA, propertyB] = [a.amount, b.amount];
+          [propertyA, propertyB] = [a.lendedAmount, b.lendedAmount];
           break;
         case 'lastDeposit':
           [propertyA, propertyB] = [customerLoanAmountMap.get(a.id) ? customerLoanAmountMap.get(a.id) : '--', customerLoanAmountMap.get(b.id) ? customerLoanAmountMap.get(b.id) : '--'];

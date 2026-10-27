@@ -152,7 +152,7 @@ export class AddStaffComponent {
             this.localStorageData.updateLoginUser(customerData);
           }
 
-          this.router.navigate(['finance/finance/staff/all-staff']);
+          this.router.navigate(['finance/staff/all-staff']);
         });
       },
       error: (err) => console.error('One or more requests failed:', err)

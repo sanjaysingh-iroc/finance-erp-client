@@ -13,60 +13,57 @@ export class AssociateService {
   constructor(private httpClient: HttpClient) {
   }
 
-  public getAllActiveUsers(companyId: number, userType: number): Observable<AssociateModel[]> {
+  public getAllActiveAssociates(companyId: number): Observable<AssociateModel[]> {
     let params = new HttpParams().append('companyId', companyId.toString());
-    if (userType != undefined) {
-      params = params.append('userType', userType.toString());
-    }
-    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/user/getAllActiveUsers`, { params: params });
+    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/associate/getAllActiveAssociates`, { params: params });
   }
 
 
 
-  getUsersByName(companyId: number, name: string): Observable<AssociateModel[]> {
+  getAssociatesByName(companyId: number, name: string): Observable<AssociateModel[]> {
     let params = new HttpParams().append('companyId', companyId.toString()).append('name', name);
-    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/user/getAllActiveUsersByName`, { params: params });
+    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/associate/getAllActiveAssociatesByName`, { params: params });
   }
 
-  public getAllUsers(companyId: number,): Observable<AssociateModel[]> {
+  public getAllAssociates(companyId: number,): Observable<AssociateModel[]> {
     let params = new HttpParams().append('companyId', companyId.toString());
 
-    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/user/getAllUsers`, { params: params });
+    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/associate/getAllAssociates`, { params: params });
   }
 
   addNewAssociate(associate: AssociateModel): Observable<AssociateModel> {
-    return this.httpClient.post<AssociateModel>(`${environment.apiUrl}/user/create`, associate);
+    return this.httpClient.post<AssociateModel>(`${environment.apiUrl}/associate/create`, associate);
   }
 
   uploadAssociatesImage(uploadImageData: FormData): Observable<UploadFileModel> {
-    return this.httpClient.post<UploadFileModel>(`${environment.apiUrl}/user/uploadFile`, uploadImageData);
+    return this.httpClient.post<UploadFileModel>(`${environment.apiUrl}/associate/uploadFile`, uploadImageData);
   }
 
   deleteAssociate(id: string, exitDate: string): Observable<AssociateModel> {
-    return this.httpClient.delete<AssociateModel>(`${environment.apiUrl}/user/deleteUser/${id}/${exitDate}`);
+    return this.httpClient.delete<AssociateModel>(`${environment.apiUrl}/associate/deleteAssociate/${id}/${exitDate}`);
   }
 
   getAssociate(id: string): Observable<AssociateModel> {
     let params = new HttpParams().append('id', id);
-    return this.httpClient.get<AssociateModel>(`${environment.apiUrl}/user/getUser`, { params: params });
+    return this.httpClient.get<AssociateModel>(`${environment.apiUrl}/associate/getAssociate`, { params: params });
   }
 
   getAllExAssociate(companyId: number): Observable<AssociateModel[]> {
     let params = new HttpParams().append('companyId', companyId.toString());
-    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/user/getAllExAssociate`, { params: params });
+    return this.httpClient.get<AssociateModel[]>(`${environment.apiUrl}/associate/getAllExAssociate`, { params: params });
   }
 
 
   addAssociatesDocuments(associateDocument: AssociateDocumentModel): Observable<AssociateDocumentModel> {
-    return this.httpClient.post<AssociateDocumentModel>(`${environment.apiUrl}/user/addDocument`, associateDocument);
+    return this.httpClient.post<AssociateDocumentModel>(`${environment.apiUrl}/associate/addDocument`, associateDocument);
   }
   getAssociatesDocuments(associateId: number): Observable<AssociateDocumentModel[]> {
     let params = new HttpParams().append('associateId', associateId + '');
-    return this.httpClient.get<AssociateDocumentModel[]>(`${environment.apiUrl}/user/getAssociateDocuments`, { params: params });
+    return this.httpClient.get<AssociateDocumentModel[]>(`${environment.apiUrl}/associate/getAssociateDocuments`, { params: params });
   }
 
   deleteAssociatesDocuments(documentId: number) {
-    return this.httpClient.delete<AssociateDocumentModel[]>(`${environment.apiUrl}/user/deleteAssociateDocument/${documentId}`);
+    return this.httpClient.delete<AssociateDocumentModel[]>(`${environment.apiUrl}/associate/deleteAssociateDocument/${documentId}`);
   }
 
 }

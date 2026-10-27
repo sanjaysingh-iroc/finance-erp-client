@@ -87,7 +87,7 @@ export class AddStaffLoanComponent implements OnInit {
 
     this.spinnerButtonOptions.active = true;
     this.staffService.addNewStaffLoan(staffLoansModel).pipe(first()).subscribe(data => {
-      this.router.navigate(['finance/finance/staff/all-staff-loans']);
+      this.router.navigate(['finance/staff/all-staff-loans']);
     });
   }
 }
