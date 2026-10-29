@@ -28,12 +28,12 @@ export class AddAllCustomerLoanAmountComponent implements OnInit {
 
   session: SessionModel;
 
-  studentFormArray = new FormArray([]);
+  customerFormArray = new FormArray([]);
   classForm: FormGroup;
   spinnerButtonOptions: MatProgressButtonOptions;
   login: LoginModel;
   groupModels: GroupModel[] = [];
-  allCustomerLoanAmountMap: Map<number, CustomerLoanAmountModel> = new Map<number, CustomerLoanAmountModel>();
+  allCustomerLoanAmountMap: Map<string, CustomerLoanAmountModel> = new Map<string, CustomerLoanAmountModel>();
   paymentTypeMap: Map<number, PaymentTypeModel> = new Map<number, PaymentTypeModel>();
 
   constructor(
@@ -62,7 +62,7 @@ export class AddAllCustomerLoanAmountComponent implements OnInit {
     this.classForm = this.fb.group({
       depositDate: [new Date],
       groupId: [0],
-      students: this.studentFormArray,
+      customers: this.customerFormArray,
     });
 
     this.onDateChange();
@@ -74,8 +74,8 @@ export class AddAllCustomerLoanAmountComponent implements OnInit {
 
     this.allCustomerLoanAmountMap.clear();
     this.customerService.getAllLoanAmountByDepositDate(this.login.companyId, formatDate(depositDate, settings.SAVE_DATE_FORMAT, 'en'), groupId).subscribe(data => {
-      data.forEach(student => {
-        this.allCustomerLoanAmountMap.set(student.customerId, student);
+      data.forEach(customer => {
+        this.allCustomerLoanAmountMap.set(customer.customerId + '_' + customer.loanId, customer);
       });
       this.fetchCustomerLoanData(depositDate, groupId);
     });
@@ -83,12 +83,12 @@ export class AddAllCustomerLoanAmountComponent implements OnInit {
 
   fetchCustomerLoanData(depositDate: Date, groupId: number) {
     if (groupId != 0) {
-      this.studentFormArray.clear();
+      this.customerFormArray.clear();
       this.customerService.getCustomerLoansByGroupAndDate(this.login.companyId, formatDate(depositDate, settings.SAVE_DATE_FORMAT, 'en'), groupId).subscribe(data => {
-        data.forEach(student => {
-          let customerLoanAmountModel: CustomerLoanAmountModel = this.allCustomerLoanAmountMap.get(student[1]) ? this.allCustomerLoanAmountMap.get(student[1]) : new CustomerLoanAmountModel({ amount: 0, paymentMode: 1, approved: 0 });
+        data.forEach(customer => {
+          let customerLoanAmountModel: CustomerLoanAmountModel = this.allCustomerLoanAmountMap.get(customer[1] + '_' + customer[0]) ? this.allCustomerLoanAmountMap.get(customer[1] + '_' + customer[0]) : new CustomerLoanAmountModel({ amount: 0, paymentMode: 1, approved: 0 });
 
-          this.studentFormArray.push(this.initSectionRow(student[0], student[1], student[2] + " S/O " + student[3], customerLoanAmountModel.amount, customerLoanAmountModel.paymentMode, customerLoanAmountModel.approved));
+          this.customerFormArray.push(this.initSectionRow(customer[0], customer[1], customer[2] + " S/O " + customer[3], customerLoanAmountModel.amount, customerLoanAmountModel.paymentMode, customerLoanAmountModel.approved));
         });
       });
     }
@@ -108,21 +108,21 @@ export class AddAllCustomerLoanAmountComponent implements OnInit {
   onSubmit() {
     this.spinnerButtonOptions.active = true;
 
-    const studentRolls: CustomerLoanAmountModel[] = [];
-    for (const student of this.classForm.value.students) {
-      if (student.amount && student.amount > 0) {
+    const customerRolls: CustomerLoanAmountModel[] = [];
+    for (const customer of this.classForm.value.customers) {
+      if (customer.amount && customer.amount > 0) {
         let customerLoanAmountModel: CustomerLoanAmountModel = new CustomerLoanAmountModel({
-          customerId: student.customerId,
-          loanId: student.loanId,
+          customerId: customer.customerId,
+          loanId: customer.loanId,
           depositDate: formatDate(this.classForm.get("depositDate").value, settings.SAVE_DATE_FORMAT, 'en'),
-          paymentMode: student.paymentMode,
-          amount: student.amount,
+          paymentMode: customer.paymentMode,
+          amount: customer.amount,
         });
         customerLoanAmountModel.createdBy = this.login.id;
         customerLoanAmountModel.companyId = this.login.companyId;
 
 
-        studentRolls.push(customerLoanAmountModel);
+        customerRolls.push(customerLoanAmountModel);
       }
 
     }
@@ -130,8 +130,8 @@ export class AddAllCustomerLoanAmountComponent implements OnInit {
     let depositDate = this.classForm.get('depositDate').value;
     let groupId = this.classForm.get('groupId').value;
 
-    if (studentRolls.length > 0) {
-      this.customerService.addAllNewCustomerLoanAmount(studentRolls, formatDate(depositDate, settings.SAVE_DATE_FORMAT, 'en'), groupId).subscribe((data) => {
+    if (customerRolls.length > 0) {
+      this.customerService.addAllNewCustomerLoanAmount(customerRolls, formatDate(depositDate, settings.SAVE_DATE_FORMAT, 'en'), groupId).subscribe((data) => {
         this.spinnerButtonOptions.active = false;
         this.notification.showSuccessNotification(
           'Add Record Successfully...!!!',

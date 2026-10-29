@@ -74,6 +74,14 @@ export class AllCustomerComponent implements OnInit {
     this.login.companyId;
     this.showDateFormat = settings.SHOW_DATE_FORMAT;
     this.session = this.localStorageData.sessionValue;
+
+    this.customerService.getAllCompleteCustomerLoans(this.login.companyId, false).subscribe(
+      data => {
+        data.forEach(loan => {
+          this.allBillingModels.push(loan.customerId);
+        });
+      }
+    );
     this.loadData();
   }
 

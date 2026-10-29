@@ -20,6 +20,8 @@ import { StaffService } from '../../staff/staff.service';
 import { StaffModel } from '../../staff/staff.model';
 import { formatDate } from '@angular/common';
 import { ApproveDialogComponent } from '../../shared/dialog/approve/approve.component';
+import { UtilsService } from '../../shared/services/utils.service';
+import { GroupModel } from '../../shared/common.models';
 
 @Component({
   selector: 'app-view-customer-loan-amount',
@@ -42,18 +44,21 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
   showDateFormat: string;
   customerModelMap: Map<number, string> = new Map<number, string>();
   loanModelMap: Map<number, number> = new Map<number, number>();
-  customerId = new FormControl('');
+
+  depositDate = new FormControl(new Date);
+  groupId = new FormControl('');
+
   allCustomerLoanAmountModels: CustomerLoanAmountModel[];
   login: LoginModel;
   staffMap: Map<number, StaffModel> = new Map<number, StaffModel>();
   customerMapChange: BehaviorSubject<Map<number, string>> = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
-  loanMapChange: BehaviorSubject<Map<number, number>> = new BehaviorSubject<Map<number, number>>(new Map<number, number>());
   selection = new SelectionModel<CustomerLoanAmountModel>(true, []);
+  groupModels: GroupModel[] = [];
 
   constructor(
     private dialog: MatDialog,
     private staffService: StaffService,
-
+    private utilsService: UtilsService,
     private customerService: CustomerService,
     private notification: NotificationsService,
     private localStorageData: LocalStorageData,
@@ -69,7 +74,9 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
 
   ngOnInit() {
     this.customerMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
-    this.loanMapChange = new BehaviorSubject<Map<number, number>>(new Map<number, number>());
+    this.utilsService.getAllGroupDetails().subscribe(data => {
+      this.groupModels = data;
+    });
 
     this.showDateFormat = settings.SHOW_DATE_FORMAT;
     this.login = this.localStorageData.userValue;
@@ -81,11 +88,9 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
       const customerList: number[] = [];
       data.forEach(loanModel => {
         customerList.push(loanModel.customerId);
-        this.loanModelMap.set(loanModel.id, loanModel.id);
-
+        this.loanModelMap.set(loanModel.id, loanModel.groupId);
       });
 
-      this.loanMapChange.next(this.loanModelMap);
 
       if (customerList.length > 0) {
         this.customerService.getAllCustomersByIds(customerList).subscribe(data => {
@@ -96,11 +101,40 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
 
         });
       }
-
-
     });
 
+
+
     this.loadData();
+  }
+
+  onDateChange() {
+    let depositDate = this.depositDate.value;
+    let groupId = this.groupId.value;
+
+    let allCustomerLoanAmountModels: CustomerLoanAmountModel[] = [...this.allCustomerLoanAmountModels];
+    allCustomerLoanAmountModels = allCustomerLoanAmountModels.filter(customerLoanAmountModel => customerLoanAmountModel.depositDate == formatDate(depositDate, settings.SAVE_DATE_FORMAT, 'en'));
+    console.log(allCustomerLoanAmountModels);
+
+    console.log(groupId);
+    console.log(this.loanModelMap);
+
+    allCustomerLoanAmountModels = allCustomerLoanAmountModels.filter(customerLoanAmountModel => groupId == this.loanModelMap.get(customerLoanAmountModel.loanId));
+
+    this.dataChange.next(allCustomerLoanAmountModels);
+    this.dataSource = new ExampleDataSource(
+      this.dataChange,
+      this.paginator,
+      this.sort,
+      this.customerMapChange,
+    );
+    fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
+      if (!this.dataSource) {
+        return;
+      }
+      this.dataSource.filter = this.filter.nativeElement.value;
+    });
+
   }
 
   approveCustomerLoanAmount(row) {
@@ -229,38 +263,13 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
     );
   }
 
-  getCustomerBillings(event) {
-    const customerId = event.value;
-    let allCustomerLoanAmountModels: CustomerLoanAmountModel[] = [...this.allCustomerLoanAmountModels];
-
-    if (customerId != 0) {
-      allCustomerLoanAmountModels = allCustomerLoanAmountModels.filter(customerLoanAmountModel => customerLoanAmountModel.customerId == customerId);
-    }
-
-    this.dataChange.next(allCustomerLoanAmountModels);
-    this.dataSource = new ExampleDataSource(
-      this.dataChange,
-      this.paginator,
-      this.sort,
-      this.customerMapChange,
-      this.loanMapChange
-    );
-    fromEvent(this.filter.nativeElement, 'keyup')
-      .subscribe(() => {
-        if (!this.dataSource) {
-          return;
-        }
-        this.dataSource.filter = this.filter.nativeElement.value;
-      });
-  }
-
   private refreshTable() {
     this.paginator._changePageSize(this.paginator.pageSize);
   }
 
   public loadData() {
     this.dataChange = new BehaviorSubject<CustomerLoanAmountModel[]>([]);
-    this.customerService.getAllCustomerLoanAmountDetails(this.login.companyId).subscribe(
+    this.customerService.getAllNonApproveCustomerLoanAmountDetails(this.login.companyId).subscribe(
       data => {
         this.allCustomerLoanAmountModels = data;
         this.dataChange.next(data);
@@ -271,7 +280,6 @@ export class ViewCustomerLoanAmountComponent implements OnInit {
       this.paginator,
       this.sort,
       this.customerMapChange,
-      this.loanMapChange
     );
     fromEvent(this.filter.nativeElement, 'keyup')
       .subscribe(() => {
@@ -299,8 +307,6 @@ export class ExampleDataSource extends DataSource<CustomerLoanAmountModel> {
     public _paginator: MatPaginator,
     public _sort: MatSort,
     public dataChange1: BehaviorSubject<Map<number, string>>,
-    public dataChange2: BehaviorSubject<Map<number, number>>,
-
   ) {
     super();
     // Reset to the first page when the customer changes the filter.
@@ -323,21 +329,19 @@ export class ExampleDataSource extends DataSource<CustomerLoanAmountModel> {
     return merge(...displayDataChanges).pipe(
       map(() => {
         const customerMapChange: Map<number, string> = this.dataChange1.value;
-        const loanMapChange: Map<number, string> = this.dataChange1.value;
 
         this.filteredData = this.data
           .slice()
           .filter((customer: CustomerLoanAmountModel) => {
             const searchStr = (
               customer.loanId.toString() +
-              customerMapChange.get(customer.customerId)?.toLowerCase() +
-              loanMapChange.get(customer.loanId)?.toLowerCase()
+              customerMapChange.get(customer.customerId)?.toLowerCase()
 
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
           });
         // Sort filtered data
-        const sortedData = this.sortData(this.filteredData.slice(), customerMapChange, loanMapChange);
+        const sortedData = this.sortData(this.filteredData.slice(), customerMapChange);
         // Grab the page's slice of the filtered sorted data.
         const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
         this.renderedData = sortedData.splice(
@@ -350,7 +354,7 @@ export class ExampleDataSource extends DataSource<CustomerLoanAmountModel> {
   }
   disconnect() { }
   /** Returns a sorted copy of the database data. */
-  sortData(data: CustomerLoanAmountModel[], customerMapChange: Map<number, string>, loanMapChange: Map<number, string>): CustomerLoanAmountModel[] {
+  sortData(data: CustomerLoanAmountModel[], customerMapChange: Map<number, string>): CustomerLoanAmountModel[] {
     if (!this._sort.active || this._sort.direction == '') {
       return data;
     }
@@ -360,9 +364,6 @@ export class ExampleDataSource extends DataSource<CustomerLoanAmountModel> {
       switch (this._sort.active) {
         case 'name':
           [propertyA, propertyB] = [customerMapChange.get(a.customerId)?.toLowerCase(), customerMapChange.get(b.customerId)?.toLowerCase()];
-          break;
-        case 'loanName':
-          [propertyA, propertyB] = [loanMapChange.get(a.loanId)?.toLowerCase(), loanMapChange.get(b.loanId)?.toLowerCase()];
           break;
         case 'DepositDate':
           [propertyA, propertyB] = [a.depositDate, b.depositDate];

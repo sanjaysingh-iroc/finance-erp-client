@@ -68,7 +68,7 @@ export class CustomerLoanModel {
   installmentAmount: number;
 
   associateId: number;
-  fosId: number;
+  paymentType: number;
 
   duration: number;
   groupId: number;
@@ -80,6 +80,7 @@ export class CustomerLoanModel {
   approvedBy: number;
   approved: boolean;
   complete: boolean;
+  uploadDoc: string;
 
   constructor(formData) {
     {
@@ -89,7 +90,7 @@ export class CustomerLoanModel {
       this.refundableAmount = formData.refundableAmount || '';
       this.fileChargeAmount = formData.fileChargeAmount || '';
       this.installmentAmount = formData.installmentAmount || '';
-      this.fosId = formData.fosId || '';
+      this.paymentType = formData.paymentType || '';
 
       this.duration = formData.duration || '';
       this.groupId = formData.groupId || '';

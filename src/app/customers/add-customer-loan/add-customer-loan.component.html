@@ -111,7 +111,8 @@
                                 <div class=" col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Lended Amount</mat-label>
-                                        <input matInput formControlName="lendedAmount" type="number"  (input)="convertAmtInWords(0,$event)">
+                                        <input matInput formControlName="lendedAmount" type="number"
+                                            (input)="convertAmtInWords(0,$event)">
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                         <mat-hint align="start"><b>{{amountInWords[0]}}</b></mat-hint>
                                         <mat-error *ngIf="customerLoansForm.get('lendedAmount').hasError('required')">
@@ -123,10 +124,10 @@
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Refundable Amount</mat-label>
                                         <input matInput formControlName="refundableAmount"
-                                            (input)="convertAmtInWords(1,$event)" type="number" >
+                                            (input)="convertAmtInWords(1,$event)" type="number">
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                         <mat-hint align="start"><b>{{amountInWords[1]}}</b></mat-hint>
-                                          <mat-error
+                                        <mat-error
                                             *ngIf="customerLoansForm.get('refundableAmount').hasError('required')">
                                             Amount can not be Empty
                                         </mat-error>
@@ -139,7 +140,7 @@
                                             (input)="convertAmtInWords(2,$event)">
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                         <mat-hint align="start"><b>{{amountInWords[2]}}</b></mat-hint>
-                                       
+
                                         <mat-error
                                             *ngIf="customerLoansForm.get('fileChargeAmount').hasError('required')">
                                             Amount can not beEmpty
@@ -152,11 +153,12 @@
                                 <div class=" col-xl-4 col-lg-4 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
                                         <mat-label>Installment Amount</mat-label>
-                                        <input matInput formControlName="installmentAmount" type="number"  (input)="convertAmtInWords(3,$event)">
+                                        <input matInput formControlName="installmentAmount" type="number"
+                                            (input)="convertAmtInWords(3,$event)">
                                         <mat-icon matSuffix>currency_rupee</mat-icon>
                                         <mat-hint align="start"><b>{{amountInWords[3]}}</b></mat-hint>
-                                        
-                                       <mat-error
+
+                                        <mat-error
                                             *ngIf="customerLoansForm.get('fileChargeAmount').hasError('required')">
                                             Amount can not be Empty
                                         </mat-error>
@@ -180,9 +182,9 @@
                             <div class="row">
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>Client Type</mat-label>
+                                        <mat-label>Group Name</mat-label>
                                         <mat-select formControlName="groupId" required>
-                                            <mat-option *ngFor="let recipient of paymentFrequencyModels"
+                                            <mat-option *ngFor="let recipient of groupModels"
                                                 [value]="recipient.id">
                                                 {{recipient.name}}
                                             </mat-option>
@@ -195,13 +197,13 @@
 
                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-form-field class="example-full-width" appearance="outline">
-                                        <mat-label>FOS ID</mat-label>
-                                        <mat-select formControlName="fosId" required>
-                                            <mat-option *ngFor="let recipient of groupModels" [value]="recipient.id">
+                                        <mat-label>Payment Type</mat-label>
+                                        <mat-select formControlName="paymentType" required>
+                                            <mat-option *ngFor="let recipient of paymentFrequencyModels" [value]="recipient.id">
                                                 {{recipient.name}}
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error *ngIf="customerLoansForm.get('fosId').hasError('required')">
+                                        <mat-error *ngIf="customerLoansForm.get('paymentType').hasError('required')">
                                             Please Select FOS
                                         </mat-error>
                                     </mat-form-field>
@@ -266,7 +268,27 @@
                                     </mat-form-field>
                                 </div>
                             </div>
-
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Upload Doc</mat-label>
+                                        <ngx-mat-file-input accept="image/*" [multiple]="false"
+                                            formControlName="uploadDoc">
+                                        </ngx-mat-file-input>
+                                        <mat-icon matSuffix>attachment</mat-icon>
+                                        <mat-error
+                                            *ngIf="customerLoansForm.get('uploadDoc').hasError('fileMinSize')">
+                                            File size exceeds More than 2 MB
+                                        </mat-error>
+                                        <mat-hint style="color: red;font-size: 16px;"> File Size should not be
+                                            exceed
+                                            more than 2
+                                            MB.</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <img [src]='apiURL+customerLoanModel.uploadDoc' (error)="updateCustomerUrl($event)"
+                                    width="100" height="60" alt="avatar" />
+                            </div>
                             <div class="row">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 0px;">
                                     <mat-spinner-button [options]="spinnerButtonOptions"

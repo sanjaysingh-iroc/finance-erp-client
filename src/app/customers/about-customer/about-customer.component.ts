@@ -12,6 +12,8 @@ import { CommonLayout } from '../../shared/shared-layout/share.layout';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { CompressImageService } from '../../shared/services/CompressImageService';
 import { LoginModel } from '../../auth/login-model';
+import { AssociateService } from '../../associate/associate.service';
+import { AssociateModel } from '../../associate/associate.model';
 
 @Component({
   selector: 'app-about-customer',
@@ -26,15 +28,19 @@ export class AboutCustomerComponent implements OnInit {
   apiURL: string = environment.apiUrl;
   spinnerButtonOptions: MatProgressButtonOptions;
   customerLoanList: CustomerLoanModel[] = [];
+  completeCustomerLoanList: CustomerLoanModel[] = [];
+
   loanTotalPaidAmountMap: Map<number, number> = new Map<number, number>();
-  customerLoanAmountMap: Map<number, string> = new Map<number, string>();
   login: LoginModel;
 
+  associateMap: Map<number, AssociateModel> = new Map<number, AssociateModel>();
   constructor(
     private customerService: CustomerService,
     private utilsService: UtilsService,
     private compressImage: CompressImageService,
     private localStorageData: LocalStorageData,
+    private associateService: AssociateService,
+
     private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,
@@ -50,10 +56,22 @@ export class AboutCustomerComponent implements OnInit {
     this.showDateFormat = settings.SHOW_DATE_FORMAT;
     this.customer = history.state.customer;
     this.login = this.localStorageData.userValue;
-    this.customerService.getCustomerLoans(this.customer.id).subscribe(data => {
-      this.customerLoanList = data;
+
+    this.associateService.getAllActiveAssociates(this.login.companyId).subscribe(data => {
+      data.forEach(customer => {
+        this.associateMap.set(customer.id, customer);
+      });
     });
 
+    this.customerService.getCustomerLoans(this.customer.id).subscribe(data => {
+      data.forEach(customerLoanModel => {
+        if (customerLoanModel.complete) {
+          this.completeCustomerLoanList.push(customerLoanModel);
+        } else {
+          this.customerLoanList.push(customerLoanModel);
+        }
+      });
+    });
 
     this.customerService.calculateAmountByLoanId(this.login.companyId).subscribe(data => {
       data.forEach(loanTotalPaidAmount => {
@@ -61,11 +79,7 @@ export class AboutCustomerComponent implements OnInit {
       });
     });
 
-    this.customerService.getCustomerLoanByLastDeposit(this.login.companyId).subscribe(data => {
-      data.forEach(customerLoanAmountModel => {
-        this.customerLoanAmountMap.set(customerLoanAmountModel.loanId, customerLoanAmountModel.depositDate);
-      });
-    });
+
   }
 
   updateCustomerUrl(event, row) {

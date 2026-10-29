@@ -68,7 +68,7 @@
                                     </div>
                                     <mat-table #table [dataSource]="dataSource" matSort class="mat-cell">
                                         <ng-container matColumnDef="id">
-                                            <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
+                                            <mat-header-cell *matHeaderCellDef>CARD ID</mat-header-cell>
                                             <mat-cell *matCellDef="let row">{{row.id}}</mat-cell>
                                         </ng-container>
 
@@ -79,8 +79,7 @@
                                             <mat-cell *matCellDef="let row"
                                                 [ngStyle]="{'color': dayCalculate.get(row.customerId)>=row.duration ? 'red' : 'black'}">
                                                 {{customerModelMap.get(row.customerId)?.name}}<br />
-                                                {{customerModelMap.get(row.customerId)?.mobile}}<br />
-                                                {{customerModelMap.get(row.customerId)?.location}}
+                                                {{customerModelMap.get(row.customerId)?.mobile}}
                                             </mat-cell>
                                         </ng-container>
                                         <ng-container matColumnDef="associate">
@@ -106,13 +105,6 @@
                                                 [ngStyle]="{'color': dayCalculate.get(row.customerId)>=row.duration ? 'red' : 'black'}">
                                                 {{row.lendedAmount}}</mat-cell>
                                         </ng-container>
-                                        <ng-container matColumnDef="totalPendingAmount">
-                                            <mat-header-cell *matHeaderCellDef mat-sort-header>Total Pending
-                                                Amount</mat-header-cell>
-                                            <mat-cell *matCellDef="let row"
-                                                [ngStyle]="{'color': dayCalculate.get(row.customerId)>=row.duration ? 'red' : 'black'}">
-                                                {{row.lendedAmount-(loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0)}}</mat-cell>
-                                        </ng-container>
                                         <ng-container matColumnDef="paidAmount">
                                             <mat-header-cell *matHeaderCellDef mat-sort-header>Paid
                                                 Amount</mat-header-cell>
@@ -120,38 +112,15 @@
                                                 [ngStyle]="{'color': dayCalculate.get(row.customerId)>=row.duration ? 'red' : 'black'}">
                                                 {{(loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0)}}</mat-cell>
                                         </ng-container>
-
-                                        <ng-container matColumnDef="lastDeposit">
-                                            <mat-header-cell *matHeaderCellDef mat-sort-header>Paid
-                                                Date</mat-header-cell>
-                                            <mat-cell *matCellDef="let row"
-                                                [ngStyle]="{'color': dayCalculate.get(row.customerId)>=row.duration ? 'red' : 'black'}">
-                                                {{customerLoanAmountMap.get(row.id) ? (customerLoanAmountMap.get(row.id)
-                                                |
-                                                date: showDateFormat ): '--'}}</mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="emiAmount">
-                                            <mat-header-cell *matHeaderCellDef mat-sort-header>EMI
-                                                Amount</mat-header-cell>
-                                            <mat-cell *matCellDef="let row"
-                                                [ngStyle]="{'color': dayCalculate.get(row.customerId)>=row.duration ? 'red' : 'black'}">
-                                                <div>
-                                                    {{row.installmentAmount}}
-                                                    <br />
-                                                    {{dayCalculate.get(row.customerId)>=row.duration ?
-                                                    dayCalculate.get(row.customerId) : '' }}
-                                                </div>
-
-                                            </mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="pendingAmount">
+                                        <ng-container matColumnDef="totalPendingAmount">
                                             <mat-header-cell *matHeaderCellDef mat-sort-header>Pending
                                                 Amount</mat-header-cell>
                                             <mat-cell *matCellDef="let row"
                                                 [ngStyle]="{'color': dayCalculate.get(row.customerId)>=row.duration ? 'red' : 'black'}">
-                                                {{calculatePendingAmount(row.loanDate,row.installmentAmount) -
-                                                (loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0)}}</mat-cell>
+                                                {{row.lendedAmount-(loanTotalPaidAmountMap.get(row.id)?loanTotalPaidAmountMap.get(row.id):0)}}</mat-cell>
                                         </ng-container>
+
+
                                         <!-- actions -->
                                         <ng-container matColumnDef="actions">
                                             <mat-header-cell *matHeaderCellDef class="pr-0">Actions</mat-header-cell>

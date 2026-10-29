@@ -5,16 +5,16 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <ul class="breadcrumb breadcrumb-style ">
                         <li class="breadcrumb-item">
-                            <h4 class="page-title">Assign Student Roll</h4>
+                            <h4 class="page-title">Add Loan amount</h4>
                         </li>
                         <li class="breadcrumb-item bcrumb-1">
                             <a routerLink="/pages/dashboard/staff-dashboard">
                                 <i class="fas fa-home"></i> Home</a>
                         </li>
                         <li class="breadcrumb-item bcrumb-2">
-                            <a href="#" onClick="return false;">Students</a>
+                            <a href="#" onClick="return false;">Customer</a>
                         </li>
-                        <li class="breadcrumb-item active">Assign Roll</li>
+                        <li class="breadcrumb-item active">Add Loan amount</li>
                     </ul>
                 </div>
             </div>
@@ -48,12 +48,12 @@
 
                                 </div>
                             </div>
-                            <div formArrayName="students" class="tableBody table-responsive"
+                            <div formArrayName="customers" class="tableBody table-responsive"
                                 style="position : relative; height: calc(100vh - 300px)" [perfectScrollbar]>
 
 
-                                <div *ngFor="let  student of studentFormArray.controls; let i = index">
-                                    <div class="row" [formGroup]="student">
+                                <div *ngFor="let  customer of customerFormArray.controls; let i = index">
+                                    <div class="row" [formGroup]="customer">
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6" style="margin-bottom: 0px;">
                                             <mat-form-field class="example-full-width" appearance="outline">
                                                 <mat-label>Card ID</mat-label>
@@ -84,7 +84,7 @@
                                             <mat-form-field class="example-full-width" appearance="outline">
                                                 <mat-label>Amount </mat-label>
                                                 <input matInput formControlName="amount" type="number"
-                                                    [readonly]="student.value.approved">
+                                                    [readonly]="customer.value.approved">
                                                 <mat-icon matSuffix>class</mat-icon>
                                             </mat-form-field>
                                         </div>

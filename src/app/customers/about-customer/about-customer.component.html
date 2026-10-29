@@ -117,19 +117,20 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr *ngFor="let customerLoan of customerLoanList">
-                                                                    <td>{{customerLoan.customerLoanName}}</td>
-                                                                    <td>{{customerLoan.customerLoanDate}}</td>
-                                                                    <td>{{customerLoan.amount}}</td>
-                                                                    <td>{{customerLoan.Associate}}
+                                                                <tr style="text-align: center;"
+                                                                    *ngFor="let customerLoan of customerLoanList">
+                                                                    <td>{{customerLoan.id}}</td>
+                                                                    <td>{{customerLoan.loanDate}}</td>
+                                                                    <td>{{customerLoan.lendedAmount}}</td>
+                                                                    <td>{{associateMap.get(customerLoan.associateId).name}}
                                                                         <br />
-                                                                        {{customerLoan.associateMobile}}
+                                                                        {{associateMap.get(customerLoan.associateId).mobile}}
                                                                     </td>
 
                                                                     <td>{{(loanTotalPaidAmountMap.get(customerLoan.id)?loanTotalPaidAmountMap.get(customerLoan.id):0)}}
                                                                     </td>
 
-                                                                    <td>{{customerLoan.emiAmount}}</td>
+                                                                    <td>{{customerLoan.installmentAmount}}</td>
                                                                     <td><a *ngIf="customerLoan.uploadDoc"
                                                                             href="{{apiURL + customerLoan.uploadDoc}}">
                                                                             <mat-icon matSuffix>archive</mat-icon>
@@ -167,11 +168,14 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr *ngFor="let customerLoan of customerLoanList">
-                                                                    <td>{{customerLoan.customerLoanName}}</td>
-                                                                    <td>{{customerLoan.customerLoanDate}}</td>
-                                                                    <td>{{customerLoan.amount}}</td>
-                                                                    <td>{{customerLoan.associateName}}
+                                                                <tr style="text-align: center;"
+                                                                    *ngFor="let customerLoan of completeCustomerLoanList">
+                                                                    <td>{{customerLoan.id}}</td>
+                                                                    <td>{{customerLoan.loanDate}}</td>
+                                                                    <td>{{customerLoan.lendedAmount}}</td>
+                                                                    <td>{{associateMap.get(customerLoan.associateId).name}}
+                                                                        <br />
+                                                                        {{associateMap.get(customerLoan.associateId).mobile}}
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -201,13 +205,19 @@
                                                                 <tr>
                                                                     <td>Aadhar Card</td>
                                                                     <td>
-
+                                                                        <a *ngIf="customer.uploadAdharDoc"
+                                                                            href="{{apiURL + customer.uploadAdharDoc}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Pan Card</td>
                                                                     <td>
-
+                                                                        <a *ngIf="customer.uploadPanDoc"
+                                                                            href="{{apiURL + customer.uploadPanDoc}}">
+                                                                            <mat-icon matSuffix>archive</mat-icon>
+                                                                        </a>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>

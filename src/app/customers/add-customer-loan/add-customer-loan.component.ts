@@ -14,7 +14,7 @@ import { CompressImageService } from '../../shared/services/CompressImageService
 import { Utils } from '../../shared/util-class';
 import { LoginModel } from '../../auth/login-model';
 import { environment } from '@environments/environment';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { AssociateModel } from '../../associate/associate.model';
 import { AssociateService } from '../../associate/associate.service';
 import { UtilsService } from '../../shared/services/utils.service';
@@ -88,11 +88,6 @@ export class AddCustomerLoanComponent implements OnInit {
       this.selectedCustomer = history.state.customer;
       this.customerLoanModel = history.state.customerLoanModel;
       this.dialogTitle = 'Edit';
-
-
-      // this.customerDetails.setValue({ name: this.selectedCustomer.name + ' S/O ' + this.selectedCustomer.fatherName });
-      // this.associateDetails.setValue({ name: this.selectedAssociate.name });
-
     } else {
       this.customerLoanModel = new CustomerLoanModel({});
       this.customerLoanModel.loanDate = formatDate(new Date, settings.SAVE_DATE_FORMAT, 'en');
@@ -113,7 +108,7 @@ export class AddCustomerLoanComponent implements OnInit {
       loanDate: [this.customerLoanModel.loanDate],
 
       groupId: [this.customerLoanModel.groupId, [Validators.required]],
-      fosId: [this.customerLoanModel.fosId, [Validators.required]],
+      paymentType: [this.customerLoanModel.paymentType, [Validators.required]],
 
       lendedAmount: [this.customerLoanModel.lendedAmount, [Validators.required]],
       refundableAmount: [this.customerLoanModel.refundableAmount, [Validators.required]],
@@ -250,7 +245,7 @@ export class AddCustomerLoanComponent implements OnInit {
 
     customerLoansModel.customerId = this.selectedCustomer.id;
     customerLoansModel.associateId = this.selectedAssociate.id;
-    // customerLoansModel.fosId = this.selectedCustomer.id;
+    // customerLoansModel.paymentType = this.selectedCustomer.id;
 
     customerLoansModel.loanDate = formatDate(this.customerLoansForm.get("loanDate").value, settings.SAVE_DATE_FORMAT, 'en');
     customerLoansModel.createdBy = login.id;
@@ -261,8 +256,39 @@ export class AddCustomerLoanComponent implements OnInit {
 
 
     this.customerService.addNewCustomerLoan(customerLoansModel).subscribe((data) => {
-      this.router.navigate(['finance/customers/all-customer-loans']);
+
+      this.uploadAllDoc(data);
     });
 
+  }
+
+  uploadAllDoc(customerLoanModel: CustomerLoanModel) {
+    const apiCalls = {
+      uploadDoc: this.uploadDoc(customerLoanModel.id, this.customerLoansForm.value.uploadDoc)
+    };
+
+    forkJoin(apiCalls).subscribe({
+      next: (results) => {
+        customerLoanModel.uploadDoc = (results as any).uploadDoc.fileDownloadUri ? (results as any).uploadDoc.fileDownloadUri : this.customerLoanModel.uploadDoc;
+
+        this.customerService.addNewCustomerLoan(customerLoanModel).subscribe((customerData) => {
+          this.router.navigate(['finance/customers/all-customer-loans']);
+        });
+      },
+      error: (err) => console.error('One or more requests failed:', err)
+    });
+  }
+
+  uploadDoc(id: number, uploadDoc) {
+    if (uploadDoc) {
+      let uploadImageData = new FormData();
+      const file = uploadDoc.files[0];
+      uploadImageData.append("file", file);
+      uploadImageData.append("id", id + "");
+      uploadImageData.append("location", "customer");
+      return this.utilsService.uploadFile(uploadImageData);
+    } else {
+      return of({});;
+    }
   }
 }

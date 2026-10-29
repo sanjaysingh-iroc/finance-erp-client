@@ -109,6 +109,12 @@ export class CustomerService {
     return this.httpClient.get<CustomerLoanAmountModel[]>(`${environment.apiUrl}/customer/getAllCustomerLoanAmountDetails`, { params: params });
   }
 
+   public getAllNonApproveCustomerLoanAmountDetails(companyId: number,): Observable<CustomerLoanAmountModel[]> {
+    let params = new HttpParams().append('companyId', companyId.toString());
+
+    return this.httpClient.get<CustomerLoanAmountModel[]>(`${environment.apiUrl}/customer/getAllNonApproveCustomerLoanAmountDetails`, { params: params });
+  }
+
 
   public calculateAmountByLoanId(companyId: number,): Observable<number[][]> {
     let params = new HttpParams().append('companyId', companyId.toString());

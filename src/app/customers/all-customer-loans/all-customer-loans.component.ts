@@ -30,11 +30,9 @@ export class AllCustomerLoanComponent implements OnInit {
     'associate',
     'customerLoanDate',
     'amount',
-    'totalPendingAmount',
     'paidAmount',
-    'lastDeposit',
-    'emiAmount',
-    'pendingAmount',
+    'totalPendingAmount',
+
 
     'actions'
   ];
@@ -53,7 +51,6 @@ export class AllCustomerLoanComponent implements OnInit {
   currentDate: Date = new Date();
   dayCalculate: Map<number, number> = new Map<number, number>();
 
-  associates: AssociateModel[] = [];
   associateMap: Map<number, AssociateModel> = new Map<number, AssociateModel>();
 
 
@@ -82,15 +79,13 @@ export class AllCustomerLoanComponent implements OnInit {
     this.invoiceMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
     this.customerLoanAmountMapChange = new BehaviorSubject<Map<number, string>>(new Map<number, string>());
 
-
     this.associateService.getAllActiveAssociates(this.login.companyId).subscribe(data => {
-      this.associates = data;
       data.forEach(customer => {
         this.associateMap.set(customer.id, customer);
       });
-
-
     });
+
+
 
     this.customerService.calculateAmountByLoanId(this.login.companyId).subscribe(data => {
       data.forEach(loanTotalPaidAmount => {
@@ -143,8 +138,8 @@ export class AllCustomerLoanComponent implements OnInit {
     this.loadData();
   }
 
-  viewCustomerProfile(customer) {
-    this.router.navigateByUrl('finance/customers/about-customer', { state: { customer: customer, action: 'view' } });
+  viewCustomerProfile(customer: CustomerLoanModel) {
+    this.router.navigateByUrl('finance/customers/about-customer', { state: { customer:  this.customerModelMap.get(customer.customerId), action: 'view' } });
   }
 
   get data(): CustomerLoanModel[] {
@@ -323,9 +318,7 @@ export class ExampleDataSource extends DataSource<CustomerLoanModel> {
         case 'amount':
           [propertyA, propertyB] = [a.lendedAmount, b.lendedAmount];
           break;
-        case 'lastDeposit':
-          [propertyA, propertyB] = [customerLoanAmountMap.get(a.id) ? customerLoanAmountMap.get(a.id) : '--', customerLoanAmountMap.get(b.id) ? customerLoanAmountMap.get(b.id) : '--'];
-          break;
+
       }
       const valueA = isNaN(+propertyA) ? propertyA : +propertyA;
       const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
